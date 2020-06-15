@@ -1,0 +1,16 @@
+# Visiual Studio code
+.vscode/
+
+# Webstorm
+.idea/
+
+# OSX
+.DS_Store
+
+# Dependency directory
+node_modules/
+
+# build artifacts
+dist/
+
+build/
