@@ -1,7 +1,7 @@
 {
-  "name": "electron-react-template",
+  "name": "blasio-app",
   "version": "0.0.1",
-  "description": "A light-weight template for createing Electron App within React",
+  "description": "Blasio video platform desktop app",
   "main": "./dist/main.prod.js",
   "scripts": {
     "clear": "rm -rf ./dist",
@@ -17,11 +17,13 @@
   "keywords": [
     "electron",
     "react",
-    "boilerplate",
-    "template"
+    "blasio",
+    "video",
+    "decentralized",
+    "orbitdb"
   ],
-  "author": "SmallStoneSK",
-  "license": "MIT",
+  "author": "vaultec81",
+  "license": "GPL-3.0",
   "devDependencies": {
     "@babel/core": "^7.4.0",
     "@babel/plugin-proposal-class-properties": "^7.10.1",
