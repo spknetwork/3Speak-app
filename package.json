@@ -51,8 +51,15 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "bootstrap": "^4.5.0",
+    "datastore-level": "^1.1.0",
     "electron-packager": "^14.2.1",
+    "i18next": "^19.4.5",
     "react": "^16.8.5",
-    "react-dom": "^16.8.5"
+    "react-bootstrap": "^1.0.1",
+    "react-dom": "^16.8.5",
+    "react-i18next": "^11.6.0",
+    "react-jw-player": "^1.19.1",
+    "react-router-dom": "^5.2.0"
   }
 }
