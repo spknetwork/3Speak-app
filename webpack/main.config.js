@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack')
 
 module.exports = {
   mode: 'production',
@@ -12,12 +13,23 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            '@babel/preset-env',
+            {
+              plugins: [
+                '@babel/plugin-proposal-class-properties'
+              ]
+            }
+          ]
+        }
       }
     ]
   },
   node: {
     __dirname: false,
     __filename: false
-  }
+  },
+  plugins: [new webpack.ExternalsPlugin("commonjs", ["leveldown"])]
 };
