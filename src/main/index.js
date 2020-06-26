@@ -1,9 +1,16 @@
 import path from 'path';
 import {app, BrowserWindow} from 'electron';
+import debug from 'debug'
+const Core = require('./core')
+const ipcAdapter = require('./ipcAdapter')
 
 const entryUrl = process.env.NODE_ENV === 'development'
   ? 'http://localhost:6789/index.html'
   : `file://${path.join(__dirname, 'index.html')}`;
+
+if(process.env.NODE_ENV === 'development') {
+  debug.enable("blasio:*");
+}
 
 let window = null;
 
@@ -18,3 +25,8 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+let coreInstance = new Core();
+(async () => {
+  await coreInstance.start()
+  new ipcAdapter(coreInstance).start()
+})()
