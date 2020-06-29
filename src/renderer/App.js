@@ -1,24 +1,28 @@
 import React from 'react';
-
-import {Header} from './components/Header';
-import {Body} from './components/Body';
+import Components from "./components"
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+  HashRouter,
+  Link,
+  Switch,
+  Route
+} from 'react-router-dom';
+import views from './views';
+import './App.css'
 
 export class App extends React.PureComponent {
   render() {
     return (
-      <div style={styles.container}>
-        <Header/>
-        <Body/>
+      <div>
+        <Components.Topbar/>
+        <HashRouter>
+          <Switch>
+            <Route path="/watch">
+              <views.watch/>
+            </Route>
+          </Switch>
+        </HashRouter>
       </div>
     );
-  }
-}
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100vw',
-    height: '100vh'
   }
 }
