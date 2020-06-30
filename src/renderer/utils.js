@@ -13,5 +13,9 @@ export default {
             duration: video_info.duration,
             title: video_info.title
         }
+    },
+    async permalinkToPostInfo(permalink) {
+        const post_content = (await PromiseIPC.send("postdb.fetch", permalink)).json_content;
+        return post_content;
     }
 }
