@@ -60,3 +60,21 @@ a {
 .ml-2, .mx-2 {
     margin-left: 0.5rem !important;
 }
+#videoAbout {
+    max-height: 200px;
+    overflow: hidden;
+}
+.tags span a {
+    background: #ccc none repeat scroll 0 0;
+    border-radius: 2px;
+    color: #fff;
+    display: inline-block;
+    padding: 4px 9px;
+}
+* {
+    margin: 1px;
+}
+body {
+    font-size: 13px;
+    font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}

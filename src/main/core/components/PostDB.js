@@ -51,12 +51,16 @@ class PostDB {
         let json_content;
         switch(sourceSystem) {
             case "hive": {
-                return (await client.database.getDiscussions("blog", {
-                    tag: author,
-                    limit: 1,
-                    start_author: author,
-                    start_permlink: id
-                }))[0]
+                if(id) {
+                    return (await client.database.getDiscussions("blog", {
+                        tag: author,
+                        limit: 1,
+                        start_author: author,
+                        start_permlink: id
+                    }))[0];
+                } else {
+                    return (await client.database.getAccounts([author]))[0];
+                }
                 break;
             }
             case "orbitdb": {
@@ -66,6 +70,7 @@ class PostDB {
             default: {
                 throw new Error("Unknown source system")
             }
+            return json_content;
         }
     }
     /**

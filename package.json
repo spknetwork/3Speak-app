@@ -54,6 +54,7 @@
     "bootstrap": "^4.5.0",
     "compressjs": "^1.0.3",
     "datastore-level": "^1.1.0",
+    "date-and-time": "^0.13.1",
     "dsteem": "^0.11.3",
     "electron-packager": "^14.2.1",
     "electron-promise-ipc": "^2.1.0",
@@ -67,6 +68,7 @@
     "react-i18next": "^11.6.0",
     "react-icons": "^3.10.0",
     "react-jw-player": "^1.19.1",
+    "react-markdown": "^4.3.1",
     "react-router-dom": "^5.2.0"
   }
 }

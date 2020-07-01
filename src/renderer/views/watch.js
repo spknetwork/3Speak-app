@@ -3,6 +3,9 @@ import Player from '../components/Player'
 import { Col, Row, Container, Button } from 'react-bootstrap'
 import utils from '../utils';
 import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload, FaBell } from 'react-icons/fa';
+import DateTime from 'date-and-time'
+import ReactMarkdown from 'react-markdown'
+import CollapsibleText from '../components/CollapsibleText'
 const queryString = require('query-string')
 
 class watch extends React.Component {
@@ -31,10 +34,11 @@ class watch extends React.Component {
     }
     render() {
         console.log(this.state.post_info)
+        console.log(this.state.video_info)
         return <div>
             <Container fluid pb={0}>
                 <Row fluid="md">
-                    <Col md={7}>
+                    <Col md={8}>
                         <div>
                             {this.state.player}
                         </div>
@@ -60,7 +64,7 @@ class watch extends React.Component {
                                     </span>
                                 </span>
                                 <br />
-                                <button style={{ float: "right" }} className="btn btn-sm dropdown-toggle btn-secondary" id="videoOptions" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-secondary btn-sm dropdown-toggle">
+                                <button style={{ float: "right" }} className="btn btn-sm dropdown-toggle btn-secondary" id="videoOptions" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" className="btn btn-secondary btn-sm dropdown-toggle">
                                     <FaCogs />
                                 </button>
                             </div>
@@ -92,11 +96,33 @@ class watch extends React.Component {
                                     </strong>
                                 </a>
                             </p>
-                            <small>Published on 
-                                {
-                                    //TODO: Implement publish date fetching
-                                }
+                            <small>Published on {(() => {
+                                    const pattern = DateTime.compile('MMMM D, YYYY');
+                                    return DateTime.format(new Date(this.state.post_info.created), pattern)
+                                })()}
                             </small>
+                        </div>
+                        <div className="single-video-info-content box mb-3">
+                            <h6>About :</h6>
+                            <CollapsibleText>
+                                <ReactMarkdown source={this.state.video_info.description}></ReactMarkdown>
+                            </CollapsibleText>
+                            <h6>Tags: </h6>
+                            <p className="tags mb-0">
+                                {(() => {
+                                    var out = [];
+                                    if(this.state.post_info.json_metadata) {
+                                        for(var tag of JSON.parse(this.state.post_info.json_metadata).tags) {
+                                            out.push(<span>
+                                                <a>
+                                                    {tag}
+                                                </a>
+                                            </span>);
+                                        }
+                                    }
+                                    return out;
+                                })()}
+                            </p>
                         </div>
                     </Col>
                     <Col md={4}>
