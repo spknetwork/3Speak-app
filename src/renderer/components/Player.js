@@ -3,6 +3,7 @@ import ReactJWPlayer from 'react-jw-player';
 import mergeOptions from 'merge-options'
 import PromiseIPC from 'electron-promise-ipc'
 import queryString from 'query-string';
+import utils from '../utils';
 
 class Player extends React.Component {
     constructor(props) {
@@ -35,29 +36,25 @@ class Player extends React.Component {
         let videoInfo;
         if(this.props.videoInfo) {
             var exampleVideoInfo = {
-                source: "ipfs", // or URL
-                format: "hls", // or ["mp4", "webm"]
-                url: "", //Full URL or IPFS CID
-                thumbnail: "", //Full URL can be IPFS URL or http
+                sources: {
+                    video: {
+                        format: "mp4", // or ["hls", "webm"]
+                        url: ""
+                    },
+                    thumbnail: "", //Full URL can be IPFS URL or http
+                }, 
                 title: "My video title",
-                duration: 15 //Duration as number in s.ms format
+                description: "Video description", //Markdown supported
+                duration: 15, //Duration as number in s.ms format
+                tags: ["test_video", "first_video"],
+                refs: ['SourceSystem/accountName/permlink'], //(Reflink) Reserved for future use when multi account system support is added.
+                meta: {} //Anything non essential can be specfied here
             }
             videoInfo = this.props.videoInfo;
         } else {
             //Generate videoInfo from permalink
             if(permalink) {
-                var post_content = await PromiseIPC.send("postdb.fetch", permalink);
-                if(post_content.json_content.json_metadata) {
-                    const json_metadata = JSON.parse(post_content.json_content.json_metadata);
-                    const video_info = json_metadata.video.info;
-                    videoInfo = {
-                        source: "URL", //Reserved for URL/IPFS differentiation. 
-                        format: video_info.file.split(".")[1], //Reserved if a different player must be used on a per format basis.
-                        url: `https://cdn.3speakcontent.online/${video_info.permlink}/${video_info.file}`,
-                        duration: video_info.duration,
-                        title: video_info.title
-                    }
-                }
+                videoInfo = await utils.accounts.permalinkToVideoInfo(permalink);
             }
         }
         this.setState({
@@ -67,7 +64,7 @@ class Player extends React.Component {
     render() {
         return <React.Fragment>
             {this.state.videoInfo ? <ReactJWPlayer licenseKey="64HPbvSQorQcd52B8XFuhMtEoitbvY/EXJmMBfKcXZQU2Rnn" customProps={{playbackRateControls: true}}
-            file={this.state.videoInfo.url} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} playerScript="https://cdn.jwplayer.com/libraries/JyghCNnw.js?v=3">
+            file={this.state.videoInfo.sources.video.url} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} playerScript="https://cdn.jwplayer.com/libraries/JyghCNnw.js?v=3">
                 
             </ReactJWPlayer> : <center>
                 [Player] videoInfo not specified
