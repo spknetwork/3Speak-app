@@ -51,6 +51,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "compressjs": "^1.0.3",
     "datastore-level": "^1.1.0",

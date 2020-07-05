@@ -1,4 +1,5 @@
 import PromiseIPC from 'electron-promise-ipc';
+import axios from 'axios';
 
 //TODO move ipfs, accounts and post related utils into a separate class or even main process.
 
@@ -27,7 +28,6 @@ const accounts = {
             case "hive": {
                 const json_metadata = JSON.parse(post_content.json_metadata);
                 const video_info = json_metadata.video.info;
-                console.log(permalink);
                 return {
                     sources: {
                         video: {
@@ -41,7 +41,7 @@ const accounts = {
                              */
                             format: video_info.file.split(".")[1]
                         },
-                        thumbnail: await video.getSourceURL(permalink)
+                        thumbnail: await video.getThumbnailURL(permalink)
                     },
                     duration: video_info.duration,
                     title: video_info.title,
@@ -63,7 +63,13 @@ const accounts = {
 
         switch (provider) {
             case "hive": {
-                return `https://images.hive.blog/u/${author}/avatar`;
+                var avatar_url = `https://images.hive.blog/u/${author}/avatar`;
+                try {
+                    await axios.head(avatar_url);
+                    return avatar_url;
+                } catch {
+                    throw new Error("Failed to retrieve profile picture information")
+                }
             }
             case "orbitdb": {
                 //Retrieve IPFS profile picture CID.
