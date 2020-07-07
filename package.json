@@ -54,6 +54,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "compressjs": "^1.0.3",
+    "convert-units": "^2.3.4",
     "datastore-level": "^1.1.0",
     "date-and-time": "^0.13.1",
     "dsteem": "^0.11.3",

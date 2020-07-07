@@ -1,0 +1,96 @@
+.teaser_holder {
+	transition: all 0.6s ease-in-out;
+	-moz-transition: all 0.6 ease-in-out;
+	-webkit-transition: all 0.6s ease-in-out;
+	-o-transition: all 0.6s ease-in-out;
+	opacity: 1;
+	position: relative;
+}
+
+.teaser_holder:hover {
+	opacity: 0.85;
+}
+
+.teaser_holder:hover .card-label {
+	display: none;
+}
+.card-label {
+    background: #E8E8E8 none repeat scroll 0 0;
+    border-radius: 2px;
+    bottom: 5px;
+    color: black;
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.7;
+    padding: 0 6px;
+    position: absolute;
+    right: 5px;
+}
+.card-label-views {
+    left: 5px;
+    width: fit-content;
+    width: -moz-fit-content;
+}
+
+.video-card-list {
+    background: transparent none repeat scroll 0 0;
+    box-shadow: none;
+    display: inline-block;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.video-card-list .video-card-body .video-title a {
+    font-size: 13px;
+}
+.video-card-list .video-card-body .video-title {
+    line-height: 17px;
+}
+.video-card-list .video-card-body .right-action {
+    opacity: 0;
+}
+.video-card-list:hover .video-card-body .right-action {
+    opacity: unset;
+}
+.video-card-list .video-card-body {
+    padding: 0;
+}
+.video-card-list .video-card-image {
+    float: left;
+    height: 77px;
+    margin: 0 12px 0 0;
+    width: 122px;
+}
+.video-card-list .video-card-body .video-title {
+    line-height: 17px;
+}
+.video-page {
+    font-size: 11px;
+}
+.video-card-image {
+    border-radius: 2px;
+    box-shadow: 0 0 11px #ececec;
+    overflow: hidden;
+    position: relative;
+}
+
+.video-card-list {
+    background: transparent none repeat scroll 0 0;
+    box-shadow: none;
+    display: inline-block;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.img-fluid {
+    width: 100%;
+}
+.video-view {
+    color: #acacac;
+    font-size: 10px;
+    font-weight: 500;
+    margin: 2px 0 0;
+}
+.video-title a {
+    color: #000;
+    font-weight: 600;
+    text-decoration: none;
+}

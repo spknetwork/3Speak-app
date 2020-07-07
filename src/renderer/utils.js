@@ -44,6 +44,7 @@ const accounts = {
                         thumbnail: await video.getThumbnailURL(permalink)
                     },
                     duration: video_info.duration,
+                    creation: new Date(post_content.created),
                     title: video_info.title,
                     description: json_metadata.video.content.description,
                     tags: json_metadata.tags,
