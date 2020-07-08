@@ -15,7 +15,9 @@ if(process.env.NODE_ENV === 'development') {
 let window = null;
 
 app.on('ready', () => {
-  window = new BrowserWindow({width: 800, height: 600});
+  window = new BrowserWindow({width: 800, height: 600,
+    icon: path.resolve(__dirname, "../renderer/assets/img/app.png")
+  });
   window.loadURL(entryUrl);
   window.on('closed', () => window = null);
 });
