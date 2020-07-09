@@ -3,7 +3,7 @@ import ReactJWPlayer from 'react-jw-player';
 import mergeOptions from 'merge-options'
 import PromiseIPC from 'electron-promise-ipc'
 import queryString from 'query-string';
-import utils from '../utils';
+import utils from '../../utils';
 
 class Player extends React.Component {
     constructor(props) {
@@ -46,6 +46,7 @@ class Player extends React.Component {
                 title: "My video title",
                 description: "Video description", //Markdown supported
                 duration: 15, //Duration as number in s.ms format
+                creation: "2020-06-13T03:05:30.000Z", //Creation time in ISO time.
                 tags: ["test_video", "first_video"],
                 refs: ['SourceSystem/accountName/permlink'], //(Reflink) Reserved for future use when multi account system support is added.
                 meta: {} //Anything non essential can be specfied here

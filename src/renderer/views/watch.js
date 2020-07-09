@@ -1,17 +1,22 @@
 import React from 'react';
-import Player from '../components/Player'
+import Player from '../components/video/Player'
 import { Col, Row, Container, Button } from 'react-bootstrap'
 import utils from '../utils';
 import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload, FaBell } from 'react-icons/fa';
 import DateTime from 'date-and-time'
 import ReactMarkdown from 'react-markdown'
 import CollapsibleText from '../components/CollapsibleText'
+import EmptyProfile from '../assets/img/EmptyProfile.png'
+import VideoTeaser from '../components/video/VideoTeaser'
 const queryString = require('query-string')
 
 class watch extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { player: null, video_info: {}, post_info: {} };
+        this.state = {
+            player: null, video_info: {}, post_info: {}, permalink: queryString.parse(location.search).v,
+            profilePictureURL: EmptyProfile
+        };
     }
     async componentDidMount() {
         this.mountPlayer();
@@ -20,16 +25,21 @@ class watch extends React.Component {
 
     }
     async mountPlayer() {
-        const permalink = queryString.parse(location.search).v
         var playerType = "standard";
         switch (playerType) {
             case "standard": {
                 this.setState({
                     player: <Player></Player>, //Insert player here
-                    video_info: await utils.permalinkToVideoInfo(permalink),
-                    post_info: await utils.permalinkToPostInfo(permalink)
+                    video_info: await utils.accounts.permalinkToVideoInfo(this.state.permalink),
+                    post_info: await utils.accounts.permalinkToPostInfo(this.state.permalink)
                 })
             }
+        }
+        try {
+            //Leave profileURL default if error is thrown when attempting to retrieve profile picture
+            this.setState({ profilePictureURL: await utils.accounts.getProfilePictureURL(this.state.permalink) })
+        } catch {
+
         }
     }
     render() {
@@ -38,7 +48,7 @@ class watch extends React.Component {
         return <div>
             <Container fluid pb={0}>
                 <Row fluid="md">
-                    <Col md={8}>
+                    <Col md={6}>
                         <div>
                             {this.state.player}
                         </div>
@@ -81,25 +91,25 @@ class watch extends React.Component {
                                             }
                                         </a>
                                     </strong>
-                                    <FaBell className="ml-2 far fa-bell" data-toggle-notifications="mediamysteries"></FaBell>
+                                    <FaBell data-toggle-notifications="mediamysteries"></FaBell>
                                 </button>
-                                
+
                                 <a target="_blank" href="" className="btn btn-light btn-sm" download="avqmxbem.mp4">
-                                    <FaDownload/> Download
+                                    <FaDownload /> Download
                                 </a>
                             </div>
-                            <img className="img-fluid" src={`https://images.hive.blog/u/${this.state.post_info.author}/avatar`} alt="" />
+                            <img className="img-fluid" src={this.state.profilePictureURL} alt="" />
                             <p>
-                                <a>
+                                <a href="#/user/">
                                     <strong>
                                         {this.state.post_info.author}
                                     </strong>
                                 </a>
                             </p>
                             <small>Published on {(() => {
-                                    const pattern = DateTime.compile('MMMM D, YYYY');
-                                    return DateTime.format(new Date(this.state.post_info.created), pattern)
-                                })()}
+                                const pattern = DateTime.compile('MMMM D, YYYY');
+                                return DateTime.format(new Date(this.state.video_info.creation), pattern)
+                            })()}
                             </small>
                         </div>
                         <div className="single-video-info-content box mb-3">
@@ -111,9 +121,9 @@ class watch extends React.Component {
                             <p className="tags mb-0">
                                 {(() => {
                                     var out = [];
-                                    if(this.state.post_info.json_metadata) {
-                                        for(var tag of JSON.parse(this.state.post_info.json_metadata).tags) {
-                                            out.push(<span>
+                                    if(this.state.video_info.tags) {
+                                        for (const tag of this.state.video_info.tags) {
+                                            out.push(<span key={tag}>
                                                 <a>
                                                     {tag}
                                                 </a>
@@ -125,9 +135,13 @@ class watch extends React.Component {
                             </p>
                         </div>
                     </Col>
-                    <Col md={4}>
+                    <Col md={5}>
                         <Row>
-                            {}
+                            <Col md={12}>
+                                <VideoTeaser permalink={this.state.permalink}>
+
+                                </VideoTeaser>
+                            </Col>
                         </Row>
                     </Col>
 

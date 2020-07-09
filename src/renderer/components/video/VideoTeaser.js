@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FaCalendarAlt, FaEye } from 'react-icons/fa';
-import utils from '../utils';
-import Reflink from '../../main/RefLink';
+import utils from '../../utils';
+import Reflink from '../../../main/RefLink';
 import convert from 'convert-units';
 import DateTime from 'date-and-time';
 

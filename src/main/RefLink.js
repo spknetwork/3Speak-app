@@ -1,11 +1,33 @@
 class RefLink {
     constructor(link) {
         this.link = link;
+        
+        if(this.link[0]) {
+            let mid = this.link[0];
+            let source = {};
+            switch(mid[0]) {
+                case "$": {
+                    source.value = mid.slice(1);
+                    source.type = "state";
+                    break;
+                }
+                case "#": {
+                    source.value = mid.slice(1);
+                    source.type = "tag";
+                    break;
+                }
+                default: {
+                    source.value = mid.slice(1);
+                    source.type = "source";
+                }
+            }
+            this.source = source;
+        }
     }
     get type() {
         switch(this.link.length) {
             case 3: {
-                return "post"
+                return "permlink"
             }
             case 2: {
                 return "root"
@@ -21,11 +43,8 @@ class RefLink {
     get root() {
         return this.link[1];
     }
-    get source() {
-        return this.link[0];
-    }
     toString() {
-        return this.link.join("/");
+        return this.link.join("/")
     }
     static isValid(link) {
         try {

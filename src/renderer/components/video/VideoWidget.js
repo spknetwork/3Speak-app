@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import utils from '../utils'
-import Reflink from '../../main/RefLink'
+import utils from '../../utils'
+import Reflink from '../../../main/RefLink'
 import DateTime from 'date-and-time';
 import PlaySVG from '../assets/img/play.svg'
 import { FaUser } from 'react-icons/fa'

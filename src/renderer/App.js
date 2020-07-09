@@ -8,8 +8,8 @@ import {
   Route
 } from 'react-router-dom';
 import views from './views';
-import './App.css'
-import './main.css'
+import './css/App.css'
+import './css/main.css'
 
 export class App extends React.PureComponent {
   render() {
