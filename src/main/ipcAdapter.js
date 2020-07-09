@@ -7,8 +7,8 @@ class ipcAdapter {
         this.core = core;
     }
     start() {
-        PromiseIPC.on("postdb.fetch", async (permalink) => {
-            return await this.core.PostDB.fetch(permalink)
+        PromiseIPC.on("genuine.fetch", async (permalink) => {
+            return await this.core.GenuineDB.fetch(permalink)
         })
     }
 }

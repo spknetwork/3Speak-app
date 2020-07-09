@@ -4,15 +4,15 @@ const DagCbor = require('ipld-dag-cbor');
 const debug = require('debug')("blasio:postdb")
 const Path = require('path');
 const compressjs = require('compressjs')
-const {Client} = require('dsteem')
+const {Client:HiveClient} = require('dsteem')
  
-const client = new Client('https://hive.3speak.online/')
+const hiveClient = new HiveClient('https://hive.3speak.online/')
 
-class PostDB {
+class GenuineDB {
     constructor(self) {
         this.self = self;
 
-        this.db = new datastoreLevel(Path.join(this.self._options.path, "postdb"));
+        this.db = new datastoreLevel(Path.join(this.self._options.path, "genuinedb"));
 
         this._options = {
             defaultExpireTime: (15 * 60 * 1000), //Fifteen minutes
@@ -52,14 +52,14 @@ class PostDB {
         switch(sourceSystem) {
             case "hive": {
                 if(id) {
-                    return (await client.database.getDiscussions("blog", {
+                    return (await hiveClient.database.getDiscussions("blog", {
                         tag: author,
                         limit: 1,
                         start_author: author,
                         start_permlink: id
                     }))[0];
                 } else {
-                    return (await client.database.getAccounts([author]))[0];
+                    return (await hiveClient.database.getAccounts([author]))[0];
                 }
                 break;
             }
@@ -105,5 +105,37 @@ class PostDB {
             }
         }
     }
+    /**
+     * Retrieves children of a content root.
+     * @param {String} reflink 
+     * @param {*} options 
+     */
+    async getChildren(reflink, options) {
+        
+    }
+    /**
+     * Retrieves content information
+     * @param {String} reflink 
+     * @param {*} options 
+     */
+    async getContent(reflink, options) {
+
+    }
+    /**
+     * Retrieves state information such as trending, recent content, following content, etc.
+     * @param {String} reflink 
+     * @param {*} options 
+     */
+    async getState(reflink, options) {
+
+    }
+    /**
+     * Retrieves account information.
+     * @param {String} reflink 
+     * @param {*} options 
+     */
+    async getAccount(reflink, options) {
+
+    }
 }
-module.exports = PostDB;
+module.exports = GenuineDB;

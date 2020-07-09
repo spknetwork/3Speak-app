@@ -19,11 +19,11 @@ const ipfs = {
 }
 const accounts = {
     async permalinkToPostInfo(permalink) {
-        const post_content = (await PromiseIPC.send("postdb.fetch", permalink)).json_content;
+        const post_content = (await PromiseIPC.send("genuine.fetch", permalink)).json_content;
         return post_content;
     },
     async permalinkToVideoInfo(permalink) {
-        const post_content = (await PromiseIPC.send("postdb.fetch", permalink)).json_content;
+        const post_content = (await PromiseIPC.send("genuine.fetch", permalink)).json_content;
         switch (permalink.split("/")[0]) {
             case "hive": {
                 const json_metadata = JSON.parse(post_content.json_metadata);
@@ -44,7 +44,7 @@ const accounts = {
                         thumbnail: await video.getThumbnailURL(permalink)
                     },
                     duration: video_info.duration,
-                    creation: new Date(post_content.created),
+                    creation: new Date(post_content.created).toISOString(),
                     title: video_info.title,
                     description: json_metadata.video.content.description,
                     tags: json_metadata.tags,

@@ -1,3 +1,3 @@
 module.exports = {
-    PostDB: require('./PostDB'),
+    GenuineDB: require('./GenuineDB'),
 }

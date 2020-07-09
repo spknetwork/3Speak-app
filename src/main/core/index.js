@@ -15,7 +15,7 @@ class Core {
         if(!fs.existsSync(this._options.path)) {
             fs.mkdirSync(this._options.path);
         }
-        this.PostDB = new Components.PostDB(this)
+        this.GenuineDB = new Components.GenuineDB(this)
     }
     async stop() {
 
