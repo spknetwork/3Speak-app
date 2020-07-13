@@ -16,7 +16,10 @@ let window = null;
 
 app.on('ready', () => {
   window = new BrowserWindow({width: 800, height: 600,
-    icon: path.resolve(__dirname, "../renderer/assets/img/app.png")
+    icon: path.resolve(__dirname, "../renderer/assets/img/app.png"),
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
   window.loadURL(entryUrl);
   window.on('closed', () => window = null);
