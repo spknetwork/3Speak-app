@@ -1,7 +1,8 @@
 import PromiseIPC from 'electron-promise-ipc';
 import axios from 'axios';
-
-//TODO move ipfs, accounts and post related utils into a separate class or even main process.
+import ArraySearch from 'arraysearch'
+import RefLink from '../main/RefLink';
+const Finder = ArraySearch.Finder;
 
 const ipfs = {
     gateway: "https://ipfs.io/ipfs/",
@@ -18,38 +19,59 @@ const ipfs = {
     }
 }
 const accounts = {
-    async permalinkToPostInfo(permalink) {
-        const post_content = (await PromiseIPC.send("genuine.fetch", permalink)).json_content;
+    /**
+     * Retrieves post information from reflink.
+     * @param {String|RefLink} reflink 
+     */
+    async permalinkToPostInfo(reflink) {
+        if(!(reflink instanceof reflink)) {
+            reflink = RefLink.parse(reflink)
+        }
+        const post_content = (await PromiseIPC.send("genuine.fetch", reflink.toString())).json_content;
         return post_content;
     },
-    async permalinkToVideoInfo(permalink) {
-        const post_content = (await PromiseIPC.send("genuine.fetch", permalink)).json_content;
-        switch (permalink.split("/")[0]) {
+    /**
+     * Retrieves post information as videoInfo from reflink.
+     * @param {String|RefLink} reflink 
+     */
+    async permalinkToVideoInfo(reflink) {
+        if(!(reflink instanceof reflink)) {
+            reflink = RefLink.parse(reflink)
+        }
+        const post_content = (await PromiseIPC.send("genuine.fetch", reflink.toString())).json_content;
+        switch (reflink.root) {
             case "hive": {
-                const json_metadata = JSON.parse(post_content.json_metadata);
+                const json_metadata = post_content.json_metadata;
                 const video_info = json_metadata.video.info;
-                return {
-                    sources: {
-                        video: {
-                            url: await video.getSourceURL(permalink),
+                let sources = [];
+                if(video_info.file) {
+                    sources.push({
+                        type: "video",
+                        url: await video.getSourceURL(permalink),
 
-                            /**
-                             * Reserved if a different player must be used on per format basis.
-                             * 
-                             * If multi-resolution support is added in the future continue to use the url/format scheme.
-                             * url should link to neccessary metadata.
-                             */
-                            format: video_info.file.split(".")[1]
-                        },
-                        thumbnail: await video.getThumbnailURL(permalink)
-                    },
+                        /**
+                         * Reserved if a different player must be used on per format basis.
+                         * 
+                         * If multi-resolution support is added in the future continue to use the url/format scheme.
+                         * url should link to neccessary metadata.
+                         */
+                        format: video_info.file.split(".")[1]
+                    })
+                }
+                sources.push({
+                    type: "thumbnail",
+                    url: await video.getThumbnailURL(permalink)
+                })
+                return {
+                    sources,
                     duration: video_info.duration,
                     creation: new Date(post_content.created).toISOString(),
                     title: video_info.title,
                     description: json_metadata.video.content.description,
                     tags: json_metadata.tags,
                     refs: [`hive/${video_info.author}/${video_info.permlink}`], //Reserved for future use when multi account system support is added.
-                    meta: {} //Reserved for future use.
+                    meta: {}, //Reserved for future use.
+                    reflink: `hive/${video_info.author}/${video_info.permlink}`
                 }
             }
             default: {
@@ -57,14 +79,19 @@ const accounts = {
             }
         }
     },
-    async getProfilePictureURL(accountString) {
-        const splitted = accountString.split("/");
-        var provider = splitted[0];
-        var author = splitted[1];
+    /**
+     * Retrieves Account profile picture URL.
+     * @todo Future item: Pull image from URL, then store locally for later use.
+     * @param {String|RefLink} reflink 
+     */
+    async getProfilePictureURL(reflink) {
+        if(!(reflink instanceof RefLink)) {
+            reflink = RefLink.parse(reflink);
+        }
 
-        switch (provider) {
+        switch (reflink.source.value) {
             case "hive": {
-                var avatar_url = `https://images.hive.blog/u/${author}/avatar`;
+                var avatar_url = `https://images.hive.blog/u/${reflink.root}/avatar`;
                 try {
                     await axios.head(avatar_url);
                     return avatar_url;
@@ -83,29 +110,36 @@ const accounts = {
 }
 const video = {
     /**
-     * Retrieves
+     * Retrieves video source URL. Basic, gets first video source in list.
+     * @todo Implement handling for multi video sources.
      * @param {String} permalink 
      */
-    async getSourceURL(permalink) {
+    async getVideoSourceURL(permalink) {
         let post_content;
         if (typeof permalink === "object") {
             post_content = permalink;
         } else {
-            post_content = await accounts.permalinkToPostInfo(permalink);
+            post_content = await accounts.permalinkToVideoInfo(permalink);
         }
-        const json_metadata = JSON.parse(post_content.json_metadata);
-        try {
-            const video_info = json_metadata.video.info;
-            var file = video_info.file;
+        const reflink = RefLink.parse(post_content.reflink);
+        const find = new Finder();
+        var videoSource = find.one.in(post_content.sources).with({
+            type: "video"
+        })
+        if(videoSource) {
             try {
-                return ipfs.compileURL(ipfs.urlToCID(file));
+                return ipfs.compileURL(ipfs.urlToCID(videoSource.file));
             } catch {
-                return `https://cdn.3speakcontent.online/${video_info.permlink}/${video_info.file}`;
+                return `https://cdn.3speakcontent.online/${reflink.root}/${reflink.permlink}`;
             }
-        } catch {
+        } else {
             throw new Error("Invalid post metadata");
         }
     },
+    /**
+     * Retrieves thumbnail URL.
+     * @param {String|Object} permalink 
+     */
     async getThumbnailURL(permalink) {
         let post_content;
         if (typeof permalink === "object") {
@@ -113,20 +147,19 @@ const video = {
         } else {
             post_content = await accounts.permalinkToPostInfo(permalink);
         }
-        try {
-            const json_metadata = JSON.parse(post_content.json_metadata);
-            if(json_metadata.image)
-                try {
-                    //TODO: Code to handle ipfs thumbnails.
-                    ipfs.urlToCID(json_metadata.image);
-                } catch {
-                    return json_metadata.image[0];
-                }
-            else {
-                return `https://img.3speakcontent.online/${post_content.permlink}/thumbnail.png`
+        const reflink = RefLink.parse(post_content.reflink);
+        const find = new Finder();
+        var imageSource = find.one.in(post_content.sources).with({
+            type: "thumbnail"
+        })
+        if(videoSource) {
+            try {
+                return ipfs.compileURL(ipfs.urlToCID(imageSource.file));
+            } catch {
+                return `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
             }
-        } catch {
-            throw new Error("Invalid post metadata")
+        } else {
+            throw new Error("Invalid post metadata");
         }
     }
 }
