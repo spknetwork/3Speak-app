@@ -17,7 +17,7 @@ class RefLink {
                     break;
                 }
                 default: {
-                    source.value = mid.slice(1);
+                    source.value = mid
                     source.type = "source";
                 }
             }
@@ -62,4 +62,4 @@ class RefLink {
         return new RefLink(link);
     }
 }
-export default RefLink
+module.exports = RefLink
