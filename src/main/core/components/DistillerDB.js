@@ -69,7 +69,6 @@ class DistillerDB {
             default: {
                 throw new Error("Unknown source system")
             }
-                return json_content;
         }
     }
     /**
