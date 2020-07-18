@@ -13,7 +13,7 @@
     "build-renderer": "webpack --config webpack/renderer.prod.config.js",
     "start-main": "cross-env NODE_ENV=development run-electron -r @babel/register src/main/index.js",
     "start-renderer": "cross-env NODE_ENV=development webpack-dev-server --port 6789 --config webpack/renderer.dev.config.js",
-    "test": "mocha"
+    "test": "mocha --slow 0"
   },
   "keywords": [
     "electron",
@@ -54,6 +54,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@hiveio/dhive": "^0.14.1",
     "@hiveio/hive-js": "^0.8.2",
     "arraysearch": "^1.2.0",
     "axios": "^0.19.2",
@@ -62,14 +63,13 @@
     "convert-units": "^2.3.4",
     "datastore-level": "^1.1.0",
     "date-and-time": "^0.13.1",
-    "dsteem": "^0.11.3",
     "electron-packager": "^14.2.1",
     "electron-promise-ipc": "^2.1.0",
     "i18next": "^19.4.5",
     "ipld-dag-cbor": "^0.15.3",
     "lokijs": "^1.5.9",
     "merge-options": "^2.0.0",
-    "pouchdb": "^7.2.1",
+    "pouchdb": "^7.1.1",
     "pouchdb-find": "^7.2.1",
     "query-string": "^6.13.1",
     "react": "^16.8.5",

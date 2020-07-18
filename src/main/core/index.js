@@ -15,7 +15,7 @@ class Core {
         if(!fs.existsSync(this._options.path)) {
             fs.mkdirSync(this._options.path);
         }
-        this.GenuineDB = new Components.GenuineDB(this)
+        this.distillerDB = new Components.DistillerDB(this)
     }
     async stop() {
 

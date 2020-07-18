@@ -7,8 +7,26 @@ class ipcAdapter {
         this.core = core;
     }
     start() {
-        PromiseIPC.on("genuine.fetch", async (permalink) => {
-            return await this.core.GenuineDB.fetch(permalink)
+        PromiseIPC.on("distiller.fetch", async (reflink) => {
+            return await this.core.DistillerDB.fetch(reflink);
+        })
+        PromiseIPC.on("distiller.getTag", async (tag, options) => {
+            return await this.core.DistillerDB.getTag(tag, options);
+        })
+        PromiseIPC.on("distiller.getContent", async (reflink, options) => {
+            return await this.core.DistillerDB.getContent(reflink, options);
+        })
+        PromiseIPC.on("distiller.getPosts", async (reflink, options) => {
+            return await this.core.DistillerDB.getPosts(reflink, options);
+        })
+        PromiseIPC.on("distiller.getChildren", async (reflink, options) => {
+            return await this.core.DistillerDB.getChildren(reflink, options);
+        })
+        PromiseIPC.on("distiller.getAccount", async (reflink, options) => {
+            return await this.core.DistillerDB.getAccount(reflink, options);
+        })
+        PromiseIPC.on("distiller.getState", async (stateKey) => {
+            return await this.core.DistillerDB.getState(stateKey);
         })
     }
 }

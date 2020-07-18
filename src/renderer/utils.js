@@ -27,7 +27,7 @@ const accounts = {
         if(!(reflink instanceof reflink)) {
             reflink = RefLink.parse(reflink)
         }
-        const post_content = (await PromiseIPC.send("genuine.fetch", reflink.toString())).json_content;
+        const post_content = (await PromiseIPC.send("distiller.getContent", reflink.toString())).json_content;
         return post_content;
     },
     /**
@@ -38,7 +38,7 @@ const accounts = {
         if(!(reflink instanceof reflink)) {
             reflink = RefLink.parse(reflink)
         }
-        const post_content = (await PromiseIPC.send("genuine.fetch", reflink.toString())).json_content;
+        const post_content = (await PromiseIPC.send("distiller.getContent", reflink.toString())).json_content;
         switch (reflink.root) {
             case "hive": {
                 const json_metadata = post_content.json_metadata;

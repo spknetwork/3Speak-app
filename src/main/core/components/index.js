@@ -1,3 +1,3 @@
 module.exports = {
-    GenuineDB: require('./GenuineDB'),
+    DistillerDB: require('./DistillerDB'),
 }
