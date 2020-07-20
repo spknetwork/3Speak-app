@@ -62,4 +62,4 @@ class RefLink {
         return new RefLink(link);
     }
 }
-module.exports = RefLink
+export default RefLink

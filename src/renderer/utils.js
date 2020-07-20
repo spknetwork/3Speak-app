@@ -7,7 +7,7 @@ const Finder = ArraySearch.Finder;
 const ipfs = {
     gateway: "https://ipfs.io/ipfs/",
     compileURL(cid) {
-        return ipfs.gateway + cid.toString()
+        return ipfs.gateway + cid.toString();
     },
     urlToCID(url) {
         url = new URL(url);
@@ -24,7 +24,7 @@ const accounts = {
      * @param {String|RefLink} reflink 
      */
     async permalinkToPostInfo(reflink) {
-        if(!(reflink instanceof reflink)) {
+        if(!(reflink instanceof RefLink)) {
             reflink = RefLink.parse(reflink)
         }
         const post_content = (await PromiseIPC.send("distiller.getContent", reflink.toString())).json_content;
@@ -35,11 +35,12 @@ const accounts = {
      * @param {String|RefLink} reflink 
      */
     async permalinkToVideoInfo(reflink) {
-        if(!(reflink instanceof reflink)) {
+        if(!(reflink instanceof RefLink)) {
             reflink = RefLink.parse(reflink)
         }
+        console.log(reflink)
         const post_content = (await PromiseIPC.send("distiller.getContent", reflink.toString())).json_content;
-        switch (reflink.root) {
+        switch (reflink.source.value) {
             case "hive": {
                 const json_metadata = post_content.json_metadata;
                 const video_info = json_metadata.video.info;
@@ -47,7 +48,7 @@ const accounts = {
                 if(video_info.file) {
                     sources.push({
                         type: "video",
-                        url: await video.getSourceURL(permalink),
+                        url: await video.getVideoSourceURL(reflink),
 
                         /**
                          * Reserved if a different player must be used on per format basis.
@@ -60,7 +61,7 @@ const accounts = {
                 }
                 sources.push({
                     type: "thumbnail",
-                    url: await video.getThumbnailURL(permalink)
+                    url: await video.getThumbnailURL(reflink)
                 })
                 return {
                     sources,
