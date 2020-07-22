@@ -10,12 +10,14 @@ class VideoTeaser extends Component {
         super(props);
         this.state = {
             video_info: {sources: {}},
+            thumbnail: null,
             permalink: {}
         };
     }
     async componentDidMount() {
         this.setState({
             video_info: await utils.accounts.permalinkToVideoInfo(this.props.permalink),
+            thumbnail: await utils.video.getThumbnailURL(this.props.permalink),
             permalink: Reflink.parse(this.props.permalink)
         });
     }
@@ -29,7 +31,7 @@ class VideoTeaser extends Component {
                     })()}
                 </div>
                 <a href={`#/watch?v=${this.props.permalink}`}>
-                    <img className="img-fluid bg-dark" src={this.state.video_info.sources.thumbnail} alt="" />
+                    <img className="img-fluid bg-dark" src={this.state.thumbnail} alt="" />
                 </a>
             </div>
             <span className="video-card-body">

@@ -11,6 +11,7 @@ class Player extends React.Component {
         
         this.state = {
             playerId: Math.random(20).toString(),
+            videoUrl: null,
             videoInfo: null
         }
     }
@@ -34,6 +35,7 @@ class Player extends React.Component {
         }
 
         let videoInfo;
+        let videoUrl;
         if(this.props.videoInfo) {
             var exampleVideoInfo = {
                 sources: {
@@ -55,20 +57,22 @@ class Player extends React.Component {
         } else {
             //Generate videoInfo from permalink
             if(permalink) {
-                videoInfo = await utils.accounts.permalinkToVideoInfo(permalink);
+                videoInfo = await utils.accounts.permalinkToVideoInfo(permalink)
             }
         }
         this.setState({
-            videoInfo
+            videoInfo,
+            thumbnail: await utils.video.getThumbnailURL(videoInfo),
+            videoUrl: await utils.video.getVideoSourceURL(videoInfo)
         })
     }
     render() {
         return <React.Fragment>
-            {this.state.videoInfo ? <ReactJWPlayer licenseKey="64HPbvSQorQcd52B8XFuhMtEoitbvY/EXJmMBfKcXZQU2Rnn" customProps={{playbackRateControls: true}}
-            file={this.state.videoInfo.sources.video.url} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} playerScript="https://cdn.jwplayer.com/libraries/JyghCNnw.js?v=3">
+            {this.state.videoUrl ? <ReactJWPlayer licenseKey="64HPbvSQorQcd52B8XFuhMtEoitbvY/EXJmMBfKcXZQU2Rnn" customProps={{playbackRateControls: true}}
+            file={this.state.videoUrl} image={this.state.thumbnail} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} playerScript="https://cdn.jwplayer.com/libraries/JyghCNnw.js?v=3">
                 
-            </ReactJWPlayer> : <center>
-                [Player] videoInfo not specified
+            </ReactJWPlayer> : <center> 
+                [Player] videoInfo not specified [Player]
             </center>}
         </React.Fragment>
     }

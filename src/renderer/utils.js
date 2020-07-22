@@ -48,8 +48,7 @@ const accounts = {
                 if(video_info.file) {
                     sources.push({
                         type: "video",
-                        url: await video.getVideoSourceURL(reflink),
-
+                        url: `https://cdn.3speakcontent.online/${reflink.permlink}/${video_info.file}`,
                         /**
                          * Reserved if a different player must be used on per format basis.
                          * 
@@ -61,7 +60,7 @@ const accounts = {
                 }
                 sources.push({
                     type: "thumbnail",
-                    url: await video.getThumbnailURL(reflink)
+                    url: `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
                 })
                 return {
                     sources,
@@ -122,16 +121,15 @@ const video = {
         } else {
             post_content = await accounts.permalinkToVideoInfo(permalink);
         }
-        const reflink = RefLink.parse(post_content.reflink);
-        const find = new Finder();
-        var videoSource = find.one.in(post_content.sources).with({
+        var videoSource = Finder.one.in(post_content.sources).with({
             type: "video"
         })
         if(videoSource) {
             try {
-                return ipfs.compileURL(ipfs.urlToCID(videoSource.file));
+                return ipfs.compileURL(ipfs.urlToCID(videoSource.url));
             } catch {
-                return `https://cdn.3speakcontent.online/${reflink.root}/${reflink.permlink}`;
+                //return `https://cdn.3speakcontent.online/${reflink.root}/${reflink.permlink}`;
+                return videoSource.url;
             }
         } else {
             throw new Error("Invalid post metadata");
@@ -146,16 +144,15 @@ const video = {
         if (typeof permalink === "object") {
             post_content = permalink;
         } else {
-            post_content = await accounts.permalinkToPostInfo(permalink);
+            post_content = await accounts.permalinkToVideoInfo(permalink);
         }
         const reflink = RefLink.parse(post_content.reflink);
-        const find = new Finder();
-        var imageSource = find.one.in(post_content.sources).with({
+        var imageSource = Finder.one.in(post_content.sources).with({
             type: "thumbnail"
         })
-        if(videoSource) {
+        if(imageSource) {
             try {
-                return ipfs.compileURL(ipfs.urlToCID(imageSource.file));
+                return ipfs.compileURL(ipfs.urlToCID(imageSource.url));
             } catch {
                 return `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
             }

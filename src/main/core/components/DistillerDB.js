@@ -1,12 +1,13 @@
+import RefLink from '../../RefLink';
 const debug = require('debug')("blasio:distiller")
 const Path = require('path');
 const { Client: HiveClient } = require('@hiveio/dhive')
 var PouchDB = require('pouchdb');
-const RefLink = require('../../RefLink');
 PouchDB.plugin(require('pouchdb-find'));
 
 const hiveClient = new HiveClient('https://hive.3speak.online/')
 const hive = require('@hiveio/hive-js');
+hiveClient.timeout = 5000
 
 /**
  * DistillerDB is a component meant for storing, and handling post object data.

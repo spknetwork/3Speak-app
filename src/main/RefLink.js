@@ -55,6 +55,9 @@ class RefLink {
         }
     }
     static parse(link) {
+        if((link instanceof RefLink)) {
+            return link;
+        }
         if(typeof link !== "string") {
             throw new Error("Invalid reflink");
         }
