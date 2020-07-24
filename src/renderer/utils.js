@@ -39,39 +39,54 @@ const accounts = {
             reflink = RefLink.parse(reflink)
         }
         console.log(reflink)
-        const post_content = (await PromiseIPC.send("distiller.getContent", reflink.toString())).json_content;
+        var post_content = (await PromiseIPC.send("distiller.getContent", reflink.toString())).json_content
+        if(!post_content) {
+            throw new Error("Invalid post content. Empty record");
+        }
         switch (reflink.source.value) {
             case "hive": {
                 const json_metadata = post_content.json_metadata;
-                const video_info = json_metadata.video.info;
+
                 let sources = [];
-                if(video_info.file) {
+                let title;
+                let description;
+                let duration;
+                try {
+                    const video_info = json_metadata.video.info;
+                    const video_content = json_metadata.video.content;
+                    description = video_content.description;
+                    title = video_info.title
+                    duration = video_info.duration
+                    if(video_info.file) {
+                        sources.push({
+                            type: "video",
+                            url: `https://cdn.3speakcontent.online/${reflink.permlink}/${video_info.file}`,
+                            /**
+                             * Reserved if a different player must be used on per format basis.
+                             * 
+                             * If multi-resolution support is added in the future continue to use the url/format scheme.
+                             * url should link to neccessary metadata.
+                             */
+                            format: video_info.file.split(".")[1]
+                        })
+                    }
                     sources.push({
-                        type: "video",
-                        url: `https://cdn.3speakcontent.online/${reflink.permlink}/${video_info.file}`,
-                        /**
-                         * Reserved if a different player must be used on per format basis.
-                         * 
-                         * If multi-resolution support is added in the future continue to use the url/format scheme.
-                         * url should link to neccessary metadata.
-                         */
-                        format: video_info.file.split(".")[1]
+                        type: "thumbnail",
+                        url: `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
                     })
+                } catch (ex) {
+                    title = post_content.title;
+                    description = post_content.body
                 }
-                sources.push({
-                    type: "thumbnail",
-                    url: `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
-                })
                 return {
                     sources,
-                    duration: video_info.duration,
                     creation: new Date(post_content.created).toISOString(),
-                    title: video_info.title,
-                    description: json_metadata.video.content.description,
+                    title,
+                    description,
                     tags: json_metadata.tags,
-                    refs: [`hive/${video_info.author}/${video_info.permlink}`], //Reserved for future use when multi account system support is added.
-                    meta: {}, //Reserved for future use.
-                    reflink: `hive/${video_info.author}/${video_info.permlink}`
+                    refs: [`hive/${post_content.author}/${post_content.permlink}`], //Reserved for future use when multi account system support is added.
+                    meta: {duration}, //Reserved for future use.
+                    reflink: `hive/${post_content.author}/${post_content.permlink}`
                 }
             }
             default: {
