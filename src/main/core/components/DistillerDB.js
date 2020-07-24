@@ -50,13 +50,21 @@ class DistillerDB {
         switch (sourceSystem) {
             case "hive": {
                 if (id) {
-                    var out = (await hiveClient.database.getDiscussions("blog", {
+                    var out = await new Promise((resolve, reject) => {
+                        hive.api.getContent(author, id, (err, ret) => {
+                            if (err) return reject(err);
+                            return resolve(ret);
+                        })
+                    });
+                    /*var out = (await hiveClient.database.getDiscussions("blog", {
                         tag: author,
                         limit: 1,
                         start_author: author,
                         start_permlink: id
-                    }))[0];
-                    out.json_metadata = JSON.parse(out.json_metadata)
+                    }))[0];*/
+                    if(out) {
+                        out.json_metadata = JSON.parse(out.json_metadata)
+                    }
                     return out;
                 } else {
                     return (await hiveClient.database.getAccounts([author]))[0];
@@ -169,7 +177,7 @@ class DistillerDB {
         if (!options.query) {
             options.query = {};
         }
-        if (!options.query) {
+        if (!options.asPost) {
             options.asPost = true;
         }
         if (!options.stateBased) {
