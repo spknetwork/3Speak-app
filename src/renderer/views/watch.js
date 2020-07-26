@@ -1,24 +1,29 @@
 import React from 'react';
-import Player from '../components/video/Player'
-import { Col, Row, Container, Button } from 'react-bootstrap'
+import Player from '../components/video/Player';
+import { Col, Row, Container } from 'react-bootstrap';
 import utils from '../utils';
 import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload, FaBell } from 'react-icons/fa';
-import DateTime from 'date-and-time'
-import ReactMarkdown from 'react-markdown'
-import CollapsibleText from '../components/CollapsibleText'
-import EmptyProfile from '../assets/img/EmptyProfile.png'
-import VideoTeaser from '../components/video/VideoTeaser'
+import DateTime from 'date-and-time';
+import ReactMarkdown from 'react-markdown';
+import CollapsibleText from '../components/CollapsibleText';
+import EmptyProfile from '../assets/img/EmptyProfile.png';
+import VideoTeaser from '../components/video/VideoTeaser';
+import CommentSection from '../components/video/CommentSection';
 const queryString = require('query-string')
 
 class watch extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            player: null, video_info: {}, post_info: {}, permalink: queryString.parse(location.search).v,
-            profilePictureURL: EmptyProfile
+            player: null, 
+            video_info: {}, 
+            post_info: {}, 
+            permalink: queryString.parse(location.search).v, 
+            profilePictureURL: EmptyProfile,
+            commentGraph: null
         };
     }
-    async componentDidMount() {
+    componentDidMount() {
         this.mountPlayer();
     }
     generateRelated() {
@@ -134,6 +139,7 @@ class watch extends React.Component {
                                 })()}
                             </p>
                         </div>
+                        <CommentSection reflink={this.state.permalink.toString()}/>
                     </Col>
                     <Col md={5}>
                         <Row>
