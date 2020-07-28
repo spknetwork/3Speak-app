@@ -10,19 +10,20 @@ import {
 import views from './views';
 import './css/App.css'
 import './css/main.css'
+import NewFeed from "./views/NewFeed";
 
 export class App extends React.PureComponent {
   render() {
     return (
       <div>
-        <Components.Topbar/>
-        <HashRouter>
-          <Switch>
-            <Route path="/watch">
-              <views.watch/>
-            </Route>
-          </Switch>
-        </HashRouter>
+          <Components.Topbar/>
+          <HashRouter>
+              <Switch>
+                  <Route path="/">
+                      <NewFeed/>
+                  </Route>
+              </Switch>
+          </HashRouter>
       </div>
     );
   }
