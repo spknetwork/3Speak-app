@@ -21,7 +21,6 @@ class VideoWidget extends Component {
             //video_info: await utils.accounts.permalinkToVideoInfo(this.props.reflink),
             reflink: Reflink.parse(this.props.reflink)
         })
-        console.log(this.state.reflink)
     }
     render() {
         return (<div className="col-lg-2 col-6 marg_bot1" style={{padding: "1 !important"}}>
