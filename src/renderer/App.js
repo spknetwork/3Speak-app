@@ -22,6 +22,9 @@ export class App extends React.PureComponent {
                   <Route path="/">
                       <NewFeed/>
                   </Route>
+                  <Route path="/watch">
+                      <views.watch/>
+                  </Route>
               </Switch>
           </HashRouter>
       </div>
