@@ -19,7 +19,7 @@ export class App extends React.PureComponent {
           <Components.Topbar/>
           <HashRouter>
               <Switch>
-                  <Route path="/">
+                  <Route path="/" exact>
                       <NewFeed/>
                   </Route>
                   <Route path="/watch">
