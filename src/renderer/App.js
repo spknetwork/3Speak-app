@@ -10,7 +10,6 @@ import {
 import views from './views';
 import './css/App.css'
 import './css/main.css'
-import NewFeed from "./views/NewFeed";
 
 export class App extends React.PureComponent {
   render() {
@@ -19,12 +18,10 @@ export class App extends React.PureComponent {
           <Components.Topbar/>
           <HashRouter>
               <Switch>
-                  <Route path="/" exact>
-                      <NewFeed/>
+                  <Route path="/new" exact>
+                      <views.NewFeed/>
                   </Route>
-                  <Route path="/watch">
-                      <views.watch/>
-                  </Route>
+                  <Route path="/watch/:reflink" component={views.watch}/>
               </Switch>
           </HashRouter>
       </div>
