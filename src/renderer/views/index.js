@@ -1,6 +1,6 @@
 import watch from './watch'
-import NewFeed from './NewFeed'
+import GridFeed from './GridFeed'
 export default {
     watch,
-    NewFeed
+    GridFeed
 }

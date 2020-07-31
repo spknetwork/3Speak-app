@@ -1,14 +1,14 @@
 import React from 'react';
 import VideoWidget from "../components/video/VideoWidget";
 
-class NewFeed extends React.Component {
+class GridFeed extends React.Component {
     constructor() {
         super();
         this.state = { data: [] };
     }
 
     componentDidMount() {
-        fetch("https://3speak.online/apiv2/feeds/new")
+        fetch(`https://3speak.online/apiv2/feeds/${this.props.type}`)
             .then(res => res.json())
             .then(json => {
                 this.setState({data: json})
@@ -28,4 +28,4 @@ class NewFeed extends React.Component {
     }
 }
 
-export default NewFeed
+export default GridFeed
