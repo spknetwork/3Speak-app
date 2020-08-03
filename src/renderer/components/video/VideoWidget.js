@@ -35,8 +35,14 @@ class VideoWidget extends Component {
                         return DateTime.format(new Date(this.state.video_info.duration* 1000), pattern)
                     })()}
                 </div>
-                <Link to={`/watch?v=${this.props.permlink}`}>
-                    <img style={{width: "100% !important", padding: "5px"}} data-permlink={this.state.reflink.permlink} className="img-fluid bg-dark" src={"https://img.3speakcontent.online/"+this.props.permlink+"/thumbnail.png"} />
+                <Link to={`#/watch/${this.props.reflink}`}>
+                    <img style={{width: "100% !important", padding: "5px"}} data-permlink={this.state.reflink.permlink} className="img-fluid bg-dark" src={(() => {
+                        if(this.props.isNSFW) {
+                            return nsfwWarning;
+                        } else {
+                            return "https://img.3speakcontent.online/"+this.props.permlink+"/thumbnail.png"
+                        }
+                    })()} />
                 </Link>
             </div>
             <Link to={`/watch?v=${this.props.permlink}`}>
