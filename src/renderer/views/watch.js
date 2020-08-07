@@ -18,7 +18,7 @@ class watch extends React.Component {
             player: null, 
             video_info: {}, 
             post_info: {}, 
-            permalink: queryString.parse(location.search).v, 
+            permalink: this.props.match.params.reflink, 
             profilePictureURL: EmptyProfile,
             commentGraph: null
         };
@@ -48,6 +48,7 @@ class watch extends React.Component {
         }
     }
     render() {
+        console.log(this.props);
         console.log(this.state.post_info)
         console.log(this.state.video_info)
         return <div>

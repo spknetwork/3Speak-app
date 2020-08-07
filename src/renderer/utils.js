@@ -1,7 +1,7 @@
 import PromiseIPC from 'electron-promise-ipc';
 import axios from 'axios';
 import ArraySearch from 'arraysearch'
-import RefLink from '../main/RefLink';
+const RefLink = require('../main/RefLink');
 const Finder = ArraySearch.Finder;
 
 const ipfs = {
@@ -84,9 +84,9 @@ const accounts = {
                     title,
                     description,
                     tags: json_metadata.tags,
-                    refs: [`hive/${post_content.author}/${post_content.permlink}`], //Reserved for future use when multi account system support is added.
+                    refs: [`hive:${post_content.author}:${post_content.permlink}`], //Reserved for future use when multi account system support is added.
                     meta: {duration}, //Reserved for future use.
-                    reflink: `hive/${post_content.author}/${post_content.permlink}`
+                    reflink: `hive:${post_content.author}:${post_content.permlink}`
                 }
             }
             default: {

@@ -13,7 +13,7 @@
     "build-renderer": "webpack --config webpack/renderer.prod.config.js",
     "start-main": "cross-env NODE_ENV=development run-electron -r @babel/register src/main/index.js",
     "start-renderer": "cross-env NODE_ENV=development webpack-dev-server --port 6789 --config webpack/renderer.dev.config.js",
-    "test": "mocha --slow 0"
+    "test": "mocha --require @babel/register --slow 0"
   },
   "keywords": [
     "electron",

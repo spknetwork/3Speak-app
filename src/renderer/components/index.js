@@ -1,4 +1,4 @@
-import Topbar from './Topbar'
+import Navbar from './Navbar'
 export default {
-    Topbar
+    Navbar
 }

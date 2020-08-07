@@ -44,7 +44,7 @@ class RefLink {
         return this.link[1];
     }
     toString() {
-        return this.link.join("/")
+        return this.link.join(":")
     }
     static isValid(link) {
         try {
@@ -61,8 +61,8 @@ class RefLink {
         if(typeof link !== "string") {
             throw new Error("Invalid reflink");
         }
-        link = link.split("/");
+        link = link.split(":");
         return new RefLink(link);
     }
 }
-export default RefLink
+export default RefLink;

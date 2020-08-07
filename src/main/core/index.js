@@ -1,6 +1,6 @@
 const Utils = require('./utils');
-const fs = require('fs');
 const Components = require('./components');
+const fs = require('fs');
 const mergeOptions = require('merge-options')
 
 class Core {

@@ -1,4 +1,4 @@
-const Core = require('../src/main/core')
+import Core from '../src/main/core'
 const tmp = require('tmp')
 /**
  * @type {Core}
@@ -22,11 +22,11 @@ describe("DistillerDB", function () {
     })
     it("Fetch content", async () => {
         //console.log(client.distillerDB)
-        await client.distillerDB.getContent("hive/evagavilan/una-que-otra-bicicleta-una-foto-cada-dia-183-366")
+        await client.distillerDB.getContent("hive:evagavilan:una-que-otra-bicicleta-una-foto-cada-dia-183-366")
     });
     it("Fetch content cached", async () => {
         //console.log(client.distillerDB)
-        await client.distillerDB.getContent("hive/evagavilan/una-que-otra-bicicleta-una-foto-cada-dia-183-366")
+        await client.distillerDB.getContent("hive:evagavilan:una-que-otra-bicicleta-una-foto-cada-dia-183-366")
     });
     it("Fetch tags", async () => {
         //console.log(client.distillerDB)
@@ -37,21 +37,21 @@ describe("DistillerDB", function () {
         await client.distillerDB.getTag("3speak")
     });
     it("Fetch children initial", async () => {
-        await client.distillerDB.getChildren("hive/evagavilan/hnrhelpe")
+        await client.distillerDB.getChildren("hive:evagavilan:hnrhelpe")
     })
     it("Fetch children cached", async () => {
-        await client.distillerDB.getChildren("hive/evagavilan/hnrhelpe");
+        await client.distillerDB.getChildren("hive:evagavilan:hnrhelpe");
     })
     it("Fetch account", async () => {
-        await client.distillerDB.getAccount("hive/evagavilan");
+        await client.distillerDB.getAccount("hive:evagavilan");
     })
     it("Fetch account cached", async () => {
-        await client.distillerDB.getAccount("hive/evagavilan");    
+        await client.distillerDB.getAccount("hive:evagavilan");    
     })
     it("Fetch posts", async () => {
-        await client.distillerDB.getPosts("hive/evagavilan");
+        await client.distillerDB.getPosts("hive:evagavilan");
     })
     it("Fetch posts cached", async () => {
-        await client.distillerDB.getPosts("hive/evagavilan");
+        await client.distillerDB.getPosts("hive:evagavilan");
     })
 })
