@@ -7,6 +7,23 @@
 	position: relative;
 }
 
+.max-lines {
+    display: block; /* or inline-block */
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    overflow: hidden;
+    max-height: 2.8em;
+    line-height: 1.4em;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* number of lines to show */
+}
+
+.word-break {
+    overflow-wrap: break-word;
+}
+
 .teaser_holder:hover {
 	opacity: 0.85;
 }
