@@ -41,7 +41,7 @@ class DistillerDB {
      */
     async _fetch(permalink) {
         debug(`Fetching permalink "${permalink}" from fresh source`);
-        const splitted = permalink.split("/");
+        const splitted = permalink.split(":");
         const sourceSystem = splitted[0];
         const author = splitted[1];
         const id = splitted[2];
@@ -91,7 +91,7 @@ class DistillerDB {
 
             let reflink;
             if (post.author && post.permlink) {
-                reflink = RefLink.parse(`hive/${post.author}/${post.permlink}`)
+                reflink = RefLink.parse(`hive:${post.author}:${post.permlink}`)
             } else if (post.reflink) {
                 reflink = RefLink.parse(post.reflink);
             } else {
@@ -497,4 +497,4 @@ class DistillerDB {
         }
     }
 }
-module.exports = DistillerDB;
+export default DistillerDB;

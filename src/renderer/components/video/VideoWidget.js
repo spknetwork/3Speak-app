@@ -5,7 +5,8 @@ import DateTime from 'date-and-time';
 import PlaySVG from '../../assets/img/play.svg'
 import { FaUser } from 'react-icons/fa'
 import convert from "convert-units";
-import {Link} from 'react-router-dom';
+import {Link, HashRouter} from 'react-router-dom';
+import nsfwWarning from '../../assets/img/nsfw.png'
 
 class VideoWidget extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ class VideoWidget extends Component {
         })
     }
     render() {
-        return (<div className="col-lg-2 col-6 marg_bot1" style={{padding: "1 !important"}}>
+        return (<HashRouter><div className="col-lg-2 col-6 marg_bot1" style={{padding: "1 !important"}}>
             <div className="teaser_holder text-center">
                 <div className="card-label card-label-views">
                     <img className="play_i" src={PlaySVG} height="11px" />
@@ -35,16 +36,22 @@ class VideoWidget extends Component {
                         return DateTime.format(new Date(this.state.video_info.duration* 1000), pattern)
                     })()}
                 </div>
-                <Link to={`/watch?v=${this.props.permlink}`}>
-                    <img style={{width: "100% !important", padding: "5px"}} data-permlink={this.state.reflink.permlink} className="img-fluid bg-dark" src={"https://img.3speakcontent.online/"+this.props.permlink+"/thumbnail.png"} />
-                </Link>
+                <a href={`#/watch/${this.props.reflink}`}>
+                    <img style={{width: "100% !important", padding: "5px"}} data-permlink={this.state.reflink.permlink} className="img-fluid bg-dark" src={(() => {
+                        if(this.props.isNSFW) {
+                            return nsfwWarning;
+                        } else {
+                            return "https://img.3speakcontent.online/"+this.props.permlink+"/thumbnail.png"
+                        }
+                    })()} />
+                </a>
             </div>
-            <Link to={`/watch?v=${this.props.permlink}`}>
+            <a href={`#/watch/${this.props.reflink}`}>
                 <b data-toggle="tooltip" data-placement="bottom" title="" className="max-lines word-break" data-original-title={this.state.video_info.title}>{this.state.video_info.title}</b>
-            </Link>
+            </a>
             <div className="mt-2">
                 <span className="black_col">
-                    <b><Link to={`/user/${this.props.author}`}> <FaUser/> {this.state.reflink.root}</Link></b>
+                    <b><a href={`#/user/${this.props.author}`}> <FaUser/> {this.state.reflink.root}</a></b>
                 </span>
                 <br/>
                 <span>{(() => {
@@ -56,7 +63,7 @@ class VideoWidget extends Component {
                         }
                     })()}</span>
             </div>
-        </div>);
+        </div></HashRouter>);
     }
 }
 

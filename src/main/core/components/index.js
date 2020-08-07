@@ -1,3 +1,4 @@
-module.exports = {
-    DistillerDB: require('./DistillerDB'),
+import DistillerDB from './DistillerDB'
+export {
+    DistillerDB
 }
