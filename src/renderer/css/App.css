@@ -82,3 +82,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     line-height: 1.2;
     color: inherit;
 }
+h1 {
+    font-size: 39px;
+    text-transform: uppercase;
+    line-height: 38px;
+    font-weight: 200;
+}
