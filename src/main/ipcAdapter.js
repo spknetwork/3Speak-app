@@ -7,6 +7,7 @@ class ipcAdapter {
         this.core = core;
     }
     start() {
+        //distillerDb
         PromiseIPC.on("distiller.fetch", async (reflink) => {
             return await this.core.distillerDB.fetch(reflink);
         })
@@ -27,6 +28,19 @@ class ipcAdapter {
         })
         PromiseIPC.on("distiller.getState", async (stateKey) => {
             return await this.core.distillerDB.getState(stateKey);
+        })
+        //Blocklist
+        PromiseIPC.on("blocklist.add", async (reflink, options) => {
+            return await this.core.blocklist.add(reflink, options);
+        })
+        PromiseIPC.on("blocklist.has", async (reflink) => {
+            return await this.core.blocklist.has(reflink);
+        })
+        PromiseIPC.on("blocklist.rm", async (reflink) => {
+            return await this.core.blocklist.rm(reflink);
+        })
+        PromiseIPC.on("blocklist.ls", async (query) => {
+            return await this.core.blocklist.rm(query);
         })
     }
 }

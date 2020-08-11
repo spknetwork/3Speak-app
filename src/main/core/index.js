@@ -15,7 +15,10 @@ class Core {
         if(!fs.existsSync(this._options.path)) {
             fs.mkdirSync(this._options.path);
         }
+        this.config = new Components.Config(this._options.path)
         this.distillerDB = new Components.DistillerDB(this)
+        this.blocklist = new Components.Blocklist(this);
+        await this.config.open()
     }
     async stop() {
 
