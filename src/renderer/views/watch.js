@@ -140,7 +140,7 @@ class watch extends React.Component {
                                 })()}
                             </p>
                         </div>
-                        <CommentSection reflink={this.state.permalink.toString()}/>
+                        <CommentSection reflink={this.state.reflink.toString()}/>
                     </Col>
                     <Col md={5}>
                         <Row>
