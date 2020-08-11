@@ -2,9 +2,10 @@ import React from 'react';
 import VideoWidget from "../components/video/VideoWidget";
 
 class GridFeed extends React.Component {
-    constructor() {
-        super();
-        this.state = { data: [], lazyLoading: false };
+    constructor(props) {
+        super(props);
+        // pass awaitingMoreData as true to prevent lazy loading
+        this.state = { data: [], awaitingMoreData: props.awaitingMoreData }
         this.handleScroll = this.handleScroll.bind(this);
     }
 
@@ -22,7 +23,7 @@ class GridFeed extends React.Component {
     }
 
     handleScroll() {
-        if (!this.state.lazyLoading) {
+        if (!this.state.awaitingMoreData) {
             const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
             const body = document.body;
             const html = document.documentElement;
@@ -30,7 +31,7 @@ class GridFeed extends React.Component {
             const windowBottom = windowHeight + window.pageYOffset;
             if (windowBottom + 200 >= docHeight) {
                 this.setState({
-                    lazyLoading: true
+                    awaitingMoreData: true
                 });
                 fetch(`https://3speak.online/api/${this.props.type === 'new' ? 'new' : 'trends'}/more?skip=${this.state.data.length}`)
                     .then(res => res.json())
@@ -49,7 +50,7 @@ class GridFeed extends React.Component {
                         console.log(json)
                         this.setState({
                             data: json,
-                            lazyLoading: false
+                            awaitingMoreData: false
                         })
                     })
             }
