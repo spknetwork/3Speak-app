@@ -11,30 +11,32 @@ import views from './views';
 import './css/App.css';
 import './css/main.css';
 import Sidebar from './components/Navbar';
-import {Col, Container} from 'react-bootstrap'
+import { Col, Container, Row } from 'react-bootstrap'
 
 export class App extends React.PureComponent {
   render() {
     return (
       <div>
-          <Container>
-            <Col>
-              <Sidebar/>
+        <Container>
+          <Row>
+            <Col md="auto">
+              <Sidebar />
             </Col>
             <Col>
               <HashRouter>
-                  <Switch>
-                      <Route path="/new" exact>
-                          <views.GridFeed awaitingMoreData={false} type="new"/>
-                      </Route>
-                      <Route path="/trends" exact>
-                          <views.GridFeed awaitingMoreData={false} type="trending"/>
-                      </Route>
-                      <Route path="/watch/:reflink" component={views.watch}/>
-                  </Switch>
+                <Switch>
+                  <Route path="/new" exact>
+                    <views.GridFeed awaitingMoreData={false} type="new" />
+                  </Route>
+                  <Route path="/trends" exact>
+                    <views.GridFeed awaitingMoreData={false} type="trending" />
+                  </Route>
+                  <Route path="/watch/:reflink" component={views.watch} />
+                </Switch>
               </HashRouter>
             </Col>
-          </Container>
+          </Row>
+        </Container>
       </div>
     );
   }

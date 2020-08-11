@@ -17,11 +17,11 @@ class Player extends React.Component {
     }
     async componentDidMount() {
         // hive/vaultec81/myPostId
-        let permalink;
-        if(this.props.permalink) {
-            permalink = this.props.permalink;
+        let reflink;
+        if(this.props.reflink) {
+            reflink = this.props.reflink;
         } else {
-            permalink = queryString.parse(location.search).v
+            reflink = this.props.match.params.reflink;
         }
         //Player specific options unrelated to video metadata
         let defaultOptions = {
@@ -56,8 +56,8 @@ class Player extends React.Component {
             videoInfo = this.props.videoInfo;
         } else {
             //Generate videoInfo from permalink
-            if(permalink) {
-                videoInfo = await utils.accounts.permalinkToVideoInfo(permalink)
+            if(reflink) {
+                videoInfo = await utils.accounts.permalinkToVideoInfo(reflink)
             }
         }
         this.setState({

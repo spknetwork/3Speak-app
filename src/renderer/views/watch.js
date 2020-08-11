@@ -9,7 +9,7 @@ import CollapsibleText from '../components/CollapsibleText';
 import EmptyProfile from '../assets/img/EmptyProfile.png';
 import VideoTeaser from '../components/video/VideoTeaser';
 import CommentSection from '../components/video/CommentSection';
-const queryString = require('query-string')
+
 
 class watch extends React.Component {
     constructor(props) {
@@ -18,7 +18,7 @@ class watch extends React.Component {
             player: null, 
             video_info: {}, 
             post_info: {}, 
-            permalink: this.props.match.params.reflink, 
+            reflink: this.props.match.params.reflink, 
             profilePictureURL: EmptyProfile,
             commentGraph: null
         };
@@ -34,15 +34,15 @@ class watch extends React.Component {
         switch (playerType) {
             case "standard": {
                 this.setState({
-                    player: <Player></Player>, //Insert player here
-                    video_info: await utils.accounts.permalinkToVideoInfo(this.state.permalink),
-                    post_info: await utils.accounts.permalinkToPostInfo(this.state.permalink)
+                    player: <Player reflink={this.props.match.params.reflink}></Player>, //Insert player here
+                    video_info: await utils.accounts.permalinkToVideoInfo(this.state.reflink),
+                    post_info: await utils.accounts.permalinkToPostInfo(this.state.reflink)
                 })
             }
         }
         try {
             //Leave profileURL default if error is thrown when attempting to retrieve profile picture
-            this.setState({ profilePictureURL: await utils.accounts.getProfilePictureURL(this.state.permalink) })
+            this.setState({ profilePictureURL: await utils.accounts.getProfilePictureURL(this.state.reflink) })
         } catch {
 
         }
@@ -140,12 +140,12 @@ class watch extends React.Component {
                                 })()}
                             </p>
                         </div>
-                        <CommentSection reflink={this.state.permalink.toString()}/>
+                        <CommentSection reflink={this.state.reflink.toString()}/>
                     </Col>
                     <Col md={5}>
                         <Row>
                             <Col md={12}>
-                                <VideoTeaser permalink={this.state.permalink}>
+                                <VideoTeaser permalink={this.state.reflink}>
 
                                 </VideoTeaser>
                             </Col>
