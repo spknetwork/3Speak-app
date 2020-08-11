@@ -25,10 +25,10 @@ export class App extends React.PureComponent {
               <HashRouter>
                   <Switch>
                       <Route path="/new" exact>
-                          <views.GridFeed type="new"/>
+                          <views.GridFeed awaitingMoreData={false} type="new"/>
                       </Route>
                       <Route path="/trends" exact>
-                          <views.GridFeed type="trending"/>
+                          <views.GridFeed awaitingMoreData={false} type="trending"/>
                       </Route>
                       <Route path="/watch/:reflink" component={views.watch}/>
                   </Switch>
