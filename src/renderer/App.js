@@ -32,6 +32,7 @@ export class App extends React.PureComponent {
                     <views.GridFeed awaitingMoreData={false} type="trending" />
                   </Route>
                   <Route path="/watch/:reflink" component={views.watch} />
+                  <Route path="/user/:reflink" component={views.User} />
                 </Switch>
               </HashRouter>
             </Col>
