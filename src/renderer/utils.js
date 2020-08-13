@@ -1,7 +1,7 @@
 import PromiseIPC from 'electron-promise-ipc';
 import axios from 'axios';
-import ArraySearch from 'arraysearch'
-const RefLink = require('../main/RefLink');
+import ArraySearch from 'arraysearch';
+import RefLink from '../main/RefLink';
 const Finder = ArraySearch.Finder;
 
 const ipfs = {
