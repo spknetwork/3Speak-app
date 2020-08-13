@@ -4,6 +4,22 @@ import RefLink from '../../../main/RefLink'
 import ReactMarkdown from 'react-markdown';
 import { FaThumbsUp, FaThumbsDown, FaDollarSign, FaTimesCircle } from "react-icons/fa";
 import { BsThreeDotsVertical } from 'react-icons/bs'
+import { Dropdown } from 'react-bootstrap';
+const electronIpc = require('electron-promise-ipc');
+const { clipboard } = require('electron');
+
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <a
+        href=""
+        ref={ref}
+        onClick={(e) => {
+            e.preventDefault();
+            onClick(e);
+        }}>
+        <BsThreeDotsVertical/>
+        {children}      
+    </a>
+));
 
 /**
  * @todo Implement displaying numbers of comments and comment value. Requires support on backend to count votes.
@@ -18,6 +34,7 @@ class PostComment extends Component {
                 reflink: this.props.reflink ? this.props.reflink : null
             }
         };
+        this.handleAction = this.handleAction.bind(this)
     }
     async componentDidMount() {
         let commentInfo;
@@ -35,6 +52,28 @@ class PostComment extends Component {
             })
         }
     }
+    async handleAction(eventKey) {
+        const reflink = this.state.commentInfo.reflink;
+        switch(eventKey) {
+            case "block_post": {
+                await electronIpc.send("blocklist.add", reflink, {
+                    reason: "manual block"
+                })
+            }
+            case "block_user": {
+                var ref = RefLink.parse(reflink)
+                await electronIpc.send("blocklist.add", `${ref.source.value}:${ref.root}`, {
+                    reason: "manual block"
+                })
+            }
+            case "copy_reflink": {
+                clipboard.writeText(reflink, clipboard)
+            }
+            default: {
+                
+            }
+        }
+    }
     render() {
         return (<div>
             <div className="col">
@@ -42,9 +81,17 @@ class PostComment extends Component {
                     <img className="img-responsive user-photo" width="24" src={this.state.profilePicture} />
                 </div>
             </div>
-            <div className="col" style={{"zIndex": 1000}}>
+            <div className="col" style={{ "zIndex": 1000 }}>
                 <div className="mr-3 float-right">
-                    <a onClick={(e) => {e.preventDefault()}}><BsThreeDotsVertical/></a>
+                    <Dropdown onSelect={this.handleAction}>
+                        <Dropdown.Toggle as={CustomToggle}>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item style={{color:"red"}} eventKey="block_post">Block post</Dropdown.Item>
+                            <Dropdown.Item style={{color:"red"}} eventKey="block_user">Block user</Dropdown.Item>
+                            <Dropdown.Item eventKey="copy_reflink">Copy to clipboard permlink</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </div>
             </div>
             <div className="col-12">
