@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { FaBell } from 'react-icons/fa'
+import VideoWidget from "../components/video/VideoWidget";
+import Image from "react-bootstrap";
+import GridFeed from "./GridFeed";
 import Follow from "../components/widgets/Follow";
 const Reflink = require('../../main/RefLink');
 const Utils = require('../utils').default;
+
 /**
  * User about page with all the public information a casual and power user would need to see about another user.
  */
@@ -23,7 +27,7 @@ class User extends Component {
     render() {
         return (<div>
             <div className="single-channel-image">
-                <img className="img-fluid mh-20" style="object-fit: cover; object-position: center; max-height: 500px;" alt="" src="https://img.3speakcontent.online/user/nicksmitley/cover.png" />
+                <img className="img-fluid mh-20" style={{objectFit: 'cover', objectPosition: 'center', maxHeight: '500px'}} alt="" src="https://img.3speakcontent.online/user/nicksmitley/cover.png" />
                 <div className="channel-profile">
                     <img className="channel-profile-img" alt="" src={this.state.profileURL}/>
                 </div>
@@ -55,10 +59,8 @@ class User extends Component {
                     </div>
                 </nav>
             </div>
-            <section className="content_home" style="height: auto !important;">
-                {
-                    //Implement video grid feed here
-                }
+            <section className="content_home" style={{height: 'auto !important'}}>
+                <GridFeed getUser={this.state.reflink} awaitingMoreData={true} />
             </section>
         </div>);
     }
