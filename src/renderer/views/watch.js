@@ -58,12 +58,12 @@ class watch extends React.Component {
                         <div>
                             {this.state.player}
                         </div>
-                        <div className="float-left">
-                            <h2 style={{ fontSize: "18px" }}>
-                                <a>{this.state.video_info.title}</a>
-                            </h2>
-                        </div>
                         <div className="single-video-title box mb-3 clearfix">
+                            <div className="float-left">
+                                <h2 style={{ fontSize: "18px" }}>
+                                    <a>{this.state.video_info.title}</a>
+                                </h2>
+                            </div>
                             <div className="float-right" style={{ textAlign: "right !important", float: "right !important", display: "inline-block !important" }}>
                                 <span>
                                     <span style={{ padding: "0 !important" }}>
