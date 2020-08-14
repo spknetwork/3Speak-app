@@ -11,7 +11,6 @@ class Follow extends Component {
     componentDidMount() {
         fetch('https://api.openhive.network', {
             method: 'POST',
-            /*headers: {'Content-Type': 'application/json'},*/
             body: JSON.stringify({
                 jsonrpc:"2.0",
                 method:"follow_api.get_follow_count",
