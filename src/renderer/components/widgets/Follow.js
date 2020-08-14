@@ -1,5 +1,6 @@
 import {FaBell} from "react-icons/fa/index";
 import React, {Component} from "react";
+import {Button} from "react-bootstrap";
 
 class Follow extends Component {
     constructor() {
@@ -28,15 +29,15 @@ class Follow extends Component {
 
     render() {
         return(<div>
-            <button className="btn btn-light btn-sm" type="button">
-            <span id="substatus">Follow </span>
-            <strong id="subcount">
+            <Button variant="light" size="sm">
+                <span>Follow </span>
+            <strong>
                 <a href={`#/user/${this.props.user}/followers`} className="view-followers" title="Click to see followers">
                     {this.state.followers}
                 </a>
             </strong>
-            {/*<FaBell/>*/}
-            </button>
+            </Button>
+
         </div>)
     }
 }
