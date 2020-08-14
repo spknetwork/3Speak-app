@@ -36,7 +36,7 @@ class Follow extends Component {
                     {this.state.followers}
                 </a>
             </strong>
-            <FaBell/>
+            {/*<FaBell/>*/}
             </button>
         </div>)
     }
