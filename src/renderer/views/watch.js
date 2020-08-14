@@ -97,7 +97,7 @@ class watch extends React.Component {
                             </div>
                             <img className="img-fluid" src={this.state.profilePictureURL} alt="" />
                             <p>
-                                <a href="#/user/">
+                                <a href={`#/user/${this.state.post_info.author}`}>
                                     <strong>
                                         {this.state.post_info.author}
                                     </strong>
