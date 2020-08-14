@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FaBell } from 'react-icons/fa'
+import Follow from "../components/widgets/Follow";
 const Reflink = require('../../main/RefLink');
 const Utils = require('../utils').default;
 /**
@@ -49,17 +50,7 @@ class User extends Component {
                             </li>
                         </ul>
                         <div className="form-inline my-2 my-lg-0">
-                            <button className="btn btn-light btn-sm" type="button">
-                                <span id="substatus">Follow</span>
-                                <strong id="subcount">
-                                    <a href={`#/user/${this.state.reflink}/followers`} className="view-followers" title="Click to see followers">
-                                        {
-                                            //Implement sub count  here
-                                        }
-                                    </a>
-                                </strong>
-                                <FaBell/>
-                            </button>
+                            <Follow user={this.state.reflink} />
                         </div>
                     </div>
                 </nav>
