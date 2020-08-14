@@ -4,6 +4,7 @@ import VideoWidget from "../components/video/VideoWidget";
 import Image from "react-bootstrap";
 import GridFeed from "./GridFeed";
 import Follow from "../components/widgets/Follow";
+import {Navbar, Nav} from "react-bootstrap";
 const Reflink = require('../../main/RefLink');
 const Utils = require('../utils').default;
 
@@ -33,31 +34,23 @@ class User extends Component {
                 </div>
             </div>
             <div className="single-channel-nav">
-                <nav className="navbar navbar-expand-lg navbar-light">
+                <Navbar expand="lg" bg="light">
                     <a className="channel-brand">{this.state.reflink.root}</a>
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <Navbar.Toggle aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
-                    </button>
-                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav mr-auto">
-                            <li className="nav-item active">
-                                <a className="nav-link" href={`#/user/${this.state.reflink}/`}>Videos <span className="sr-only">(current)</span></a>
-                            </li>
-                            <li className="nav-item ">
-                                <a className="nav-link" href={`#/user/${this.state.reflink}/earning`}>Earnings</a>
-                            </li>
-                            <li className="nav-item ">
-                                <a className="nav-link" href={`#/user/${this.state.reflink}/about`}>About</a>
-                            </li>
-                            <li className="nav-item ">
-                                <a className="nav-link" href={`#/user/${this.state.reflink}/live`}>Livestream</a>
-                            </li>
-                        </ul>
+                    </Navbar.Toggle>
+                    <Navbar.Collapse id="navbarSupportedContent">
+                        <Nav className="mr-auto">
+                            <Nav.Link href={`#/user/${this.state.reflink}/`}>Videos <span className="sr-only">(current)</span></Nav.Link>
+                            <Nav.Link href={`#/user/${this.state.reflink}/earning`}>Earnings</Nav.Link>
+                            <Nav.Link href={`#/user/${this.state.reflink}/about`}>About</Nav.Link>
+                            <Nav.Link href={`#/user/${this.state.reflink}/live`}>Livestream</Nav.Link>
+                        </Nav>
                         <div className="form-inline my-2 my-lg-0">
                             <Follow user={this.state.reflink} />
                         </div>
-                    </div>
-                </nav>
+                    </Navbar.Collapse>
+                </Navbar>
             </div>
             <section className="content_home" style={{height: 'auto !important'}}>
                 <GridFeed getUser={this.state.reflink} awaitingMoreData={true} />
