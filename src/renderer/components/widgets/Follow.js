@@ -20,7 +20,6 @@ class Follow extends Component {
         })
             .then(res =>res.json())
             .then(json => {
-                console.log(json)
                 this.setState({
                     followers: json.result.follower_count
                 })
