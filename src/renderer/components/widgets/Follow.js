@@ -29,7 +29,7 @@ class Follow extends Component {
 
     render() {
         return(<div>
-            <button className="btn btn-light btn-sm" type="button" onClick={{/*TODO: subscribe and unsubscribe*/}}>
+            <button className="btn btn-light btn-sm" type="button">
             <span id="substatus">Follow </span>
             <strong id="subcount">
                 <a href={`#/user/${this.props.user}/followers`} className="view-followers" title="Click to see followers">
