@@ -35,6 +35,11 @@ class CommentSection extends Component {
     async *generateCommentGraph(startRoot, progressHandler) {
         const children = await PromiseIpc.send("distiller.getChildren", startRoot, {asPost: true});
         for(const child of children) {
+            if((await PromiseIpc.send("blocklist.has", child._id))) {
+                //Comment blocking; Stop working on this tree.
+                //Add warning for lower level blocks later on.
+                continue;
+            }
             let childComments = [];
             for await(const childComment of this.generateCommentGraph(child._id, progressHandler)) {
                 childComments.push(childComment)
