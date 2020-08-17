@@ -5,7 +5,7 @@ import {Button} from "react-bootstrap";
 class Follow extends Component {
     constructor(props) {
         super(props)
-        this.state = {followers: 0}
+        this.state = {followers: 0, reflink: props.user}
     }
 
     componentDidMount() {
@@ -14,7 +14,7 @@ class Follow extends Component {
             body: JSON.stringify({
                 jsonrpc:"2.0",
                 method:"follow_api.get_follow_count",
-                params:{"account":this.props.user},
+                params:{"account":this.state.reflink},
                 id:1
             })
         })
@@ -30,11 +30,11 @@ class Follow extends Component {
         return(<div>
             <Button variant="light" size="sm">
                 <span>Follow </span>
-            <strong>
-                <a href={`#/user/${this.props.user}/followers`} className="view-followers" title="Click to see followers">
-                    {this.state.followers}
-                </a>
-            </strong>
+                <strong>
+                    <a href={`#/user/${this.state.reflink}/followers`} className="view-followers" title="Click to see followers">
+                        {this.state.followers}
+                    </a>
+                </strong>
             </Button>
 
         </div>)

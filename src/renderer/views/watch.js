@@ -89,7 +89,7 @@ class watch extends React.Component {
                         </div>
                         <div className="single-video-author box mb-3">
                             <div className="float-right">
-                                <Follow user={this.state.post_info.author} />
+                                <Follow user={this.state.reflink} />
 
                                 <a target="_blank" href="" className="btn btn-light btn-sm" download="avqmxbem.mp4">
                                     <FaDownload /> Download
