@@ -3,8 +3,8 @@ import React, {Component} from "react";
 import {Button} from "react-bootstrap";
 
 class Follow extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {followers: 0}
     }
 
