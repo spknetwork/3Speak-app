@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { FaBell } from 'react-icons/fa'
-import VideoWidget from "../components/video/VideoWidget";
-import Image from "react-bootstrap";
 import GridFeed from "./GridFeed";
 import Follow from "../components/widgets/Follow";
 import {Navbar, Nav} from "react-bootstrap";
