@@ -1,29 +1,22 @@
 import {FaBell} from "react-icons/fa/index";
 import React, {Component} from "react";
 import {Button} from "react-bootstrap";
+import utils from '../../utils';
+import RefLink from "../../../main/RefLink";
 
 class Follow extends Component {
     constructor(props) {
         super(props)
-        this.state = {followers: 0, reflink: props.user}
+        this.state = {
+            followers: 0,
+            reflink: RefLink.parse(props.reflink)
+        }
     }
 
-    componentDidMount() {
-        fetch('https://api.openhive.network', {
-            method: 'POST',
-            body: JSON.stringify({
-                jsonrpc:"2.0",
-                method:"follow_api.get_follow_count",
-                params:{"account":this.state.reflink},
-                id:1
-            })
+    async componentDidMount(reflink) {
+        this.setState({
+            followers: await utils.accounts.getFollowerCount(this.props.reflink)
         })
-            .then(res =>res.json())
-            .then(json => {
-                this.setState({
-                    followers: json.result.follower_count
-                })
-            })
     }
 
     render() {
@@ -31,7 +24,7 @@ class Follow extends Component {
             <Button variant="light" size="sm">
                 <span>Follow </span>
                 <strong>
-                    <a href={`#/user/${this.state.reflink}/followers`} className="view-followers" title="Click to see followers">
+                    <a href={`#/user/${this.state.reflink.root}/followers`} className="view-followers" title="Click to see followers">
                         {this.state.followers}
                     </a>
                 </strong>

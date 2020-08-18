@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import GridFeed from "./GridFeed";
 import Follow from "../components/widgets/Follow";
 import {Navbar, Nav} from "react-bootstrap";
-const Reflink = require('../../main/RefLink');
+import RefLink from "../../main/RefLink";
 const Utils = require('../utils').default;
 
 /**
@@ -12,7 +12,7 @@ class User extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            reflink: this.props.match.params.reflink
+            reflink: RefLink.parse(this.props.match.params.reflink)
         }
     }
     componentDidMount() {
@@ -38,19 +38,19 @@ class User extends Component {
                     </Navbar.Toggle>
                     <Navbar.Collapse id="navbarSupportedContent">
                         <Nav className="mr-auto">
-                            <Nav.Link href={`#/user/${this.state.reflink}/`}>Videos <span className="sr-only">(current)</span></Nav.Link>
-                            <Nav.Link href={`#/user/${this.state.reflink}/earning`}>Earnings</Nav.Link>
-                            <Nav.Link href={`#/user/${this.state.reflink}/about`}>About</Nav.Link>
-                            <Nav.Link href={`#/user/${this.state.reflink}/live`}>Livestream</Nav.Link>
+                            <Nav.Link href={`#/user/${this.state.reflink.toString()}/`}>Videos <span className="sr-only">(current)</span></Nav.Link>
+                            <Nav.Link href={`#/user/${this.state.reflink.toString()}/earning`}>Earnings</Nav.Link>
+                            <Nav.Link href={`#/user/${this.state.reflink.toString()}/about`}>About</Nav.Link>
+                            <Nav.Link href={`#/user/${this.state.reflink.toString()}/live`}>Livestream</Nav.Link>
                         </Nav>
                         <div className="form-inline my-2 my-lg-0">
-                            <Follow user={this.state.reflink} />
+                            <Follow reflink={this.state.reflink.toString()} />
                         </div>
                     </Navbar.Collapse>
                 </Navbar>
             </div>
             <section className="content_home" style={{height: 'auto !important'}}>
-                <GridFeed getUser={this.state.reflink} awaitingMoreData={true} />
+                <GridFeed getUser={this.state.reflink.toString()} awaitingMoreData={true} />
             </section>
         </div>);
     }
