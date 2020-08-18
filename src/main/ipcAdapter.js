@@ -40,7 +40,7 @@ class ipcAdapter {
             return await this.core.blocklist.rm(reflink);
         })
         PromiseIPC.on("blocklist.ls", async (query) => {
-            return await this.core.blocklist.rm(query);
+            return await this.core.blocklist.ls(query);
         })
     }
 }
