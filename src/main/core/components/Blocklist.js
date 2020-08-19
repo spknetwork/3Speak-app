@@ -50,10 +50,13 @@ class Blocklist {
         } catch {}
         return false;
     }
-    async ls(query) {
-        return await this.pouch.find({
+    async ls(query = {}) {
+        query._deleted = {
+            $exists: false
+        }
+        return (await this.pouch.find({
             selector: query
-        })
+        })).docs
     }
     async start() {
         

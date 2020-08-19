@@ -33,6 +33,7 @@ export class App extends React.PureComponent {
                   </Route>
                   <Route path="/watch/:reflink" component={views.watch} />
                   <Route path="/user/:reflink" component={views.User} />
+                  <Route path="/blocklist/" component={views.Blocklist} />
                 </Switch>
               </HashRouter>
             </Col>
