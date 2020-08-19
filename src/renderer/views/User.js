@@ -3,6 +3,10 @@ import GridFeed from "./GridFeed";
 import Follow from "../components/widgets/Follow";
 import {Navbar, Nav} from "react-bootstrap";
 import RefLink from "../../main/RefLink";
+import {
+    Switch,
+    Route
+} from 'react-router-dom';
 const Utils = require('../utils').default;
 
 /**
@@ -56,9 +60,22 @@ class User extends Component {
                     </Navbar.Collapse>
                 </Navbar>
             </div>
-            <section className="content_home" style={{height: 'auto !important'}}>
-                <GridFeed type={'@' + this.state.reflink.root} awaitingMoreData={true} />
-            </section>
+            <Switch>
+                <Route exact path={`/user/${this.state.reflink.toString()}`}>
+                    <section className="content_home" style={{height: 'auto !important'}}>
+                        <GridFeed type={'@' + this.state.reflink.root} awaitingMoreData={true} />
+                    </section>
+                </Route>
+                <Route path={`/user/${this.state.reflink.toString()}/earning`}>
+                    <h1>@{this.state.reflink.root} Earnings</h1>
+                </Route>
+                <Route path={`/user/${this.state.reflink.toString()}/about`}>
+                    <h1>@{this.state.reflink.root} About</h1>
+                </Route>
+                <Route path={`/user/${this.state.reflink.toString()}/live`}>
+                    <h1>@{this.state.reflink.root} Livestreams</h1>
+                </Route>
+            </Switch>
         </div>);
     }
 }

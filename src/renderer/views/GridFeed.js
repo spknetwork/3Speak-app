@@ -61,7 +61,7 @@ class GridFeed extends React.Component {
     render() {
         return (
             <div>
-                <h1>{this.props.type}</h1>
+                <h1>{this.props.type} videos</h1>
                 <div className={'row'}>
                 {this.state.data.map(el => (
                     <VideoWidget key={el.author + '/' + el.permlink} reflink={`hive:${el.author}:${el.permlink}`} {...el} />
