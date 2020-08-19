@@ -22,10 +22,17 @@ class User extends Component {
             })
         })
     }
+    get coverURL() {
+        switch(this.state.reflink.source.value) {
+            case "hive": {
+                return `https://img.3speakcontent.online/user/${this.state.reflink.root}/cover.png`
+            }
+        }
+    }
     render() {
         return (<div>
             <div className="single-channel-image">
-                <img className="img-fluid mh-20" style={{objectFit: 'cover', objectPosition: 'center', maxHeight: '500px'}} alt="" src={`https://img.3speakcontent.online/user/${this.state.reflink.root}/cover.png`} />
+                <img className="img-fluid mh-20" style={{objectFit: 'cover', objectPosition: 'center', maxHeight: '500px'}} alt="" src={this.coverURL} />
                 <div className="channel-profile">
                     <img className="channel-profile-img" alt="" src={this.state.profileURL}/>
                 </div>
