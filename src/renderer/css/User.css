@@ -1,0 +1,32 @@
+.channel-profile-img {
+    background: #fff none repeat scroll 0 0;
+    border: 2px solid #fff;
+    border-radius: 50px;
+    height: 90px;
+    width: 90px;
+}
+.single-channel-image {
+    position: relative;
+}
+.channel-profile {
+    bottom: 0;
+    left: 0;
+    padding: 1rem 30px;
+    position: absolute;
+    right: 0;
+}
+.bg-steem {
+    background-color: #1FBF8F !important;
+}
+.bg-sbd {
+    background: #161fc8 !important;
+}
+.status .card-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 48px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 45px;
+    padding-top: 20px;
+    letter-spacing: -0.8px;
+}

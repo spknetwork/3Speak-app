@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import GridFeed from "./GridFeed";
 import Follow from "../components/widgets/Follow";
-import {Navbar, Nav} from "react-bootstrap";
+import { Navbar, Nav, Card, Col, Row } from "react-bootstrap";
 import RefLink from "../../main/RefLink";
 import {
     Switch,
     Route
 } from 'react-router-dom';
+import '../css/User.css'
 const Utils = require('../utils').default;
 
 /**
@@ -27,7 +28,7 @@ class User extends Component {
         })
     }
     get coverURL() {
-        switch(this.state.reflink.source.value) {
+        switch (this.state.reflink.source.value) {
             case "hive": {
                 return `https://img.3speakcontent.online/user/${this.state.reflink.root}/cover.png`
             }
@@ -36,9 +37,9 @@ class User extends Component {
     render() {
         return (<div>
             <div className="single-channel-image">
-                <img className="img-fluid mh-20" style={{objectFit: 'cover', objectPosition: 'center', maxHeight: '500px'}} alt="" src={this.coverURL} />
+                <img className="img-fluid mh-20" style={{ objectFit: 'cover', objectPosition: 'center', maxHeight: '500px' }} alt="" src={this.coverURL} />
                 <div className="channel-profile">
-                    <img className="channel-profile-img" alt="" src={this.state.profileURL}/>
+                    <img className="channel-profile-img" alt="" src={this.state.profileURL} />
                 </div>
             </div>
             <div className="single-channel-nav">
@@ -62,12 +63,54 @@ class User extends Component {
             </div>
             <Switch>
                 <Route exact path={`/user/${this.state.reflink.toString()}`}>
-                    <section className="content_home" style={{height: 'auto !important'}}>
+                    <section className="content_home" style={{ height: 'auto !important' }}>
                         <GridFeed type={'@' + this.state.reflink.root} awaitingMoreData={true} />
                     </section>
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/earning`}>
                     <h1>@{this.state.reflink.root} Earnings</h1>
+                    <Row>
+                        <Col md={6}>
+                            <Card bg="danger" className="status">
+                                <Card.Header>
+                                    <Card.Title className="text-center">0.00 SPEAK</Card.Title>
+                                </Card.Header>
+                                <Card.Body className="bg-white text-center">
+                                    <strong>Available Balance</strong>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col md={6}>
+                            <Card bg="dark" className="status">
+                                <Card.Header>
+                                    <Card.Title className="text-center">0.00 SPEAK</Card.Title>
+                                </Card.Header>
+                                <Card.Body className="bg-white text-center">
+                                    <strong>Lifetime Earnings</strong>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col md={6}>
+                            <Card className="bg-steem status">
+                                <Card.Header>
+                                    <Card.Title className="text-center">0.00 HIVE</Card.Title>
+                                </Card.Header>
+                                <Card.Body className="bg-white text-center">
+                                    <strong>Available HIVE Balance</strong>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col md={6}>
+                            <Card className="bg-sbd status">
+                                <Card.Header>
+                                    <Card.Title className="text-center">0.00 HBD</Card.Title>
+                                </Card.Header>
+                                <Card.Body className="bg-white text-center">
+                                    <strong>Available HBD Balance</strong>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/about`}>
                     <h1>@{this.state.reflink.root} About</h1>
