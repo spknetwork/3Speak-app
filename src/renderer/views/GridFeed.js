@@ -5,28 +5,16 @@ class GridFeed extends React.Component {
     constructor(props) {
         super(props);
         // pass awaitingMoreData as true to prevent lazy loading
-        let {getUser = undefined, awaitingMoreData = undefined} = props
-        this.state = { data: [], awaitingMoreData, getUser }
+        let {awaitingMoreData = undefined} = props
+        this.state = { data: [], awaitingMoreData}
         this.handleScroll = this.handleScroll.bind(this);
     }
 
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
-        let url;
-        if (this.state.getUser) {
-            url = `https://3speak.online/apiv2/videoData?key=TEAM_IPFS&creator=${this.state.getUser}&start=0`
-        } else {
-            url = `https://3speak.online/apiv2/feeds/${this.props.type}`
-        }
-        fetch(url)
+        fetch(`https://3speak.online/apiv2/feeds/${this.props.type}`)
             .then(res => res.json())
             .then(json => {
-                if (json[0].timestamp) {
-                    json.forEach((data) => {
-                        data['created'] = data['timestamp']
-                    })
-                    json.reverse()
-                }
                 this.setState({data: json})
             })
     }

@@ -50,7 +50,7 @@ class User extends Component {
                 </Navbar>
             </div>
             <section className="content_home" style={{height: 'auto !important'}}>
-                <GridFeed getUser={this.state.reflink.toString()} awaitingMoreData={true} />
+                <GridFeed type={'@' + this.state.reflink.root} awaitingMoreData={true} />
             </section>
         </div>);
     }
