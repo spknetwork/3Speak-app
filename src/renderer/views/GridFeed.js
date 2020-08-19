@@ -1,6 +1,7 @@
 import React from 'react';
 import VideoWidget from "../components/video/VideoWidget";
 import RefLink from "../../main/RefLink";
+import PromiseIpc from 'electron-promise-ipc';
 
 class GridFeed extends React.Component {
     constructor(props) {
@@ -17,7 +18,12 @@ class GridFeed extends React.Component {
             case "hive": {
                 fetch(`https://3speak.online/apiv2/feeds/${this.props.type}`)
                     .then(res => res.json())
-                    .then(json => {
+                    .then(async json => {
+                        for(var e in json) {
+                            if(await PromiseIpc.send("blocklist.has", `hive:${json[e].author}:${json[e].permlink}`)) {
+                                delete json[e];
+                            }
+                        }
                         this.setState({data: json})
                     })
             }
@@ -50,7 +56,7 @@ class GridFeed extends React.Component {
                     case "hive": {
                         fetch(`https://3speak.online/api/${this.props.type === 'new' ? 'new' : 'trends'}/more?skip=${this.state.data.length}`)
                             .then(res => res.json())
-                            .then(json => {
+                            .then(async json => {
                                 json = json.recommended ? json.recommended : json.trends
                                 json.forEach((video) => {
                                     video['author'] = video['owner'];
@@ -62,6 +68,11 @@ class GridFeed extends React.Component {
                                         v.author === video.author && v.permlink === video.permlink
                                     ))
                                 )
+                                for(var e in json) {
+                                    if(await PromiseIpc.send("blocklist.has", `hive:${json[e].author}:${json[e].permlink}`)) {
+                                        delete json[e];
+                                    }
+                                }
                                 this.setState({
                                     data: json,
                                     awaitingMoreData: false
