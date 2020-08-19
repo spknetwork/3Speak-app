@@ -10,7 +10,7 @@ import EmptyProfile from '../assets/img/EmptyProfile.png';
 import VideoTeaser from '../components/video/VideoTeaser';
 import CommentSection from '../components/video/CommentSection';
 import Follow from "../components/widgets/Follow";
-
+import RefLink from '../../main/RefLink'
 
 class watch extends React.Component {
     constructor(props) {
@@ -21,7 +21,8 @@ class watch extends React.Component {
             post_info: {}, 
             reflink: this.props.match.params.reflink, 
             profilePictureURL: EmptyProfile,
-            commentGraph: null
+            commentGraph: null,
+            videoLink: ""
         };
     }
     componentDidMount() {
@@ -37,7 +38,8 @@ class watch extends React.Component {
                 this.setState({
                     player: <Player reflink={this.props.match.params.reflink}></Player>, //Insert player here
                     video_info: await utils.accounts.permalinkToVideoInfo(this.state.reflink),
-                    post_info: await utils.accounts.permalinkToPostInfo(this.state.reflink)
+                    post_info: await utils.accounts.permalinkToPostInfo(this.state.reflink),
+                    videoLink: await utils.video.getVideoSourceURL(this.state.reflink)
                 })
             }
         }
@@ -52,6 +54,7 @@ class watch extends React.Component {
         console.log(this.props);
         console.log(this.state.post_info)
         console.log(this.state.video_info)
+        var ref = RefLink.parse(this.state.reflink)
         return <div>
             <Container fluid pb={0}>
                 <Row fluid="md">
@@ -91,13 +94,13 @@ class watch extends React.Component {
                             <div className="float-right">
                                 <Follow reflink={this.state.reflink} />
 
-                                <a target="_blank" href="" className="btn btn-light btn-sm" download="avqmxbem.mp4">
+                                <a target="_blank" className="btn btn-light btn-sm" href={this.state.videoLink}>
                                     <FaDownload /> Download
                                 </a>
                             </div>
                             <img className="img-fluid" src={this.state.profilePictureURL} alt="" />
                             <p>
-                                <a href={`#/user/${this.state.post_info.author}`}>
+                                <a href={`#/user/${ref.source.value}:${ref.root}`}>
                                     <strong>
                                         {this.state.post_info.author}
                                     </strong>
