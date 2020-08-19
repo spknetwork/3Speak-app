@@ -29,6 +29,10 @@ class ipcAdapter {
         PromiseIPC.on("distiller.getState", async (stateKey) => {
             return await this.core.distillerDB.getState(stateKey);
         })
+        PromiseIPC.on("distiller.getFollowerCount", async (reflink) => {
+            console.log(reflink)
+            return await this.core.distillerDB.getFollowerCount(reflink)
+        })
         //Blocklist
         PromiseIPC.on("blocklist.add", async (reflink, options) => {
             return await this.core.blocklist.add(reflink, options);
