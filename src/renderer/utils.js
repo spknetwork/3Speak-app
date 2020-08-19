@@ -121,6 +121,27 @@ const accounts = {
                 throw new Error("Unknown account provider")
             }
         }
+    },
+    /**
+     * Retrieves Follower count.
+     * @param {String|RefLink} reflink
+     */
+    async getFollowerCount(reflink) {
+        if(!(reflink instanceof RefLink)) {
+            reflink = RefLink.parse(reflink)
+        }
+        switch (reflink.source.value) {
+            case "hive": {
+                let followerCount = (await PromiseIPC.send("distiller.getFollowerCount", reflink.toString()))
+                return followerCount
+            }
+            case "orbitdb": {
+                //Retrieve DB followers
+            }
+            default: {
+                throw new Error("Unknown account provider")
+            }
+        }
     }
 }
 const video = {

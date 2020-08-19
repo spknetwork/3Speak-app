@@ -500,5 +500,20 @@ class DistillerDB {
             })
         }
     }
+    /**
+     * Retrieves follower count.
+     * @param {String|RefLink} reflink
+     */
+    async getFollowerCount(reflink) {
+        if (!(reflink instanceof RefLink)) {
+            reflink = RefLink.parse(reflink);
+        }
+        let followerCount = (await hiveClient.call(
+            'follow_api',
+            'get_follow_count',
+            {account: reflink.root})).follower_count
+
+        return followerCount
+    }
 }
 export default DistillerDB;

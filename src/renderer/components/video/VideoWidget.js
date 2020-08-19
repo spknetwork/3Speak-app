@@ -51,7 +51,7 @@ class VideoWidget extends Component {
             </a>
             <div className="mt-2">
                 <span className="black_col">
-                    <b><a href={`#/user/${this.props.author}`}> <FaUser/> {this.state.reflink.root}</a></b>
+                    <b><a href={`#/user/${this.props.reflink}`}> <FaUser/> {this.state.reflink.root}</a></b>
                 </span>
                 <br/>
                 <span>{(() => {

@@ -9,6 +9,7 @@ import CollapsibleText from '../components/CollapsibleText';
 import EmptyProfile from '../assets/img/EmptyProfile.png';
 import VideoTeaser from '../components/video/VideoTeaser';
 import CommentSection from '../components/video/CommentSection';
+import Follow from "../components/widgets/Follow";
 
 
 class watch extends React.Component {
@@ -88,17 +89,7 @@ class watch extends React.Component {
                         </div>
                         <div className="single-video-author box mb-3">
                             <div className="float-right">
-                                <button className="btn btn-light btn-sm" data-subscribe="mediamysteries" type="button">
-                                    <span id="substatus">Follow</span>
-                                    <strong className="ml-2" id="subcount">
-                                        <a href={`/user/${this.state.post_info.author}/followers`} className="view-followers" data-tooltip="tooltip" title="Click to see followers">
-                                            {
-                                                //TODO: implement folower count.
-                                            }
-                                        </a>
-                                    </strong>
-                                    <FaBell data-toggle-notifications="mediamysteries"></FaBell>
-                                </button>
+                                <Follow reflink={this.state.reflink} />
 
                                 <a target="_blank" href="" className="btn btn-light btn-sm" download="avqmxbem.mp4">
                                     <FaDownload /> Download
@@ -106,7 +97,7 @@ class watch extends React.Component {
                             </div>
                             <img className="img-fluid" src={this.state.profilePictureURL} alt="" />
                             <p>
-                                <a href="#/user/">
+                                <a href={`#/user/${this.state.post_info.author}`}>
                                     <strong>
                                         {this.state.post_info.author}
                                     </strong>
