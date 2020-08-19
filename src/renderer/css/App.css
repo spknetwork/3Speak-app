@@ -88,3 +88,6 @@ h1 {
     line-height: 38px;
     font-weight: 200;
 }
+.videowidget-padding {
+    padding: 1px !important
+}

@@ -24,7 +24,7 @@ class VideoWidget extends Component {
         })
     }
     render() {
-        return (<HashRouter><div className="col-lg-2 col-6 marg_bot1" style={{padding: "1 !important"}}>
+        return (<HashRouter><div className="col-lg-2 col-6 marg_bot1 videowidget-padding">
             <div className="teaser_holder text-center">
                 <div className="card-label card-label-views">
                     <img className="play_i" src={PlaySVG} height="11px" />
