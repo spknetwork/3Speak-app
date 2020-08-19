@@ -63,7 +63,11 @@ class DistillerDB {
                         start_permlink: id
                     }))[0];*/
                     if(out) {
-                        out.json_metadata = JSON.parse(out.json_metadata)
+                        try {
+                            out.json_metadata = JSON.parse(out.json_metadata)
+                        } catch {
+                            
+                        }
                     }
                     return out;
                 } else {
