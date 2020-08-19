@@ -47,7 +47,7 @@ class VideoWidget extends Component {
                 </a>
             </div>
             <a href={`#/watch/${this.props.reflink}`}>
-                <b data-toggle="tooltip" data-placement="bottom" title="" className="max-lines word-break" data-original-title={this.state.video_info.title}>{this.state.video_info.title}</b>
+                <b data-toggle="tooltip" data-placement="bottom" title={this.state.video_info.title} className="max-lines word-break" data-original-title={this.state.video_info.title}>{this.state.video_info.title}</b>
             </a>
             <div className="mt-2">
                 <span className="black_col">
