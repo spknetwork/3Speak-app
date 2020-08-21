@@ -111,3 +111,65 @@
     font-weight: 600;
     text-decoration: none;
 }
+.community-card {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 2px;
+    box-shadow: 0 0 11px #ececec;
+    padding: 5px 12px;
+    position: relative;
+    text-align: center;
+    transition-duration: 0.4s;
+}
+.channels-card {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 2px;
+    box-shadow: 0 0 11px #ececec;
+    padding: 24px 12px;
+    position: relative;
+    text-align: center;
+    transition-duration: 0.4s;
+}
+.channels-card::after {
+    background: #dcdcdc none repeat scroll 0 0;
+    border-radius: 0 0 5px 6px;
+    bottom: -4px;
+    content: "";
+    height: 7px;
+    left: 15px;
+    position: absolute;
+    right: 15px;
+    z-index: -1;
+}
+.channels-card-image img {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 50px;
+    box-shadow: 0 0 2px #ccc;
+    height: 80px;
+    margin: 1px 0 8px;
+    object-fit: scale-down;
+    transform: scale(1);
+    width: 80px;
+}
+.channels-card-score {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 14px;
+}
+.channels-card-rank {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 14px;
+}
+.badge {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
