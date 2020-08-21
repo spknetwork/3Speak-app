@@ -35,6 +35,7 @@ export class App extends React.PureComponent {
                   <Route path="/user/:reflink" component={views.User} />
                   <Route path="/blocklist/" component={views.Blocklist} />
                   <Route path="/communities/" component={views.Communities} />
+                  <Route path="/leaderboard/" component={views.Leaderboard} />
                 </Switch>
               </HashRouter>
             </Col>
