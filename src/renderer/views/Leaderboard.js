@@ -53,8 +53,8 @@ class Leaderboard extends Component {
                 </div>
                 <Row>
                     {this.state.bronze.map(value => (
-                        <div class="col-xl-2 col-sm-4 mb-3">
-                            <LeaderTile key={value.username} info={value} reflink={`hive:${value.username}`}/>
+                        <div key={value.username} className="col-xl-2 col-sm-4 mb-3">
+                            <LeaderTile info={value} reflink={`hive:${value.username}`}/>
                         </div>
                     ))}
                 </Row>
