@@ -173,3 +173,22 @@
     vertical-align: baseline;
     border-radius: 0.25rem;
 }
+/*
+ Primary
+*/
+body {
+    min-height: 100vh;
+    background-color: #EFF4F5;
+}
+.header_sec {
+    background-color: #E8E8E8;
+}
+.content_home {
+    padding: 15px;
+}
+@media (min-width: 768px) {
+    body {
+        padding-top: 0;
+        margin-left: 232px;
+    }
+}

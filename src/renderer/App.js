@@ -23,21 +23,21 @@ export class App extends React.PureComponent {
               <Sidebar />
             </Col>
             <Col>
-              <HashRouter>
-                <Switch>
-                  <Route path="/new" exact>
-                    <views.GridFeed awaitingMoreData={false} type="new" />
-                  </Route>
-                  <Route path="/trends" exact>
-                    <views.GridFeed awaitingMoreData={false} type="trending" />
-                  </Route>
-                  <Route path="/watch/:reflink" component={views.watch} />
-                  <Route path="/user/:reflink" component={views.User} />
-                  <Route path="/blocklist/" component={views.Blocklist} />
-                  <Route path="/communities/" component={views.Communities} />
-                  <Route path="/leaderboard/" component={views.Leaderboard} />
-                </Switch>
-              </HashRouter>
+        <HashRouter>
+          <Switch>
+            <Route path="/new" exact>
+              <views.GridFeed awaitingMoreData={false} type="new" />
+            </Route>
+            <Route path="/trends" exact>
+              <views.GridFeed awaitingMoreData={false} type="trending" />
+            </Route>
+            <Route path="/watch/:reflink" component={views.watch} />
+            <Route path="/user/:reflink" component={views.User} />
+            <Route path="/blocklist/" component={views.Blocklist} />
+            <Route path="/communities/" component={views.Communities} />
+            <Route path="/leaderboard/" component={views.Leaderboard} />
+          </Switch>
+        </HashRouter>
             </Col>
           </Row>
         </Container>
