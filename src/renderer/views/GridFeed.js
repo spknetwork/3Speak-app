@@ -11,9 +11,18 @@ class GridFeed extends React.Component {
         this.state = { data: [], awaitingMoreData, reflink: RefLink.parse(source)}
         this.handleScroll = this.handleScroll.bind(this);
     }
-
+    componentDidUpdate(prevProps) {
+        if (this.props.type !== prevProps.type) {
+            // Handle path changes
+            window.scrollTo(0, 0)
+          this.retrieveData();
+        }
+    }
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
+        this.retrieveData();
+    }
+    retrieveData() {
         switch(this.state.reflink.source.value) {
             case "hive": {
                 fetch(`https://3speak.online/apiv2/feeds/${this.props.type}`)
@@ -34,9 +43,7 @@ class GridFeed extends React.Component {
 
             }
         }
-
     }
-
     componentWillUnmount() {
         window.removeEventListener("scroll", this.handleScroll);
     }
