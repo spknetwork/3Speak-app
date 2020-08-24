@@ -11,18 +11,12 @@ import views from './views';
 import './css/App.css';
 import './css/main.css';
 import Sidebar from './components/Navbar';
-import { Col, Container, Row } from 'react-bootstrap'
 
 export class App extends React.PureComponent {
   render() {
     return (
       <div>
-        <Container>
-          <Row>
-            <Col md="auto">
-              <Sidebar />
-            </Col>
-            <Col>
+        <Sidebar />
         <HashRouter>
           <Switch>
             <Route path="/new" exact>
@@ -38,9 +32,6 @@ export class App extends React.PureComponent {
             <Route path="/leaderboard/" component={views.Leaderboard} />
           </Switch>
         </HashRouter>
-            </Col>
-          </Row>
-        </Container>
       </div>
     );
   }
