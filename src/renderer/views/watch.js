@@ -139,7 +139,7 @@ class watch extends React.Component {
                     <Col md={5}>
                         <Row>
                             <Col md={12}>
-                                <VideoTeaser permalink={this.state.reflink}>
+                                <VideoTeaser reflink={this.state.reflink}>
 
                                 </VideoTeaser>
                             </Col>

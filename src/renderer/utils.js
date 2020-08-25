@@ -80,7 +80,7 @@ const accounts = {
                 }
                 return {
                     sources,
-                    creation: new Date(post_content.created).toISOString(),
+                    creation: new Date(post_content.created + "Z").toISOString(),
                     title,
                     description,
                     tags: json_metadata.tags,

@@ -9,16 +9,16 @@ class VideoTeaser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            video_info: {sources: {}},
+            video_info: {sources: {}, meta: {}},
             thumbnail: null,
-            permalink: {}
+            reflink: {}
         };
     }
     async componentDidMount() {
         this.setState({
-            video_info: await utils.accounts.permalinkToVideoInfo(this.props.permalink),
-            thumbnail: await utils.video.getThumbnailURL(this.props.permalink),
-            permalink: Reflink.parse(this.props.permalink)
+            video_info: await utils.accounts.permalinkToVideoInfo(this.props.reflink),
+            thumbnail: await utils.video.getThumbnailURL(this.props.reflink),
+            reflink: Reflink.parse(this.props.reflink)
         });
     }
     render() {
@@ -27,30 +27,34 @@ class VideoTeaser extends Component {
                 <div className="card-label">
                     {(() => {
                         const pattern = DateTime.compile('mm:ss');
-                        return DateTime.format(new Date(this.state.video_info.duration * 1000), pattern)
+                        return DateTime.format(new Date(this.state.video_info.meta.duration * 1000), pattern)
                     })()}
                 </div>
-                <a href={`#/watch?v=${this.props.permalink}`}>
+                <a href={`#/watch?v=${this.props.reflink}`}>
                     <img className="img-fluid bg-dark" src={this.state.thumbnail} alt="" />
                 </a>
             </div>
             <span className="video-card-body">
                 <div className="video-title">
-                    <a href={`#/watch?v=${this.props.permalink}`}>{this.state.video_info.title}</a>
+                    <a href={`#/watch?v=${this.props.reflink}`} style={{textOverflow: "ellipsis", overflow: "nowrap"}}>
+                        {this.state.video_info.title}
+                    </a>
                 </div>
                 <div className="video-page">
-                    <a href={`#/user/${this.state.permalink.root}`}>{this.state.permalink.root}</a>
+                    <a href={`#/user/${this.state.reflink.root}`}>{this.state.reflink.root}</a>
                 </div>
                 <div className="video-view">
                     <FaEye/> Unknown views
                     <span>
                         <FaCalendarAlt/> 
                         {(() => {
-                            const dateBest = convert((new Date() / 1) - (new Date(this.state.video_info.creation) / 1)).from("ms").toBest();
-                            if(Math.round(dateBest.val) >= 2) {
-                                return `${Math.round(dateBest.val)} ${dateBest.plural} ago`;
-                            } else {
-                                return `${Math.round(dateBest.val)} ${dateBest.singular} ago`;
+                            if(this.state.video_info.creation) {
+                                const dateBest = convert((new Date(new Date().toUTCString()) /1)  - (Date.parse(this.state.video_info.creation) / 1)).from("ms").toBest();
+                                if(Math.round(dateBest.val) >= 2) {
+                                    return `${Math.round(dateBest.val)} ${dateBest.plural} ago`;
+                                } else {
+                                    return `${Math.round(dateBest.val)} ${dateBest.singular} ago`;
+                                }
                             }
                         })()}
                     </span>
