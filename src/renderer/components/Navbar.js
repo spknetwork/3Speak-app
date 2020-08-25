@@ -89,7 +89,7 @@ class SideBar extends Component {
                         Leaderboard
 
                     </Nav.Link>
-                    <Nav.Link href="/newcomers">
+                    <Nav.Link href="#/first-uploads">
                         <div className="nav_icons"><img src={iconNewcomer} height="19px" />
                         </div>
                             First Uploads
