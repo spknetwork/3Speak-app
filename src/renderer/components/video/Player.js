@@ -14,8 +14,12 @@ class Player extends React.Component {
             videoUrl: null,
             videoInfo: null
         }
+        this.player = React.createRef()
     }
     async componentDidMount() {
+        this.fireUp();
+    }
+    async fireUp() {
         // hive/vaultec81/myPostId
         let reflink;
         if(this.props.reflink) {
@@ -66,10 +70,14 @@ class Player extends React.Component {
             videoUrl: await utils.video.getVideoSourceURL(videoInfo)
         })
     }
+    ExecUpdate() {
+        this.fireUp()
+        this.player.current.componentDidMount()
+    }
     render() {
         return <React.Fragment>
             {this.state.videoUrl ? <ReactJWPlayer licenseKey="64HPbvSQorQcd52B8XFuhMtEoitbvY/EXJmMBfKcXZQU2Rnn" customProps={{playbackRateControls: true}}
-            file={this.state.videoUrl} image={this.state.thumbnail} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} playerScript="https://cdn.jwplayer.com/libraries/JyghCNnw.js?v=3">
+            file={this.state.videoUrl} image={this.state.thumbnail} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} ref={this.player} playerScript="https://cdn.jwplayer.com/libraries/JyghCNnw.js?v=3">
                 
             </ReactJWPlayer> : <center> 
                 [Player] videoInfo not specified [Player]

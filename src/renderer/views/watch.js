@@ -26,20 +26,30 @@ class watch extends React.Component {
             videoLink: "",
             recommendedVideos: []
         };
+        this.player = React.createRef()
     }
     componentDidMount() {
         this.mountPlayer();
         this.retrieveRecommended()
     }
-    generateRelated() {
-
+    componentDidUpdate(prevProps) {
+        if (this.props.match.params.reflink !== prevProps.match.params.reflink) {
+            // Handle path changes
+            window.scrollTo(0, 0)
+            this.setState({
+                reflink: this.props.match.params.reflink
+            }, () => {
+                this.mountPlayer();
+                this.retrieveRecommended()
+                this.player.current.ExecUpdate()
+            })
+        }
     }
     async mountPlayer() {
         var playerType = "standard";
         switch (playerType) {
             case "standard": {
                 this.setState({
-                    player: <Player reflink={this.props.match.params.reflink}></Player>, //Insert player here
                     video_info: await utils.accounts.permalinkToVideoInfo(this.state.reflink),
                     post_info: await utils.accounts.permalinkToPostInfo(this.state.reflink),
                     videoLink: await utils.video.getVideoSourceURL(this.state.reflink)
@@ -74,7 +84,7 @@ class watch extends React.Component {
                 <Row fluid="md">
                     <Col md={6}>
                         <div>
-                            {this.state.player}
+                            <Player ref={this.player} reflink={this.props.match.params.reflink}></Player>
                         </div>
                         <div className="single-video-title box mb-3 clearfix">
                             <div className="float-left">
