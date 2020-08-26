@@ -121,9 +121,9 @@ class watch extends React.Component {
                             <p className="tags mb-0">
                                 {(() => {
                                     var out = [];
-                                    if(this.state.video_info.tags) {
+                                    if (this.state.video_info.tags) {
                                         for (const tag of this.state.video_info.tags) {
-                                            out.push(<span key={tag}>
+                                            out.push(<span style={{paddingLeft: "3px"}} key={tag}>
                                                 <a>
                                                     {tag}
                                                 </a>
