@@ -1,8 +1,8 @@
 import RefLink from '../../RefLink';
+import PouchDB from 'pouchdb'
 const debug = require('debug')("blasio:distiller")
 const Path = require('path');
 const { Client: HiveClient } = require('@hiveio/dhive')
-var PouchDB = require('pouchdb');
 PouchDB.plugin(require('pouchdb-find'));
 
 const hiveClient = new HiveClient('https://hive.3speak.online/')
