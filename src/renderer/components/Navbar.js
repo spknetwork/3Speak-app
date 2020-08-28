@@ -17,8 +17,7 @@ class SideBar extends Component {
         this.state = {}
     }
     render() {
-        return (
-                <Navbar bg="white" expand="lg" id="layoutNav" className="fixed-left">
+        return (<Navbar bg="white" expand="lg" id="layoutNav" className="fixed-left">
                     <Navbar.Brand><img src={SpeakLogo} /></Navbar.Brand>
                     <a href="/auth/login" className="display-mobile">
                         <button className="btn btn-dark text-white btn-sm">
@@ -45,7 +44,6 @@ class SideBar extends Component {
                             <Nav.Link href="#/new">
                                 <div className="nav_icons"><img src={iconNewContent} height="17px" /></div>
                                 New Content
-
                             </Nav.Link>
 
 

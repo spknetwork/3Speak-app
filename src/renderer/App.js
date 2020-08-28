@@ -14,8 +14,6 @@ import Sidebar from './components/Navbar';
 import TopNavbar from './components/TopNavbar';
 
 export class App extends React.PureComponent {
-
-
   render() {
     return (
       <div>
