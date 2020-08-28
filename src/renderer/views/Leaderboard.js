@@ -40,13 +40,13 @@ class Leaderboard extends Component {
     render() {
         return (<div>
             <div className="header_sec">
-                <div className="container-fluid header_sec">
+                <Container fluid className="header_sec">
                     <div className="row">
-                        <div className="col-lg-6 col-md-12 col-xs-12 header_dist1">
+                        <div className="col-lg-6 col-md-6 col-xs-12 header_dist1">
                             <h1 className="white_col">Content Creator Leaderboard</h1>
                         </div>
                     </div>
-                </div>
+                </Container>
             </div>
             <section className="content_home">
                 <Container fluid> 

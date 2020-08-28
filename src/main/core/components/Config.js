@@ -128,4 +128,4 @@ class Config {
         await this.save();
     }
 }
-module.exports = Config;
+export default Config;

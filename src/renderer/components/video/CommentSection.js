@@ -14,6 +14,12 @@ class CommentSection extends Component {
     componentDidMount() {
         this.generateComments(this.props.reflink);
     }
+    componentDidUpdate(prevProps) {
+        if (this.props.reflink !== prevProps.reflink) {
+            // Handle path changes
+            this.generateComments(this.props.reflink);
+        }
+    }
     async generateComments(reflink) {
         let totalComments = 0;
         let comments = [];

@@ -11,32 +11,45 @@ import VideoTeaser from '../components/video/VideoTeaser';
 import CommentSection from '../components/video/CommentSection';
 import Follow from "../components/widgets/Follow";
 import RefLink from '../../main/RefLink'
+import axios from 'axios';
 
 class watch extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            player: null, 
-            video_info: {}, 
-            post_info: {}, 
-            reflink: this.props.match.params.reflink, 
+            player: null,
+            video_info: {},
+            post_info: {},
+            reflink: this.props.match.params.reflink,
             profilePictureURL: EmptyProfile,
             commentGraph: null,
-            videoLink: ""
+            videoLink: "",
+            recommendedVideos: []
         };
+        this.player = React.createRef()
     }
     componentDidMount() {
         this.mountPlayer();
+        this.retrieveRecommended()
     }
-    generateRelated() {
-
+    componentDidUpdate(prevProps) {
+        if (this.props.match.params.reflink !== prevProps.match.params.reflink) {
+            // Handle path changes
+            window.scrollTo(0, 0)
+            this.setState({
+                reflink: this.props.match.params.reflink
+            }, () => {
+                this.mountPlayer();
+                this.retrieveRecommended()
+                this.player.current.ExecUpdate()
+            })
+        }
     }
     async mountPlayer() {
         var playerType = "standard";
         switch (playerType) {
             case "standard": {
                 this.setState({
-                    player: <Player reflink={this.props.match.params.reflink}></Player>, //Insert player here
                     video_info: await utils.accounts.permalinkToVideoInfo(this.state.reflink),
                     post_info: await utils.accounts.permalinkToPostInfo(this.state.reflink),
                     videoLink: await utils.video.getVideoSourceURL(this.state.reflink)
@@ -50,6 +63,17 @@ class watch extends React.Component {
 
         }
     }
+    async retrieveRecommended() {
+        var ref = RefLink.parse(this.state.reflink)
+        var data = (await axios.get(`https://3speak.online/apiv2/recommended?v=${ref.root}/${ref.permlink}`)).data
+        data.forEach((value => {
+            var link = value.link.split("=")[1].split("/")
+            value.reflink = `hive:${link[0]}:${link[1]}`
+        }))
+        this.setState({
+            recommendedVideos: data
+        })
+    }
     render() {
         console.log(this.props);
         console.log(this.state.post_info)
@@ -60,7 +84,7 @@ class watch extends React.Component {
                 <Row fluid="md">
                     <Col md={6}>
                         <div>
-                            {this.state.player}
+                            <Player ref={this.player} reflink={this.props.match.params.reflink}></Player>
                         </div>
                         <div className="single-video-title box mb-3 clearfix">
                             <div className="float-left">
@@ -121,9 +145,9 @@ class watch extends React.Component {
                             <p className="tags mb-0">
                                 {(() => {
                                     var out = [];
-                                    if(this.state.video_info.tags) {
+                                    if (this.state.video_info.tags) {
                                         for (const tag of this.state.video_info.tags) {
-                                            out.push(<span key={tag}>
+                                            out.push(<span style={{paddingLeft: "3px"}} key={tag}>
                                                 <a>
                                                     {tag}
                                                 </a>
@@ -134,14 +158,16 @@ class watch extends React.Component {
                                 })()}
                             </p>
                         </div>
-                        <CommentSection reflink={this.state.reflink.toString()}/>
+                        <CommentSection reflink={this.state.reflink.toString()} />
                     </Col>
                     <Col md={5}>
                         <Row>
                             <Col md={12}>
-                                <VideoTeaser reflink={this.state.reflink}>
-
-                                </VideoTeaser>
+                                {
+                                    this.state.recommendedVideos.map(value => (
+                                        <VideoTeaser key={value.reflink} reflink={value.reflink}/>
+                                    ))
+                                }
                             </Col>
                         </Row>
                     </Col>

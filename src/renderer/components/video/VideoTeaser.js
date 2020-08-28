@@ -11,14 +11,13 @@ class VideoTeaser extends Component {
         this.state = {
             video_info: {sources: {}, meta: {}},
             thumbnail: null,
-            reflink: {}
+            reflink: Reflink.parse(this.props.reflink)
         };
     }
     async componentDidMount() {
         this.setState({
             video_info: await utils.accounts.permalinkToVideoInfo(this.props.reflink),
-            thumbnail: await utils.video.getThumbnailURL(this.props.reflink),
-            reflink: Reflink.parse(this.props.reflink)
+            thumbnail: await utils.video.getThumbnailURL(this.props.reflink)
         });
     }
     render() {
@@ -30,18 +29,18 @@ class VideoTeaser extends Component {
                         return DateTime.format(new Date(this.state.video_info.meta.duration * 1000), pattern)
                     })()}
                 </div>
-                <a href={`#/watch?v=${this.props.reflink}`}>
+                <a href={`#/watch/${this.props.reflink}`}>
                     <img className="img-fluid bg-dark" src={this.state.thumbnail} alt="" />
                 </a>
             </div>
             <span className="video-card-body">
                 <div className="video-title">
-                    <a href={`#/watch?v=${this.props.reflink}`} style={{textOverflow: "ellipsis", overflow: "nowrap"}}>
+                    <a href={`#/watch/${this.props.reflink}`} style={{textOverflow: "ellipsis", overflow: "nowrap"}}>
                         {this.state.video_info.title}
                     </a>
                 </div>
                 <div className="video-page">
-                    <a href={`#/user/${this.state.reflink.root}`}>{this.state.reflink.root}</a>
+                    <a href={`#/user/${this.state.reflink.source.value}:${this.state.reflink.root}`}>{this.state.reflink.root}</a>
                 </div>
                 <div className="video-view">
                     <FaEye/> Unknown views
