@@ -1,6 +1,6 @@
 import React from 'react';
 import Player from '../components/video/Player';
-import { Col, Row, Container } from 'react-bootstrap';
+import { Col, Row, Container, Dropdown } from 'react-bootstrap';
 import utils from '../utils';
 import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload, FaBell } from 'react-icons/fa';
 import DateTime from 'date-and-time';
@@ -12,6 +12,7 @@ import CommentSection from '../components/video/CommentSection';
 import Follow from "../components/widgets/Follow";
 import RefLink from '../../main/RefLink'
 import axios from 'axios';
+import PromiseIpc from 'electron-promise-ipc'
 
 class watch extends React.Component {
     constructor(props) {
@@ -27,6 +28,7 @@ class watch extends React.Component {
             recommendedVideos: []
         };
         this.player = React.createRef()
+        this.gearSelect = this.gearSelect.bind(this);
     }
     componentDidMount() {
         this.mountPlayer();
@@ -63,6 +65,19 @@ class watch extends React.Component {
 
         }
     }
+    async gearSelect(eventKey) {
+        var ref = RefLink.parse(this.state.reflink)
+        switch(eventKey) {
+            case "mute_post": {
+                await PromiseIpc.send("blocklist.add", ref.toString())
+                break;
+            }
+            case "mute_user": {
+                await PromiseIpc.send("blocklist.add", `${ref.source.value}:${ref.root}`)
+                break;
+            }
+        }
+    }
     async retrieveRecommended() {
         var ref = RefLink.parse(this.state.reflink)
         var data = (await axios.get(`https://3speak.online/apiv2/recommended?v=${ref.root}/${ref.permlink}`)).data
@@ -78,6 +93,15 @@ class watch extends React.Component {
         console.log(this.props);
         console.log(this.state.post_info)
         console.log(this.state.video_info)
+        const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+            <button style={{ float: "right" }} ref={ref} onClick={(e) => {
+                e.preventDefault();
+                onClick(e);
+            }} className="btn btn-sm dropdown-toggle btn-secondary" id="videoOptions" type="button" data-toggle="dropdown">
+                <FaCogs />
+            </button>
+        ));
+
         var ref = RefLink.parse(this.state.reflink)
         return <div>
             <Container fluid pb={0}>
@@ -107,12 +131,15 @@ class watch extends React.Component {
                                         }
                                     </span>
                                 </span>
-                                <br />
-                                <button style={{ float: "right" }} className="btn btn-sm dropdown-toggle btn-secondary" id="videoOptions" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" className="btn btn-secondary btn-sm dropdown-toggle">
-                                    <FaCogs />
-                                </button>
+                                <Dropdown onSelect={this.gearSelect}>
+                                    <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item eventKey="mute_post"><p style={{ color: "red" }}>Mute Post</p></Dropdown.Item>
+                                        <Dropdown.Item eventKey="mute_user"><p style={{ color: "red" }}>Mute User</p></Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </div>
-
                         </div>
                         <div className="single-video-author box mb-3">
                             <div className="float-right">
