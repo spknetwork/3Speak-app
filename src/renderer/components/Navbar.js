@@ -8,6 +8,7 @@ import iconBlog from '../assets/img/blog.png'
 import shakeHands from '../assets/img/shake-hands.svg'
 import SpeakLogo from '../assets/img/3S_logo.svg'
 import { FaDiscord, FaTwitter, FaGlobe, FaUsers, FaTelegram } from 'react-icons/fa'
+import { BsFillGearFill } from 'react-icons/bs'
 import { Navbar, Nav, NavDropdown, ButtonGroup, Dropdown } from 'react-bootstrap'
 import "./Navbar.css"
 
@@ -45,7 +46,31 @@ class SideBar extends Component {
                                 <div className="nav_icons"><img src={iconNewContent} height="17px" /></div>
                                 New Content
                             </Nav.Link>
-
+        return (<Navbar bg="white" expand="lg" id="layoutNav" className="bg_white fixed-left">
+            <Navbar.Brand><img src={SpeakLogo} /></Navbar.Brand>
+            <a href="#/auth/login" className="display-mobile">
+                <button className="btn btn-dark text-white btn-sm">
+                    Log In / Sign Up
+                </button>
+            </a>
+            <Navbar.Toggle aria-controls="basic-navbar-nav">
+                <span className="navbar-toggler-icon"></span>
+            </Navbar.Toggle>
+            <Navbar.Collapse >
+                <Nav className="mr-auto nav_dist">
+                    <Nav.Link href="#/">
+                            <div className="nav_icons"><img src={iconHome} height="14px" /></div>
+                            Home
+                    </Nav.Link>
+                    <Nav.Item></Nav.Item>
+                    <Nav.Link href="#/trends">
+                        <div className="nav_icons"><img src={iconTrend} height="21px" />
+                        </div>
+                            Trending Content
+                    </Nav.Link>
+                    <Nav.Link href="#/new">
+                        <div className="nav_icons"><img src={iconNewContent} height="17px" /></div>
+                        New Content
 
                             <NavDropdown title={<React.Fragment>
                                 <div className="nav_icons"><img src={shakeHands} style={{ height: "21px" }} />
@@ -86,7 +111,6 @@ class SideBar extends Component {
                                 <div className="nav_icons"><img src={iconLeaderboard} height="12px" />
                                 </div>
                                 Leaderboard
-
                             </Nav.Link>
                             <Nav.Link href="/newcomers">
                                 <div className="nav_icons"><img src={iconNewcomer} height="19px" />
@@ -105,6 +129,50 @@ class SideBar extends Component {
                             <li className="nav-item">
                                 <a className="nav-link" href="/intl/faq">FAQ</a>
                             </li>
+                    <NavDropdown title={<React.Fragment>
+                        <div className="nav_icons"><img src={shakeHands} style={{ height: "21px" }} />
+
+                        </div>Communities</React.Fragment>}>
+                        <Nav.Link href="#/communities">
+                            <FaGlobe /> All Communities...
+                        </Nav.Link>
+                        <NavDropdown.Item href="#/c/hive-181335">
+                            <FaUsers /> Threespeak
+                        </NavDropdown.Item>
+                        <NavDropdown.Item href="#/c/hive-153014">
+                            <FaUsers /> Citizen Journalists
+                        </NavDropdown.Item>
+                        
+                        <NavDropdown.Item href="#/c/hive-112355">
+                            <FaUsers /> Threeshorts
+                        </NavDropdown.Item>
+                        <NavDropdown.Item href="#/c/hive-129768">
+                            <FaUsers />&nbsp;Coronavirus Pandemic
+                        </NavDropdown.Item>
+                        <NavDropdown.Item href="#/c/hive-196427">
+                            <FaUsers /> &nbsp;COVID-19
+                        </NavDropdown.Item>
+                    </NavDropdown>
+                    <Nav.Link href="#/leaderboard">
+                        <div className="nav_icons"><img src={iconLeaderboard} height="12px" />
+                        </div>
+                        Leaderboard
+
+                    </Nav.Link>
+                    <Nav.Link href="#/newcomers">
+                        <div className="nav_icons"><img src={iconNewcomer} height="19px" />
+                        </div>
+                            First Uploads
+                    </Nav.Link>
+                    <NavDropdown title={<React.Fragment>
+                        <div className="nav_icons"><BsFillGearFill style={{ height: "21px" }} />
+
+                        </div>Settings</React.Fragment>}>
+                        <Nav.Link href="#/blocklist">
+                            <FaGlobe /> Blocklist
+                        </Nav.Link>
+                    </NavDropdown>
+                </Nav>
 
                             <li className="nav-item text-center">
                                 <a className="" target="_blank" href="https://twitter.com/3speakonline?utm_source=3speak.online">

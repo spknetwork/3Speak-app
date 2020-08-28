@@ -1,6 +1,6 @@
+import PouchDB from 'pouchdb'
+import RefLink from '../../RefLink'
 const Path = require('path')
-const PouchDB = require('pouchdb');
-const RefLink = require('../../RefLink').default
 PouchDB.plugin(require('pouchdb-find'));
 
 /**
@@ -62,4 +62,4 @@ class Blocklist {
         
     }
 }
-module.exports = Blocklist;
+export default Blocklist;

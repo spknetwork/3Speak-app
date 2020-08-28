@@ -1,5 +1,5 @@
+import Components from './components';
 const Utils = require('./utils');
-const Components = require('./components');
 const fs = require('fs');
 const mergeOptions = require('merge-options')
 
@@ -24,4 +24,4 @@ class Core {
 
     }
 }
-module.exports = Core;
+export default Core;
