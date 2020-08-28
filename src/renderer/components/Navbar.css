@@ -96,6 +96,9 @@ Navbar fixed left
     height: 60px;
     overflow: none;
 }
+body {
+    padding-top: 80px;
+}
 @media (min-width: 768px) {
     .navbar.fixed-left {
         bottom: 0;

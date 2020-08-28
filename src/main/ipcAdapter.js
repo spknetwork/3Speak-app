@@ -48,4 +48,4 @@ class ipcAdapter {
         })
     }
 }
-module.exports = ipcAdapter;
+export default ipcAdapter;

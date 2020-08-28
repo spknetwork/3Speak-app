@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Container } from 'react-bootstrap';
 import axios from 'axios';
 import LeaderTile from '../components/widgets/LeaderTile'
 
@@ -20,7 +20,7 @@ class Leaderboard extends Component {
         }
         let step = 1;
         for (var ex of data) {
-            if(step >= 30) {
+            if (step >= 30) {
                 break;
             }
             if (step === 1) {
@@ -39,26 +39,40 @@ class Leaderboard extends Component {
     }
     render() {
         return (<div>
-            <Row className="justify-content-md-center">
-                <div className="col-xl-8 col-sm-8 col-12 mb-3">
-                    {this.state.first ? <LeaderTile info={this.state.first} reflink={`hive:${this.state.first.username}`}/> : null }
-                </div>
-            </Row>
-            <Row className="justify-content-md-center">
-                <div className="col-xl-5 col-sm-8 col-12 mb-3">
-                    {this.state.second ? <LeaderTile info={this.state.second} reflink={`hive:${this.state.second.username}`}/> : null }
-                </div>
-                <div className="col-xl-5 col-sm-8 col-12 mb-3">
-                    {this.state.third ? <LeaderTile info={this.state.third} reflink={`hive:${this.state.third.username}`}/> : null }
-                </div>
-                <Row>
-                    {this.state.bronze.map(value => (
-                        <div key={value.username} className="col-xl-2 col-sm-4 mb-3">
-                            <LeaderTile info={value} reflink={`hive:${value.username}`}/>
+            <div className="header_sec">
+                <Container fluid className="header_sec">
+                    <div className="row">
+                        <div className="col-lg-6 col-md-6 col-xs-12 header_dist1">
+                            <h1 className="white_col">Content Creator Leaderboard</h1>
                         </div>
-                    ))}
-                </Row>
-            </Row>
+                    </div>
+                </Container>
+            </div>
+            <section className="content_home">
+                <Container fluid> 
+                    <Row className="justify-content-md-center">
+                        <div className="col-xl-8 col-sm-8 col-12 mb-3">
+                            {this.state.first ? <LeaderTile info={this.state.first} reflink={`hive:${this.state.first.username}`} /> : null}
+                        </div>
+                    </Row>
+                    <Row className="justify-content-md-center">
+                        <div className="col-xl-5 col-sm-8 col-12 mb-3">
+                            {this.state.second ? <LeaderTile info={this.state.second} reflink={`hive:${this.state.second.username}`} /> : null}
+                        </div>
+                        <div className="col-xl-5 col-sm-8 col-12 mb-3">
+                            {this.state.third ? <LeaderTile info={this.state.third} reflink={`hive:${this.state.third.username}`} /> : null}
+                        </div>
+                        <Row>
+                            {this.state.bronze.map(value => (
+                                <div key={value.username} className="col-xl-2 col-sm-4 mb-3">
+                                    <LeaderTile info={value} reflink={`hive:${value.username}`} />
+                                </div>
+                            ))}
+                        </Row>
+                    </Row>
+                </Container>
+            </section>
+
         </div>);
     }
 }

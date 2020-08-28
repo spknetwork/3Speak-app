@@ -1,8 +1,8 @@
 import path from 'path';
 import {app, BrowserWindow} from 'electron';
 import debug from 'debug'
-const Core = require('./core')
-const ipcAdapter = require('./ipcAdapter')
+import Core from './core'
+import ipcAdapter from './ipcAdapter'
 
 const entryUrl = process.env.NODE_ENV === 'development'
   ? 'http://localhost:6789/index.html'

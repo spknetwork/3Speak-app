@@ -8,6 +8,7 @@ import iconBlog from '../assets/img/blog.png'
 import shakeHands from '../assets/img/shake-hands.svg'
 import SpeakLogo from '../assets/img/3S_logo.svg'
 import { FaDiscord, FaTwitter, FaGlobe, FaUsers, FaTelegram } from 'react-icons/fa'
+import { BsFillGearFill } from 'react-icons/bs'
 import { Navbar, Nav, NavDropdown, ButtonGroup, Dropdown } from 'react-bootstrap'
 import "./Navbar.css"
 
@@ -17,9 +18,9 @@ class SideBar extends Component {
         this.state = {}
     }
     render() {
-        return (<Navbar bg="white" expand="lg" id="layoutNav" className="fixed-left">
+        return (<Navbar bg="white" expand="lg" id="layoutNav" className="bg_white fixed-left">
             <Navbar.Brand><img src={SpeakLogo} /></Navbar.Brand>
-            <a href="/auth/login" className="display-mobile">
+            <a href="#/auth/login" className="display-mobile">
                 <button className="btn btn-dark text-white btn-sm">
                     Log In / Sign Up
                 </button>
@@ -29,12 +30,10 @@ class SideBar extends Component {
             </Navbar.Toggle>
             <Navbar.Collapse >
                 <Nav className="mr-auto nav_dist">
-                    <Nav.Item>
-                        <Nav.Link href="/">
+                    <Nav.Link href="#/">
                             <div className="nav_icons"><img src={iconHome} height="14px" /></div>
                             Home
-                        </Nav.Link>
-                    </Nav.Item>
+                    </Nav.Link>
                     <Nav.Item></Nav.Item>
                     <Nav.Link href="#/trends">
                         <div className="nav_icons"><img src={iconTrend} height="21px" />
@@ -50,50 +49,47 @@ class SideBar extends Component {
 
                     <NavDropdown title={<React.Fragment>
                         <div className="nav_icons"><img src={shakeHands} style={{ height: "21px" }} />
-                                
-                            </div>Communities</React.Fragment>}>
-                        <NavDropdown.Item>
-                            <a href="/communities">
-                                <FaGlobe /> All Communities...
-                            </a>
+
+                        </div>Communities</React.Fragment>}>
+                        <Nav.Link href="#/communities">
+                            <FaGlobe /> All Communities...
+                        </Nav.Link>
+                        <NavDropdown.Item href="#/c/hive-181335">
+                            <FaUsers /> Threespeak
                         </NavDropdown.Item>
-                        <NavDropdown.Item>
-                            <a className="dropdown-item" href="/c/hive-181335">
-                                <FaUsers /> Threespeak
-                            </a>
+                        <NavDropdown.Item href="#/c/hive-153014">
+                            <FaUsers /> Citizen Journalists
                         </NavDropdown.Item>
-                        <NavDropdown.Item>
-                            <a className="dropdown-item" href="/c/hive-153014">
-                                <FaUsers /> Citizen Journalists
-                            </a>
+                        
+                        <NavDropdown.Item href="#/c/hive-112355">
+                            <FaUsers /> Threeshorts
                         </NavDropdown.Item>
-                        <NavDropdown.Item>
-                            <a className="dropdown-item" href="/c/hive-112355">
-                                <FaUsers /> Threeshorts
-                            </a>
+                        <NavDropdown.Item href="#/c/hive-129768">
+                            <FaUsers />&nbsp;Coronavirus Pandemic
                         </NavDropdown.Item>
-                        <NavDropdown.Item>
-                            <a className="dropdown-item" href="/c/hive-129768">
-                                <FaUsers />&nbsp;Coronavirus Pandemic
-                            </a>
-                        </NavDropdown.Item>
-                        <NavDropdown.Item>
-                            <a className="dropdown-item" href="/c/hive-196427">
-                                <FaUsers /> &nbsp;COVID-19
-                            </a>
+                        <NavDropdown.Item href="#/c/hive-196427">
+                            <FaUsers /> &nbsp;COVID-19
                         </NavDropdown.Item>
                     </NavDropdown>
-                    <Nav.Link href="/leaderboard">
+                    <Nav.Link href="#/leaderboard">
                         <div className="nav_icons"><img src={iconLeaderboard} height="12px" />
                         </div>
                         Leaderboard
 
                     </Nav.Link>
-                    <Nav.Link href="#/first-uploads">
+                    <Nav.Link href="#/newcomers">
                         <div className="nav_icons"><img src={iconNewcomer} height="19px" />
                         </div>
                             First Uploads
                     </Nav.Link>
+                    <NavDropdown title={<React.Fragment>
+                        <div className="nav_icons"><BsFillGearFill style={{ height: "21px" }} />
+
+                        </div>Settings</React.Fragment>}>
+                        <Nav.Link href="#/blocklist">
+                            <FaGlobe /> Blocklist
+                        </Nav.Link>
+                    </NavDropdown>
                 </Nav>
 
                 <Nav mt={3}>
