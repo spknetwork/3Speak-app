@@ -482,22 +482,24 @@ class DistillerDB {
         }
 
         if (accountRecord) {
-            if (accountRecord.expire > (new Date / 1)) {
-                var account = await hiveClient.database.getAccounts([reflink.root])[0];
+            if (accountRecord.expire > (new Date() / 1)) {
+                var account = (await hiveClient.database.getAccounts([reflink.root]))[0];
                 accountRecord.json_content = account;
                 accountRecord.expire = new Date() / 1 + this._options.defaultExpireTime;
-                return await this.pouch.put(accountRecord);
+                await this.pouch.put(accountRecord);
+                return await this.pouch.get(reflink.toString())
             } else {
                 return accountRecord
             }
         } else {
             var account = await hiveClient.database.getAccounts([reflink.root])[0];
-            return await this.pouch.put({
+            await this.pouch.put({
                 _id: reflink.toString(),
                 json_content: account,
                 expire: new Date() / 1 + this._options.defaultExpireTime,
                 type: "account"
             })
+            return await this.pouch.get(reflink.toString())
         }
     }
     /**
