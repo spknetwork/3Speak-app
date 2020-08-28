@@ -17,7 +17,6 @@ export class App extends React.PureComponent {
   render() {
     return (
       <div>
-        <div>
           <TopNavbar />
           <Sidebar />
           <HashRouter>
@@ -35,7 +34,6 @@ export class App extends React.PureComponent {
               <Route path="/leaderboard/" component={views.Leaderboard} />
             </Switch>
           </HashRouter>
-        </div>
       </div>
     );
   }
