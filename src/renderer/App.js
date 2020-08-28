@@ -19,11 +19,17 @@ export class App extends React.PureComponent {
         <Sidebar />
         <HashRouter>
           <Switch>
+            <Route path="/" exact>
+              <views.GridFeed awaitingMoreData={true} type="home" />
+            </Route>
             <Route path="/new" exact>
               <views.GridFeed awaitingMoreData={false} type="new" />
             </Route>
             <Route path="/trends" exact>
               <views.GridFeed awaitingMoreData={false} type="trending" />
+            </Route>
+            <Route path="/newcomers" exact>
+              <views.GridFeed awaitingMoreData={true} type="firstUploads" />
             </Route>
             <Route path="/watch/:reflink" component={views.watch} />
             <Route path="/user/:reflink" component={views.User} />
