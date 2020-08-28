@@ -18,34 +18,6 @@ class SideBar extends Component {
         this.state = {}
     }
     render() {
-        return (<Navbar bg="white" expand="lg" id="layoutNav" className="fixed-left">
-                    <Navbar.Brand><img src={SpeakLogo} /></Navbar.Brand>
-                    <a href="/auth/login" className="display-mobile">
-                        <button className="btn btn-dark text-white btn-sm">
-                            Log In / Sign Up
-                        </button>
-                    </a>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav">
-                        <span className="navbar-toggler-icon"></span>
-                    </Navbar.Toggle>
-                    <Navbar.Collapse >
-                        <Nav className="mr-auto nav_dist">
-                            <Nav.Item>
-                                <Nav.Link href="/">
-                                    <div className="nav_icons"><img src={iconHome} height="14px" /></div>
-                                    Home
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item></Nav.Item>
-                            <Nav.Link href="#/trends">
-                                <div className="nav_icons"><img src={iconTrend} height="21px" />
-                                </div>
-                                    Trending Content
-                            </Nav.Link>
-                            <Nav.Link href="#/new">
-                                <div className="nav_icons"><img src={iconNewContent} height="17px" /></div>
-                                New Content
-                            </Nav.Link>
         return (<Navbar bg="white" expand="lg" id="layoutNav" className="bg_white fixed-left">
             <Navbar.Brand><img src={SpeakLogo} /></Navbar.Brand>
             <a href="#/auth/login" className="display-mobile">
@@ -117,7 +89,7 @@ class SideBar extends Component {
                                 </div>
                                     First Uploads
                             </Nav.Link>
-                        </Nav>
+                        </Nav.Link>
 
                         <Nav mt={3}>
                             <li className="nav-item">
