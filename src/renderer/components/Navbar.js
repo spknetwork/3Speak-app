@@ -18,7 +18,6 @@ class SideBar extends Component {
     }
     render() {
         return (
-            <div>
                 <Navbar bg="white" expand="lg" id="layoutNav" className="fixed-left">
                     <Navbar.Brand><img src={SpeakLogo} /></Navbar.Brand>
                     <a href="/auth/login" className="display-mobile">
@@ -141,7 +140,6 @@ class SideBar extends Component {
 
                     </Navbar.Collapse>
                 </Navbar>
-            </div>
         );
     }
 }

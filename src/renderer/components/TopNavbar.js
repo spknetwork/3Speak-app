@@ -1,12 +1,7 @@
 import React from 'react';
-import { Navbar, Nav, NavDropdown, ButtonGroup, Dropdown, Breadcrumb } from 'react-bootstrap'
-import "./Navbar.css"
-import ReactDOM from "react-dom";
-import {
-  BrowserRouter as Router,
-  Switch,
-  useLocation
-} from "react-router-dom";
+import { Navbar, Nav, Breadcrumb } from 'react-bootstrap'
+import "./Navbar.css";
+import { FaAngleRight, FaAngleLeft, FaCopy } from 'react-icons/fa'
 
 
 
@@ -34,7 +29,7 @@ class TopNavbar extends React.Component {
             const windowLocation = window.location.href
 
             urlSplit = windowLocation.split('/')
-            const newUrl = urlSplit.splice(0, 4);
+            urlSplit.splice(0, 4);
 
             this.setState({
                 urlSplit: urlSplit
@@ -48,17 +43,44 @@ class TopNavbar extends React.Component {
     }
 
     render() {
+        let windowLocationUrl = window.location.href
+        let windowLocationSearch = windowLocationUrl.search('#')
+        let windowLocationHref = windowLocationUrl.slice(windowLocationSearch)
+
+        function copyToClip() {
+            navigator.clipboard.writeText(windowLocationUrl)
+            .then(() => {
+                console.log('done',);
+            })
+            .catch(err => {
+                console.log('Something went wrong', err);
+            });
+        }
+
+        function goForth() {
+            window.history.forward()
+        }
+
+        function goBack() {
+            window.history.back()
+        }
+
         return (
            <div>
                  <Navbar bg="light" expand="lg">
                     <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
                     <Breadcrumb>
-                        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+                        <Breadcrumb.Item href="#/">Home</Breadcrumb.Item>
                         {this.state.urlSplit.map(el => (
-                            <Breadcrumb.Item href="#" key={el}>{el}</Breadcrumb.Item>
+                            <Breadcrumb.Item href={windowLocationHref} key={el}>{el}</Breadcrumb.Item>
                         ))}
                     </Breadcrumb>
+                    </Nav>
+                    <Nav>
+                        <Nav.Link><FaAngleLeft size={28} onClick={goBack} /></Nav.Link>
+                        <Nav.Link><FaAngleRight size={28} onClick={goForth} /></Nav.Link>
+                        <Nav.Link><FaCopy size={28} onClick={copyToClip} /></Nav.Link>
                     </Nav>
                     </Navbar.Collapse>
                 </Navbar>
