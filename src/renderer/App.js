@@ -28,7 +28,7 @@ export class App extends React.PureComponent {
             <Route path="/trends" exact>
               <views.GridFeed awaitingMoreData={false} type="trending" />
             </Route>
-            <Route path="/first-uploads" exact>
+            <Route path="/newcomers" exact>
               <views.GridFeed awaitingMoreData={true} type="firstUploads" />
             </Route>
             <Route path="/watch/:reflink" component={views.watch} />
