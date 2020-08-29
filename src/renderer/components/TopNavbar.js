@@ -17,7 +17,7 @@ class TopNavbar extends React.Component {
         const windowLocation = window.location.href
         
         urlSplit = windowLocation.split('/')
-        const newUrl = urlSplit.splice(0, 4);
+        urlSplit.splice(0, 4);
 
         this.setState({
             urlSplit: urlSplit
