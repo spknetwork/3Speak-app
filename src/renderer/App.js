@@ -21,6 +21,9 @@ export class App extends React.PureComponent {
           <Sidebar />
           <HashRouter>
             <Switch>
+              <Route path="/" exact>
+                <views.GridFeed awaitingMoreData={true} type="home" />
+              </Route>
               <Route path="/new" exact>
                 <views.GridFeed awaitingMoreData={false} type="new" />
               </Route>
