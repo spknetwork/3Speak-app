@@ -17,11 +17,13 @@ export class App extends React.PureComponent {
   render() {
     return (
       <div>
-        <div>
           <TopNavbar />
           <Sidebar />
           <HashRouter>
             <Switch>
+              <Route path="/" exact>
+                <views.GridFeed awaitingMoreData={true} type="home" />
+              </Route>
               <Route path="/new" exact>
                 <views.GridFeed awaitingMoreData={false} type="new" />
               </Route>
@@ -35,7 +37,6 @@ export class App extends React.PureComponent {
               <Route path="/leaderboard/" component={views.Leaderboard} />
             </Switch>
           </HashRouter>
-        </div>
       </div>
     );
   }

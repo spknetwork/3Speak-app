@@ -49,9 +49,6 @@ class TopNavbar extends React.Component {
 
         function copyToClip() {
             navigator.clipboard.writeText(windowLocationUrl)
-            .then(() => {
-                console.log('done',);
-            })
             .catch(err => {
                 console.log('Something went wrong', err);
             });
