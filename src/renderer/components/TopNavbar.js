@@ -14,10 +14,10 @@ class TopNavbar extends React.Component {
     
     HeaderView() {
         let urlSplit;
-        const windowLocation = window.location.href
+        const windowLocation = window.location.hash
         
         urlSplit = windowLocation.split('/')
-        urlSplit.splice(0, 4);
+        urlSplit.splice(0, 1);
 
         this.setState({
             urlSplit: urlSplit
@@ -26,10 +26,10 @@ class TopNavbar extends React.Component {
 
 
         window.addEventListener('popstate', function (event) {
-            const windowLocation = window.location.href
+            const windowLocation = window.location.hash
 
             urlSplit = windowLocation.split('/')
-            urlSplit.splice(0, 4);
+            urlSplit.splice(0, 1);
 
             this.setState({
                 urlSplit: urlSplit
@@ -43,7 +43,7 @@ class TopNavbar extends React.Component {
     }
 
     render() {
-        let windowLocationUrl = window.location.href
+        let windowLocationUrl = window.location.hash
         let windowLocationSearch = windowLocationUrl.search('#')
         let windowLocationHref = windowLocationUrl.slice(windowLocationSearch)
 
