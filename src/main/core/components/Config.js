@@ -1,8 +1,7 @@
-const path = require('path');
-const _get = require('dlv');
-const mergeOptions = require('merge-options');
-const {Key} = require('interface-datastore');
-const DatastoreFs = require('datastore-fs');
+import _get from 'dlv';
+import mergeOptions from 'merge-options'
+import {Key} from 'interface-datastore'
+import DatastoreFs from 'datastore-fs'
 
 function obj_set(obj, props, value) {
     if (typeof props == 'string') {
