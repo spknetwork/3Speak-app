@@ -193,7 +193,8 @@ const video = {
                 return `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
             }
         } else {
-            throw new Error("Invalid post metadata");
+            return `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
+            //throw new Error("Invalid post metadata");
         }
     }
 }
