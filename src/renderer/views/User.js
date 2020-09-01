@@ -54,7 +54,6 @@ class User extends Component {
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/`}>Videos <span className="sr-only">(current)</span></Nav.Link>
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/earning`}>Earnings</Nav.Link>
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/about`}>About</Nav.Link>
-                            <Nav.Link href={`#/user/${this.state.reflink.toString()}/live`}>Livestream</Nav.Link>
                         </Nav>
                         <div className="form-inline my-2 my-lg-0">
                             <Follow reflink={this.state.reflink.toString()} />
@@ -71,26 +70,6 @@ class User extends Component {
                 <Route path={`/user/${this.state.reflink.toString()}/earning`}>
                     <h1>@{this.state.reflink.root} Earnings</h1>
                     <Row>
-                        <Col md={6}>
-                            <Card bg="danger" className="status">
-                                <Card.Header>
-                                    <Card.Title className="text-center">0.00 SPEAK</Card.Title>
-                                </Card.Header>
-                                <Card.Body className="bg-white text-center">
-                                    <strong>Available Balance</strong>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col md={6}>
-                            <Card bg="dark" className="status">
-                                <Card.Header>
-                                    <Card.Title className="text-center">0.00 SPEAK</Card.Title>
-                                </Card.Header>
-                                <Card.Body className="bg-white text-center">
-                                    <strong>Lifetime Earnings</strong>
-                                </Card.Body>
-                            </Card>
-                        </Col>
                         <Col md={6}>
                             <Card className="bg-steem status">
                                 <Card.Header>
@@ -120,9 +99,6 @@ class User extends Component {
                             {this.state.profileAbout}
                         </ReactMarkdown>
                     </p>
-                </Route>
-                <Route path={`/user/${this.state.reflink.toString()}/live`}>
-                    <h1>@{this.state.reflink.root} Livestreams</h1>
                 </Route>
             </Switch>
         </div>);
