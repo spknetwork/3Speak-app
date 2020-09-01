@@ -517,16 +517,5 @@ class DistillerDB {
 
         return followerCount
     }
-    /**
-     * Retrieves "about" text for user profiles
-     * @param {String|RefLink} reflink
-     */
-    async getProfileAbout(reflink) {
-        if (!(reflink instanceof RefLink)) {
-            reflink = RefLink.parse(reflink)
-        }
-        let userAbout = JSON.parse((await this.getAccount(reflink)).json_content.json_metadata).profile.about
-        return userAbout
-    }
 }
 export default DistillerDB;

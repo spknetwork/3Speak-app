@@ -153,7 +153,12 @@ const accounts = {
         }
         switch (reflink.source.value) {
             case "hive": {
-                let userAboutText = (await PromiseIPC.send("distiller.getProfileAbout", reflink.toString()))
+                let userAboutText = JSON.parse(
+                    (await PromiseIPC.send(
+                        "distiller.getAccount",
+                        `${reflink.source}:${reflink.root}`
+                    )).json_content.json_metadata).profile.about
+
                 return userAboutText
             }
             case "orbitdb": {
