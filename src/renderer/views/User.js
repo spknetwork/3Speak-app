@@ -8,6 +8,7 @@ import {
     Route
 } from 'react-router-dom';
 import '../css/User.css'
+import ReactMarkdown from "react-markdown";
 const Utils = require('../utils').default;
 
 /**
@@ -115,7 +116,9 @@ class User extends Component {
                 <Route path={`/user/${this.state.reflink.toString()}/about`}>
                     <h1>@{this.state.reflink.root} About</h1>
                     <p className={'p-3'}>
-                        {this.state.profileAbout}
+                        <ReactMarkdown>
+                            {this.state.profileAbout}
+                        </ReactMarkdown>
                     </p>
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/live`}>
