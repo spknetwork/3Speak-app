@@ -168,6 +168,37 @@ const accounts = {
                 throw new Error("Unknown account provider")
             }
         }
+    },
+    /**
+     * Retrieves balances for user
+     * @param {String|RefLink} reflink
+     */
+    async getAccountBalances(reflink) {
+        if(!(reflink instanceof RefLink)) {
+            reflink = RefLink.parse(reflink)
+        }
+        switch (reflink.source.value) {
+            case "hive": {
+                let accountBalances = (
+                    await PromiseIPC.send(
+                        "distiller.getAccount",
+                        `${reflink.source}:${reflink.root}`)
+                ).json_content
+                console.log(accountBalances)
+                accountBalances = {
+                    hive: accountBalances.balance,
+                    hbd: accountBalances.sbd_balance
+                }
+                console.log(accountBalances)
+                return accountBalances
+            }
+            case "orbitdb": {
+                //not sure yet
+            }
+            default: {
+                throw new Error("Unknown account provider")
+            }
+        }
     }
 }
 const video = {

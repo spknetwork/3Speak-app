@@ -19,13 +19,18 @@ class User extends Component {
         super(props);
         this.state = {
             reflink: RefLink.parse(this.props.match.params.reflink),
-            profileAbout: ''
+            profileAbout: '',
+            hiveBalance: '0.000 HIVE',
+            hbdBalance: '0.000 HBD'
         }
     }
     async componentDidMount() {
+        let accountBalances = Utils.accounts.getAccountBalances(this.state.reflink)
         this.setState({
             profileURL: await Utils.accounts.getProfilePictureURL(this.state.reflink),
-            profileAbout: await Utils.accounts.getProfileAbout(this.state.reflink)
+            profileAbout: await Utils.accounts.getProfileAbout(this.state.reflink),
+            hiveBalance: (await accountBalances).hive,
+            hbdBalance: (await accountBalances).hbd
         })
     }
     get coverURL() {
@@ -73,7 +78,7 @@ class User extends Component {
                         <Col md={6}>
                             <Card className="bg-steem status">
                                 <Card.Header>
-                                    <Card.Title className="text-center">0.00 HIVE</Card.Title>
+                                    <Card.Title className="text-center">{this.state.hiveBalance}</Card.Title>
                                 </Card.Header>
                                 <Card.Body className="bg-white text-center">
                                     <strong>Available HIVE Balance</strong>
@@ -83,7 +88,7 @@ class User extends Component {
                         <Col md={6}>
                             <Card className="bg-sbd status">
                                 <Card.Header>
-                                    <Card.Title className="text-center">0.00 HBD</Card.Title>
+                                    <Card.Title className="text-center">{this.state.hbdBalance}</Card.Title>
                                 </Card.Header>
                                 <Card.Body className="bg-white text-center">
                                     <strong>Available HBD Balance</strong>
