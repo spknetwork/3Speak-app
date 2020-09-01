@@ -142,6 +142,27 @@ const accounts = {
                 throw new Error("Unknown account provider")
             }
         }
+    },
+    /**
+     * Retrieves "about" text for user profiles
+     * @param {String|RefLink} reflink
+     */
+    async getProfileAbout(reflink) {
+        if(!(reflink instanceof RefLink)) {
+            reflink = RefLink.parse(reflink)
+        }
+        switch (reflink.source.value) {
+            case "hive": {
+                let userAboutText = (await PromiseIPC.send("distiller.getProfileAbout", reflink.toString()))
+                return userAboutText
+            }
+            case "orbitdb": {
+                //Retrieve DB user about text
+            }
+            default: {
+                throw new Error("Unknown account provider")
+            }
+        }
     }
 }
 const video = {

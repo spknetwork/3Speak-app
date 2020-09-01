@@ -17,14 +17,14 @@ class User extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            reflink: RefLink.parse(this.props.match.params.reflink)
+            reflink: RefLink.parse(this.props.match.params.reflink),
+            profileAbout: ''
         }
     }
-    componentDidMount() {
-        Utils.accounts.getProfilePictureURL(this.state.reflink).then(url => {
-            this.setState({
-                profileURL: url
-            })
+    async componentDidMount() {
+        this.setState({
+            profileURL: await Utils.accounts.getProfilePictureURL(this.state.reflink),
+            profileAbout: await Utils.accounts.getProfileAbout(this.state.reflink)
         })
     }
     get coverURL() {
@@ -114,6 +114,9 @@ class User extends Component {
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/about`}>
                     <h1>@{this.state.reflink.root} About</h1>
+                    <p className={'p-3'}>
+                        {this.state.profileAbout}
+                    </p>
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/live`}>
                     <h1>@{this.state.reflink.root} Livestreams</h1>
