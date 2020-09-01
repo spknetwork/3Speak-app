@@ -156,7 +156,7 @@ const accounts = {
                 let userAboutText = JSON.parse(
                     (await PromiseIPC.send(
                         "distiller.getAccount",
-                        `${reflink.source}:${reflink.root}`
+                        `hive:${reflink.root}`
                     )).json_content.json_metadata).profile.about
 
                 return userAboutText
@@ -182,7 +182,7 @@ const accounts = {
                 let accountBalances = (
                     await PromiseIPC.send(
                         "distiller.getAccount",
-                        `${reflink.source}:${reflink.root}`)
+                        `hive:${reflink.root}`)
                 ).json_content
                 console.log(accountBalances)
                 accountBalances = {

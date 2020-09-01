@@ -20,8 +20,8 @@ class User extends Component {
         this.state = {
             reflink: RefLink.parse(this.props.match.params.reflink),
             profileAbout: '',
-            hiveBalance: '0.000 HIVE',
-            hbdBalance: '0.000 HBD'
+            hiveBalance: 'HIVE',
+            hbdBalance: 'HBD'
         }
     }
     async componentDidMount() {
@@ -99,11 +99,9 @@ class User extends Component {
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/about`}>
                     <h1>@{this.state.reflink.root} About</h1>
-                    <p className={'p-3'}>
-                        <ReactMarkdown>
-                            {this.state.profileAbout}
-                        </ReactMarkdown>
-                    </p>
+                    <ReactMarkdown className={'p-3'}>
+                        {this.state.profileAbout}
+                    </ReactMarkdown>
                 </Route>
             </Switch>
         </div>);
