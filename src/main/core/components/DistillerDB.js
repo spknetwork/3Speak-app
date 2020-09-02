@@ -125,47 +125,6 @@ class DistillerDB {
         }
     }
     /**
-     * Fetches post from local database or internet
-     * Caches post data locally, expires after a set period of time. 
-     * When post data is expired node will fetch the latest data, unless device is offline. 
-     * Where local copy will be used regardless.
-     * @param {String} permalink
-     * @param {{timeout: Number}} options
-     * @deprecated
-     */
-    async fetch(permalink) {
-        //var record = await this._get(new Key(permalink));
-        let record = {};
-        try {
-            record = await this.pouch.get(permalink.toString())
-        } catch {
-
-        }
-        if (new Date() / 1 < record.expire) {
-            return record;
-        } else {
-            debug(`Post "${permalink}" is expired or missing. Fetching recent version...`)
-            try {
-                var json_content = await this._fetch(permalink);
-                let toStore = {
-                    json_content,
-                    _id: permalink.toString(),
-                    expire: (new Date() / 1) + this._options.defaultExpireTime,
-                    type: "post"
-                }
-                await this.pouch.put(toStore);
-                return toStore;
-            } catch (ex) {
-                console.log(ex)
-                if (record.json_content) {
-                    return record;
-                } else {
-                    throw new Error("Failed to retrieve post information. (Not in database or available on the internet)");
-                }
-            }
-        }
-    }
-    /**
      * Retrieves children of a content root.
      * @param {String|RefLink} reflink 
      * @param {*} options 

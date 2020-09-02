@@ -8,9 +8,6 @@ class ipcAdapter {
     }
     start() {
         //distillerDb
-        PromiseIPC.on("distiller.fetch", async (reflink) => {
-            return await this.core.distillerDB.fetch(reflink);
-        })
         PromiseIPC.on("distiller.getTag", async (tag, options) => {
             return await this.core.distillerDB.getTag(tag, options);
         })
