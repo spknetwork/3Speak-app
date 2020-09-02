@@ -38,7 +38,6 @@ const accounts = {
         if(!(reflink instanceof RefLink)) {
             reflink = RefLink.parse(reflink)
         }
-        console.log(reflink)
         var post_content = (await PromiseIPC.send("distiller.getContent", reflink.toString())).json_content
         if(!post_content) {
             throw new Error("Invalid post content. Empty record");
