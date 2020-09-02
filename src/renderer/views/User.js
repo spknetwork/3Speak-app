@@ -97,9 +97,7 @@ class User extends Component {
                     </Row>
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/about`}>
-                    <ReactMarkdown className={'p-3'}>
-                        {this.state.profileAbout}
-                    </ReactMarkdown>
+                    <ReactMarkdown className={'p-3'} source={this.state.profileAbout}/>
                 </Route>
             </Switch>
         </div>);
