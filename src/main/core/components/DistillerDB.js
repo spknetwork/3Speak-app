@@ -1,13 +1,18 @@
 import RefLink from '../../RefLink';
 import PouchDB from 'pouchdb'
+import pQueue from 'p-queue'
 const debug = require('debug')("blasio:distiller")
 const Path = require('path');
 const { Client: HiveClient } = require('@hiveio/dhive')
 PouchDB.plugin(require('pouchdb-find'));
 
-const hiveClient = new HiveClient('https://hive.3speak.online/')
+const hiveClient = new HiveClient('https://anyx.io')
 const hive = require('@hiveio/hive-js');
 hiveClient.timeout = 5000
+
+const queue = new pQueue({
+    concurrency: 1
+});
 
 /**
  * DistillerDB is a component meant for storing, and handling post object data.
@@ -179,12 +184,12 @@ class DistillerDB {
              * This is used to track the child state of a particular post.
              * If a post child is removed (for any abstract reason) it will be instantly modified. 
              */
-            await this.pouch.put({
+            await queue.add(async () => await this.pouch.put({
                 _id: `child/${reflink.toString()}`,
                 json_content: childState,
                 expire: (new Date() / 1) + this._options.defaultExpireTime,
                 type: "state.child",
-            })
+            }));
         } else {
             if ((new Date() / 1) < record.expire) {
                 //Record is not expired.
@@ -200,13 +205,13 @@ class DistillerDB {
                 for await (const result of this._processPostsInsertion(children)) {
                     childState.push(result.reflink.toString())
                 }
-                await this.pouch.put({
+                await queue.add(async () => await this.pouch.put({
                     _id: `child/${reflink}`,
                     _rev: record._rev,
                     json_content: childState,
                     expire: (new Date() / 1) + this._options.defaultExpireTime,
                     type: "state.child"
-                })
+                }));
             }
         }
 
@@ -259,7 +264,7 @@ class DistillerDB {
                     if (record._rev) {
                         toStore._rev = record._rev;
                     }
-                    await this.pouch.put(toStore);
+                    await queue.add(async () => await this.pouch.put(toStore));
                     return toStore;
                 } catch (ex) {
                     console.log(ex);
@@ -319,12 +324,12 @@ class DistillerDB {
             for await (const result of this._processPostsInsertion(posts)) {
                 tagState.push(result.reflink.toString())
             }
-            await this.pouch.put({
+            await queue.add(async () => await this.pouch.put({
                 _id: `tag/${tag}`,
                 json_content: tagState,
                 expire: (new Date() / 1) + this._options.defaultExpireTime,
                 type: "state.tag"
-            })
+            }));
         } else {
             if ((new Date() / 1) < record.expire) {
                 //Record is not expired.
@@ -338,13 +343,13 @@ class DistillerDB {
                 for await (const result of this._processPostsInsertion(posts)) {
                     tagState.push(result.reflink.toString())
                 }
-                await this.pouch.put({
+                await queue.add(async () => await this.pouch.put({
                     _id: `tag/${tag}`,
                     _rev: record._rev,
                     json_content: tagState,
                     expire: (new Date() / 1) + this._options.defaultExpireTime,
                     type: "state.tag"
-                })
+                }));
             }
         }
 
@@ -396,12 +401,12 @@ class DistillerDB {
                 tag: reflink.root,
                 limit: options.limit
             });
-            await this.pouch.put({
+            await queue.add(async () => await this.pouch.put({
                 _id: reflink.toString(),
                 posts: latestState,
                 expire: new Date() / 1 + this._options.defaultExpireTime,
                 type: "account"
-            })
+            }));
         } else {
             if (stateRecord.expire > (new Date / 1) && !stateRecord.posts) {
                 latestState = await hiveClient.database.getDiscussions("blog", {
@@ -409,7 +414,7 @@ class DistillerDB {
                     limit: options.limit
                 });
                 stateRecord.posts = latestState;
-                await this.pouch.put(stateRecord);
+                await queue.add(async () => await this.pouch.put(stateRecord));
             } else {
                 latestState = stateRecord.posts;
             }
@@ -435,29 +440,29 @@ class DistillerDB {
 
         let accountRecord;
         try {
-            accountRecord = await this.pouch.get(reflink.toString());
+            accountRecord = await queue.add(async () => await this.pouch.get(reflink.toString()));
         } catch {
 
         }
 
         if (accountRecord) {
-            if (accountRecord.expire > (new Date() / 1)) {
+            if (accountRecord.expire < (new Date() / 1) || !accountRecord.json_content) {
                 var account = (await hiveClient.database.getAccounts([reflink.root]))[0];
                 accountRecord.json_content = account;
                 accountRecord.expire = new Date() / 1 + this._options.defaultExpireTime;
-                await this.pouch.put(accountRecord);
-                return await this.pouch.get(reflink.toString())
+                await queue.add(async () => await this.pouch.put(accountRecord));
+                return await this.pouch.get(reflink.toString());
             } else {
                 return accountRecord
             }
         } else {
             var account = await hiveClient.database.getAccounts([reflink.root])[0];
-            await this.pouch.put({
+            await queue.add(async () => await this.pouch.put({
                 _id: reflink.toString(),
                 json_content: account,
                 expire: new Date() / 1 + this._options.defaultExpireTime,
                 type: "account"
-            })
+            }));
             return await this.pouch.get(reflink.toString())
         }
     }
