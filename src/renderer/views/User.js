@@ -73,7 +73,6 @@ class User extends Component {
                     </section>
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/earning`}>
-                    <h1>@{this.state.reflink.root} Earnings</h1>
                     <Row>
                         <Col md={6}>
                             <Card className="bg-steem status">
@@ -98,7 +97,6 @@ class User extends Component {
                     </Row>
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/about`}>
-                    <h1>@{this.state.reflink.root} About</h1>
                     <ReactMarkdown className={'p-3'}>
                         {this.state.profileAbout}
                     </ReactMarkdown>
