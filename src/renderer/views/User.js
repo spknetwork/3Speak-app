@@ -8,6 +8,7 @@ import {
     Route
 } from 'react-router-dom';
 import '../css/User.css'
+import ReactMarkdown from "react-markdown";
 const Utils = require('../utils').default;
 
 /**
@@ -17,14 +18,19 @@ class User extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            reflink: RefLink.parse(this.props.match.params.reflink)
+            reflink: RefLink.parse(this.props.match.params.reflink),
+            profileAbout: '',
+            hiveBalance: 'HIVE',
+            hbdBalance: 'HBD'
         }
     }
-    componentDidMount() {
-        Utils.accounts.getProfilePictureURL(this.state.reflink).then(url => {
-            this.setState({
-                profileURL: url
-            })
+    async componentDidMount() {
+        let accountBalances = Utils.accounts.getAccountBalances(this.state.reflink)
+        this.setState({
+            profileURL: await Utils.accounts.getProfilePictureURL(this.state.reflink),
+            profileAbout: await Utils.accounts.getProfileAbout(this.state.reflink),
+            hiveBalance: (await accountBalances).hive,
+            hbdBalance: (await accountBalances).hbd
         })
     }
     get coverURL() {
@@ -53,7 +59,6 @@ class User extends Component {
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/`}>Videos <span className="sr-only">(current)</span></Nav.Link>
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/earning`}>Earnings</Nav.Link>
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/about`}>About</Nav.Link>
-                            <Nav.Link href={`#/user/${this.state.reflink.toString()}/live`}>Livestream</Nav.Link>
                         </Nav>
                         <div className="form-inline my-2 my-lg-0">
                             <Follow reflink={this.state.reflink.toString()} />
@@ -71,29 +76,9 @@ class User extends Component {
                     <h1>@{this.state.reflink.root} Earnings</h1>
                     <Row>
                         <Col md={6}>
-                            <Card bg="danger" className="status">
-                                <Card.Header>
-                                    <Card.Title className="text-center">0.00 SPEAK</Card.Title>
-                                </Card.Header>
-                                <Card.Body className="bg-white text-center">
-                                    <strong>Available Balance</strong>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col md={6}>
-                            <Card bg="dark" className="status">
-                                <Card.Header>
-                                    <Card.Title className="text-center">0.00 SPEAK</Card.Title>
-                                </Card.Header>
-                                <Card.Body className="bg-white text-center">
-                                    <strong>Lifetime Earnings</strong>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col md={6}>
                             <Card className="bg-steem status">
                                 <Card.Header>
-                                    <Card.Title className="text-center">0.00 HIVE</Card.Title>
+                                    <Card.Title className="text-center">{this.state.hiveBalance}</Card.Title>
                                 </Card.Header>
                                 <Card.Body className="bg-white text-center">
                                     <strong>Available HIVE Balance</strong>
@@ -103,7 +88,7 @@ class User extends Component {
                         <Col md={6}>
                             <Card className="bg-sbd status">
                                 <Card.Header>
-                                    <Card.Title className="text-center">0.00 HBD</Card.Title>
+                                    <Card.Title className="text-center">{this.state.hbdBalance}</Card.Title>
                                 </Card.Header>
                                 <Card.Body className="bg-white text-center">
                                     <strong>Available HBD Balance</strong>
@@ -114,9 +99,9 @@ class User extends Component {
                 </Route>
                 <Route path={`/user/${this.state.reflink.toString()}/about`}>
                     <h1>@{this.state.reflink.root} About</h1>
-                </Route>
-                <Route path={`/user/${this.state.reflink.toString()}/live`}>
-                    <h1>@{this.state.reflink.root} Livestreams</h1>
+                    <ReactMarkdown className={'p-3'}>
+                        {this.state.profileAbout}
+                    </ReactMarkdown>
                 </Route>
             </Switch>
         </div>);

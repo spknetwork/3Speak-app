@@ -142,6 +142,63 @@ const accounts = {
                 throw new Error("Unknown account provider")
             }
         }
+    },
+    /**
+     * Retrieves "about" text for user profiles
+     * @param {String|RefLink} reflink
+     */
+    async getProfileAbout(reflink) {
+        if(!(reflink instanceof RefLink)) {
+            reflink = RefLink.parse(reflink)
+        }
+        switch (reflink.source.value) {
+            case "hive": {
+                let userAboutText = JSON.parse(
+                    (await PromiseIPC.send(
+                        "distiller.getAccount",
+                        `hive:${reflink.root}`
+                    )).json_content.json_metadata).profile.about
+
+                return userAboutText
+            }
+            case "orbitdb": {
+                //Retrieve DB user about text
+            }
+            default: {
+                throw new Error("Unknown account provider")
+            }
+        }
+    },
+    /**
+     * Retrieves balances for user
+     * @param {String|RefLink} reflink
+     */
+    async getAccountBalances(reflink) {
+        if(!(reflink instanceof RefLink)) {
+            reflink = RefLink.parse(reflink)
+        }
+        switch (reflink.source.value) {
+            case "hive": {
+                let accountBalances = (
+                    await PromiseIPC.send(
+                        "distiller.getAccount",
+                        `hive:${reflink.root}`)
+                ).json_content
+                console.log(accountBalances)
+                accountBalances = {
+                    hive: accountBalances.balance,
+                    hbd: accountBalances.sbd_balance
+                }
+                console.log(accountBalances)
+                return accountBalances
+            }
+            case "orbitdb": {
+                //not sure yet
+            }
+            default: {
+                throw new Error("Unknown account provider")
+            }
+        }
     }
 }
 const video = {
