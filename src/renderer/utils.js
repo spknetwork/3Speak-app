@@ -156,9 +156,8 @@ const accounts = {
                     (await PromiseIPC.send(
                         "distiller.getAccount",
                         `hive:${reflink.root}`
-                    )).json_content.json_metadata).profile.about
-
-                return userAboutText
+                    )).json_content.posting_json_metadata).profile.about
+                return userAboutText;
             }
             case "orbitdb": {
                 //Retrieve DB user about text
