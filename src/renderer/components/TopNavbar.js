@@ -102,7 +102,7 @@ class TopNavbar extends React.Component {
                     <Breadcrumb>
                         <Breadcrumb.Item href="#/">Home</Breadcrumb.Item>
                         {this.state.urlSplit.map(el => (
-                            <Breadcrumb.Item href={'#/user/hive:' + el} key={el}>{el}</Breadcrumb.Item>
+                            (el === this.state.urlSplit[1] && this.state.urlSplit[0] === 'watch') ? <Breadcrumb.Item href={'#/user/hive:' + el} key={el} id={el}>{el}</Breadcrumb.Item>:<Breadcrumb.Item href={'#'} key={el} id={el}>{el}</Breadcrumb.Item>
                         ))}
                     </Breadcrumb>
                     </Nav>
