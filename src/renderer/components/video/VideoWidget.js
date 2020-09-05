@@ -13,7 +13,7 @@ class VideoWidget extends Component {
         this.state = {
             video_info: props,
             permlink: props.permlink,
-            reflink: {permlink: '', author: ''}
+            reflink:Reflink.parse(this.props.reflink)
         }
     }
     async componentDidMount() {
@@ -36,11 +36,11 @@ class VideoWidget extends Component {
                     })()}
                 </div>
                 <a href={`#/watch/${this.props.reflink}`}>
-                    <img style={{width: "100% !important", padding: "5px"}} data-permlink={this.state.reflink.permlink} className="img-fluid bg-dark" src={(() => {
+                    <img style={{width: "100% !important", padding: "5px"}} className="img-fluid bg-dark" src={(() => {
                         if(this.props.isNSFW) {
                             return nsfwWarning;
                         } else {
-                            return "https://img.3speakcontent.online/"+this.props.permlink+"/thumbnail.png"
+                            return "https://img.3speakcontent.online/"+this.state.reflink.permlink+"/thumbnail.png"
                         }
                     })()} />
                 </a>
