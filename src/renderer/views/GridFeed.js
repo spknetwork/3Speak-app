@@ -13,10 +13,16 @@ class GridFeed extends React.Component {
         this.handleScroll = this.handleScroll.bind(this);
     }
     componentDidUpdate(prevProps) {
-        if (this.props.type !== prevProps.type) {
+        if (this.props.type !== prevProps.type || this.props.data !== prevProps.data) {
+            if (this.props.data) {
+                this.setState({
+                    data: this.props.data
+                }) 
+            } else {
             // Handle path changes
+                this.retrieveData();
+            }
             window.scrollTo(0, 0)
-            this.retrieveData();
         }
     }
     componentDidMount() {

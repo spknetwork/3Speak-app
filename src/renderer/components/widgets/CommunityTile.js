@@ -19,7 +19,7 @@ class CommunityTile extends Component {
     }
     render() { 
         return (<Col className="col-md-3 col-sm-3 mb-3" md={3} sm={3} mb={3}>
-        <a href={`/c/${this.props.reflink}`} className="font-weight-bold">
+        <a href={`#/community/${this.props.reflink}`} className="font-weight-bold">
             <div className="community-card channels-card">
                 <div className="text-left" style={{display: "inline-block", float: "left"}}>
                     <img style={{width: "40px", height: "40px", borderRadius: "50%", verticalAlign: "middle"}} src={this.state.communityPicture + "?size=icon"}/>

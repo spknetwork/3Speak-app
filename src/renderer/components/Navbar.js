@@ -54,20 +54,20 @@ class SideBar extends Component {
                         <Nav.Link href="#/communities">
                             <FaGlobe /> All Communities...
                         </Nav.Link>
-                        <NavDropdown.Item href="#/c/hive-181335">
+                        <NavDropdown.Item href="#/community/hive:hive-181335">
                             <FaUsers /> Threespeak
                         </NavDropdown.Item>
-                        <NavDropdown.Item href="#/c/hive-153014">
+                        <NavDropdown.Item href="#/community/hive:hive-153014">
                             <FaUsers /> Citizen Journalists
                         </NavDropdown.Item>
                         
-                        <NavDropdown.Item href="#/c/hive-112355">
+                        <NavDropdown.Item href="#/community/hive:hive-112355">
                             <FaUsers /> Threeshorts
                         </NavDropdown.Item>
-                        <NavDropdown.Item href="#/c/hive-129768">
+                        <NavDropdown.Item href="#/community/hive:hive-129768">
                             <FaUsers />&nbsp;Coronavirus Pandemic
                         </NavDropdown.Item>
-                        <NavDropdown.Item href="#/c/hive-196427">
+                        <NavDropdown.Item href="#/community/hive:hive-196427">
                             <FaUsers /> &nbsp;COVID-19
                         </NavDropdown.Item>
                     </NavDropdown>
