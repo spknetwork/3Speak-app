@@ -5,11 +5,16 @@ import { FaAngleRight, FaAngleLeft, FaCopy } from 'react-icons/fa'
 
 
 
+let items = []
+
+
 class TopNavbar extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {urlSplit: []};
+        this.state = {
+            urlSplit: []
+        };
     }
     
     HeaderView() {
@@ -22,7 +27,20 @@ class TopNavbar extends React.Component {
         this.setState({
             urlSplit: urlSplit
         });
-        
+
+        if (urlSplit[0] === 'watch') {
+            const pagePerm = urlSplit[1]
+            const pagePermSpliced = pagePerm.split(':')
+            pagePermSpliced.splice(0, 1)
+            urlSplit.pop()
+            pagePermSpliced.forEach(onePagePerm => {
+                urlSplit.push(onePagePerm)
+            })
+
+            this.setState({
+                urlSplit: urlSplit
+            })
+        }        
 
 
         window.addEventListener('popstate', function (event) {
@@ -34,6 +52,20 @@ class TopNavbar extends React.Component {
             this.setState({
                 urlSplit: urlSplit
             });
+
+            if (urlSplit[0] === 'watch') {
+                const pagePerm = urlSplit[1]
+                const pagePermSpliced = pagePerm.split(':')
+                pagePermSpliced.splice(0, 1)
+                urlSplit.pop()
+                pagePermSpliced.forEach(onePagePerm => {
+                    urlSplit.push(onePagePerm)
+                })
+
+                this.setState({
+                    urlSplit: urlSplit
+                })
+            }
             
         }.bind(this));
     }
@@ -70,7 +102,7 @@ class TopNavbar extends React.Component {
                     <Breadcrumb>
                         <Breadcrumb.Item href="#/">Home</Breadcrumb.Item>
                         {this.state.urlSplit.map(el => (
-                            <Breadcrumb.Item href={windowLocationHref} key={el}>{el}</Breadcrumb.Item>
+                            (el === this.state.urlSplit[1] && this.state.urlSplit[0] === 'watch') ? <Breadcrumb.Item href={'#/user/hive:' + el} key={el} id={el}>{el}</Breadcrumb.Item>:<Breadcrumb.Item href={'#'} key={el} id={el}>{el}</Breadcrumb.Item>
                         ))}
                     </Breadcrumb>
                     </Nav>

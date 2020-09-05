@@ -14,7 +14,10 @@ import Sidebar from './components/Navbar';
 import TopNavbar from './components/TopNavbar';
 
 export class App extends React.PureComponent {
+
   render() {
+    let reflinkArr = ['link 1', 'link 2']
+
     return (
       <div>
           <TopNavbar />
@@ -33,7 +36,7 @@ export class App extends React.PureComponent {
               <Route path="/newcomers" exact>
                 <views.GridFeed awaitingMoreData={true} titleText="First Uploads" type="firstUploads" />
               </Route>
-              <Route path="/watch/:reflink" component={views.watch} />
+              <Route path="/watch/:reflink" component={views.watch}/>
               <Route path="/user/:reflink" component={views.User} />
               <Route path="/blocklist/" component={views.Blocklist} />
               <Route path="/communities/" component={views.Communities} />
