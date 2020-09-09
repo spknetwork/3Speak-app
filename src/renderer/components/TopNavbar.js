@@ -3,11 +3,6 @@ import { Navbar, Nav, Breadcrumb } from 'react-bootstrap'
 import "./Navbar.css";
 import { FaAngleRight, FaAngleLeft, FaCopy } from 'react-icons/fa'
 
-
-
-let items = []
-
-
 class TopNavbar extends React.Component {
 
     constructor(props) {
@@ -78,6 +73,26 @@ class TopNavbar extends React.Component {
         let windowLocationUrl = window.location.hash
         let windowLocationSearch = windowLocationUrl.search('#')
         let windowLocationHref = windowLocationUrl.slice(windowLocationSearch)
+        windowLocationHref = windowLocationHref.split('/')
+        windowLocationHref.splice(0, 1);
+
+        let userProfileUrl = '#/user/';
+
+        if (windowLocationHref[0] === 'watch') {
+            const userProfileUrlInit = windowLocationHref[1]
+            const userProfileUrlSpliced = userProfileUrlInit.split(':')
+            userProfileUrlSpliced.pop()
+            
+            userProfileUrlSpliced.forEach(one => {
+                if (one === userProfileUrlSpliced[0]) {
+                    userProfileUrl = userProfileUrl + one + ':'
+                } else {
+                    userProfileUrl = userProfileUrl + one
+                }
+                
+            })
+        }
+
 
         function copyToClip() {
             navigator.clipboard.writeText(windowLocationUrl)
@@ -102,7 +117,7 @@ class TopNavbar extends React.Component {
                     <Breadcrumb>
                         <Breadcrumb.Item href="#/">Home</Breadcrumb.Item>
                         {this.state.urlSplit.map(el => (
-                            (el === this.state.urlSplit[1] && this.state.urlSplit[0] === 'watch') ? <Breadcrumb.Item href={'#/user/hive:' + el} key={el} id={el}>{el}</Breadcrumb.Item>:<Breadcrumb.Item href={'#'} key={el} id={el}>{el}</Breadcrumb.Item>
+                            (el === this.state.urlSplit[1] && this.state.urlSplit[0] === 'watch') ? <Breadcrumb.Item href={userProfileUrl} key={el} id={el}>{el}</Breadcrumb.Item>:<Breadcrumb.Item href={'#'} key={el} id={el}>{el}</Breadcrumb.Item>
                         ))}
                     </Breadcrumb>
                     </Nav>

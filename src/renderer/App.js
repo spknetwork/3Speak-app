@@ -16,8 +16,6 @@ import TopNavbar from './components/TopNavbar';
 export class App extends React.PureComponent {
 
   render() {
-    let reflinkArr = ['link 1', 'link 2']
-
     return (
       <div>
           <TopNavbar />
