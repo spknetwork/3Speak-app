@@ -36,7 +36,7 @@ class User extends Component {
     get coverURL() {
         switch (this.state.reflink.source.value) {
             case "hive": {
-                return `https://img.3speakcontent.online/user/${this.state.reflink.root}/cover.png`
+                return `https://img.3speakcontent.co/user/${this.state.reflink.root}/cover.png`
             }
         }
     }

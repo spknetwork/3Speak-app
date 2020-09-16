@@ -38,7 +38,7 @@ class GridFeed extends React.Component {
     retrieveData() {
         switch (this.state.reflink.source.value) {
             case "hive": {
-                fetch(`https://3speak.online/apiv2/feeds/${this.props.type}`)
+                fetch(`https://3speak.co/apiv2/feeds/${this.props.type}`)
                     .then(res => res.json())
                     .then(async json => {
                         for (var e in json) {
@@ -74,7 +74,7 @@ class GridFeed extends React.Component {
                 });
                 switch (this.state.reflink.source.value) {
                     case "hive": {
-                        fetch(`https://3speak.online/api/${this.props.type === 'new' ? 'new' : 'trends'}/more?skip=${this.state.data.length}`)
+                        fetch(`https://3speak.co/api/${this.props.type === 'new' ? 'new' : 'trends'}/more?skip=${this.state.data.length}`)
                             .then(res => res.json())
                             .then(async json => {
                                 json = json.recommended ? json.recommended : json.trends

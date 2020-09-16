@@ -40,7 +40,7 @@ class VideoWidget extends Component {
                         if(this.props.isNSFW) {
                             return nsfwWarning;
                         } else {
-                            return "https://img.3speakcontent.online/"+this.state.reflink.permlink+"/thumbnail.png"
+                            return "https://img.3speakcontent.co/"+this.state.reflink.permlink+"/thumbnail.png"
                         }
                     })()} />
                 </a>

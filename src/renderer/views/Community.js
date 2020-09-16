@@ -41,8 +41,8 @@ class Community extends Component {
             })
             //const trending = await client.call("bridge", "get_ranked_posts", { sort: "trending", tag: this.state.reflink.root, observer: "alice" })
             //const newVideos = await client.call("bridge", "get_ranked_posts", { sort: "created", tag: this.state.reflink.root, observer: "alice" })
-            const trending = (await axios.get(`https://3speak.online/apiv2/feeds/community/${this.state.reflink.root}`)).data
-            const newVideos = (await axios.get(`https://3speak.online/apiv2/feeds/community/${this.state.reflink.root}`)).data
+            const trending = (await axios.get(`https://3speak.co/apiv2/feeds/community/${this.state.reflink.root}`)).data
+            const newVideos = (await axios.get(`https://3speak.co/apiv2/feeds/community/${this.state.reflink.root}`)).data
             this.setState({
                 videos: {
                     trending,
@@ -53,7 +53,7 @@ class Community extends Component {
     }
     render() {
         return (<div>
-            <div style={{ position: "relative", display: "inline-block", width: "100%", minHeight: "400px", backgroundAttachment: "fixed", backgroundSize: "cover", backgroundRepeat: "no-repeat", background: `url('https://img.3speakcontent.online/user/${this.state.reflink.root}/cover.png')` }}>
+            <div style={{ position: "relative", display: "inline-block", width: "100%", minHeight: "400px", backgroundAttachment: "fixed", backgroundSize: "cover", backgroundRepeat: "no-repeat", background: `url('https://img.3speakcontent.co/user/${this.state.reflink.root}/cover.png')` }}>
                 <img className="channel-profile-img" style={{ position: "absolute", bottom: "10px", left: "10px" }} alt="" src={`https://images.hive.blog/u/${this.state.reflink.root}/avatar`} />
 
                 <h1 style={{ position: "absolute", bottom: "10px", left: "150px" }}><b style={{
