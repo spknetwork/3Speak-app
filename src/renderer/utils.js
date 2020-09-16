@@ -57,18 +57,19 @@ const accounts = {
                     title = video_info.title
                     duration = video_info.duration
 
-                    let url;
+                    let urls = [];
                     if (video_info.ipfs) {
 
-                        url = `ipfs://${video_info.ipfs}/default.m3u8`
+                        urls.push(`ipfs://${video_info.ipfs}/default.m3u8`)
 
-                    } else if (video_info.file) {
+                    }
+                    if (video_info.file) {
 
-                        url = `https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`
+                        urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`)
 
                     }
 
-                    if (url) {
+                    for (let url of urls) {
                         sources.push({
                             type: "video",
                             url,
@@ -81,6 +82,7 @@ const accounts = {
                             format: url.split(".").slice(-1)[0]
                         })
                     }
+
 
                     sources.push({
                         type: "thumbnail",
