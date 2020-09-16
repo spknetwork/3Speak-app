@@ -56,23 +56,39 @@ const accounts = {
                     description = video_content.description;
                     title = video_info.title
                     duration = video_info.duration
-                    if(video_info.file) {
+
+                    let urls = [];
+                    if (video_info.ipfs) {
+
+                        urls.push(`ipfs://${video_info.ipfs}/default.m3u8`)
+
+                    }
+                    if (video_info.file) {
+
+                        urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`)
+
+                    }
+
+                    for (let url of urls) {
                         sources.push({
                             type: "video",
-                            url: `https://cdn.3speakcontent.online/${reflink.permlink}/${video_info.file}`,
+                            url,
                             /**
                              * Reserved if a different player must be used on per format basis.
-                             * 
+                             *
                              * If multi-resolution support is added in the future continue to use the url/format scheme.
                              * url should link to neccessary metadata.
                              */
-                            format: video_info.file.split(".")[1]
+                            format: url.split(".").slice(-1)[0]
                         })
                     }
+
+
                     sources.push({
                         type: "thumbnail",
-                        url: `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
+                        url: `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
                     })
+                    console.log(sources)
                 } catch (ex) {
                     title = post_content.title;
                     description = post_content.body
@@ -219,7 +235,7 @@ const video = {
             try {
                 return ipfs.compileURL(ipfs.urlToCID(videoSource.url));
             } catch {
-                //return `https://cdn.3speakcontent.online/${reflink.root}/${reflink.permlink}`;
+                //return `https://cdn.3speakcontent.co/${reflink.root}/${reflink.permlink}`;
                 return videoSource.url;
             }
         } else {
@@ -245,10 +261,10 @@ const video = {
             try {
                 return ipfs.compileURL(ipfs.urlToCID(imageSource.url));
             } catch {
-                return `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
+                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
             }
         } else {
-            return `https://img.3speakcontent.online/${reflink.permlink}/thumbnail.png`
+            return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
             //throw new Error("Invalid post metadata");
         }
     }
