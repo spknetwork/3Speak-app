@@ -56,25 +56,32 @@ const accounts = {
                     description = video_content.description;
                     title = video_info.title
                     duration = video_info.duration
+
+                    let url;
                     if (video_info.ipfs) {
-                        sources.push({
-                            type: "video",
-                            url: `ipfs://${video_info.ipfs}/default.m3u8`
-                        })
+
+                        url = `ipfs://${video_info.ipfs}/default.m3u8`
+
+                    } else if (video_info.file) {
+
+                        url = `https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`
+
                     }
-                    else if(video_info.file) {
+
+                    if (url) {
                         sources.push({
                             type: "video",
-                            url: `https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`,
+                            url,
                             /**
                              * Reserved if a different player must be used on per format basis.
-                             * 
+                             *
                              * If multi-resolution support is added in the future continue to use the url/format scheme.
                              * url should link to neccessary metadata.
                              */
-                            format: video_info.file.split(".")[1]
+                            format: url.split(".").slice(-1)[0]
                         })
                     }
+
                     sources.push({
                         type: "thumbnail",
                         url: `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
