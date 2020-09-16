@@ -14,7 +14,7 @@ class Leaderboard extends Component {
         }
     }
     async componentDidMount() {
-        let data = (await axios.get("https://3speak.online/apiv2/leaderboard")).data
+        let data = (await axios.get("https://3speak.co/apiv2/leaderboard")).data
         let state = {
             bronze: []
         }

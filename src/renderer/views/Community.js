@@ -41,8 +41,8 @@ class Community extends Component {
             })
             //const trending = await client.call("bridge", "get_ranked_posts", { sort: "trending", tag: this.state.reflink.root, observer: "alice" })
             //const newVideos = await client.call("bridge", "get_ranked_posts", { sort: "created", tag: this.state.reflink.root, observer: "alice" })
-            const trending = (await axios.get(`https://3speak.online/apiv2/feeds/community/${this.state.reflink.root}`)).data
-            const newVideos = (await axios.get(`https://3speak.online/apiv2/feeds/community/${this.state.reflink.root}`)).data
+            const trending = (await axios.get(`https://3speak.co/apiv2/feeds/community/${this.state.reflink.root}`)).data
+            const newVideos = (await axios.get(`https://3speak.co/apiv2/feeds/community/${this.state.reflink.root}`)).data
             this.setState({
                 videos: {
                     trending,

@@ -104,13 +104,13 @@ class SideBar extends Component {
                     </li>
 
                     <li className="nav-item text-center">
-                        <a className="" target="_blank" href="https://twitter.com/3speakonline?utm_source=3speak.online">
+                        <a className="" target="_blank" href="https://twitter.com/3speakonline?utm_source=3speak.co">
                             <FaTwitter size={28} />
                         </a>
-                        <a className="ml-2" target="_blank" href="https://t.me/threespeak?utm_source=3speak.online">
+                        <a className="ml-2" target="_blank" href="https://t.me/threespeak?utm_source=3speak.co">
                             <FaTelegram size={28} />
                         </a>
-                        <a className="ml-2" target="_blank" href="https://discord.me/3speak?utm_source=3speak.online">
+                        <a className="ml-2" target="_blank" href="https://discord.me/3speak?utm_source=3speak.co">
                             <i className="fab fa-discord text-muted fa-2x"></i>
                             <FaDiscord size={28} />
                         </a>
@@ -125,9 +125,9 @@ class SideBar extends Component {
                             Find us
                             </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            <a className="dropdown-item" href="https://t.me/threespeak?utm_source=3speak.online">Telegram</a>
-                            <a className="dropdown-item" href="https://discord.me/3speak?utm_source=3speak.online">Discord</a>
-                            <a className="dropdown-item" target="_blank" href="https://twitter.com/3speakonline?utm_source=3speak.online">Twitter</a>
+                            <a className="dropdown-item" href="https://t.me/threespeak?utm_source=3speak.co">Telegram</a>
+                            <a className="dropdown-item" href="https://discord.me/3speak?utm_source=3speak.co">Discord</a>
+                            <a className="dropdown-item" target="_blank" href="https://twitter.com/3speakonline?utm_source=3speak.co">Twitter</a>
                         </Dropdown.Menu>
                     </Dropdown>
 
