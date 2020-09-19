@@ -5,14 +5,14 @@ import RefLink from '../main/RefLink';
 const Finder = ArraySearch.Finder;
 
 const ipfs = {
-    gateway: "https://ipfs.io/ipfs/",
+    gateway: "https://gateway.originprotocol.com/ipfs/",
     compileURL(cid) {
-        return ipfs.gateway + cid.toString();
+        return ipfs.gateway + cid;
     },
     urlToCID(url) {
         url = new URL(url);
-        if (url.protocol === "ipfs:") {
-            return url.host;
+        if (url.protocol === "ipfs:" && url.pathname !== "") {
+            return url.pathname;
         } else {
             throw new Error("Invalid IPFS url");
         }
@@ -58,15 +58,11 @@ const accounts = {
                     duration = video_info.duration
 
                     let urls = [];
-                    if (video_info.ipfs) {
-
+                    if (video_info.ipfs != null && video_info.ipfs) {
                         urls.push(`ipfs://${video_info.ipfs}/default.m3u8`)
-
                     }
                     if (video_info.file) {
-
                         urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`)
-
                     }
 
                     for (let url of urls) {
@@ -88,7 +84,6 @@ const accounts = {
                         type: "thumbnail",
                         url: `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
                     })
-                    console.log(sources)
                 } catch (ex) {
                     title = post_content.title;
                     description = post_content.body
