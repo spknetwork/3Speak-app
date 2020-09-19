@@ -32,7 +32,7 @@ var defaultIpfsConfig = {
 class ipfsHandler {
     static get ready() {
         return new Promise(async(resolve, reject) => {
-            const ipfsInfo = await ipfsHandler.getIpfs();
+            var ipfsInfo = await ipfsHandler.getIpfs();
             if (ipfsInfo.ipfs) {
                 return resolve(ipfsInfo.ipfs)
             } else {
@@ -44,7 +44,7 @@ class ipfsHandler {
         })
     }
     static async start(appPath) {
-        const ipfsInfo = await ipfsHandler.getIpfs();
+        var ipfsInfo = await ipfsHandler.getIpfs();
         if (!ipfsInfo.exists) {
             ipfsInfo = await utils.ipfs.getIpfs();
             await utils.ipfs.init(ipfsInfo.ipfsPath);
