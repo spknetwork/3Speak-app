@@ -18,13 +18,14 @@ app.on('ready', () => {
   window = new BrowserWindow({width: 800, height: 600,
     icon: path.resolve(__dirname, "../renderer/assets/img/app.png"),
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false
     }
   });
   window.loadURL(entryUrl);
   window.on('closed', () => window = null);
 });
-
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 app.on('window-all-closed', () => {
   if(process.platform !== 'darwin') {
     app.quit();
