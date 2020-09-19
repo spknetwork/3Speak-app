@@ -46,8 +46,8 @@ class ipfsHandler {
     static async start(appPath) {
         var ipfsInfo = await ipfsHandler.getIpfs();
         if (!ipfsInfo.exists) {
-            ipfsInfo = await utils.ipfs.getIpfs();
-            await utils.ipfs.init(ipfsInfo.ipfsPath);
+            ipfsInfo = await ipfsHandler.getIpfs();
+            await ipfsHandler.init(ipfsInfo.ipfsPath);
             fs.writeFileSync(Path.join(appPath, "ipfs.pid"), await ipfsHandler.run());
             ipfsHandler.events.emit("ready")
         } else {
