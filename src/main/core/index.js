@@ -18,10 +18,11 @@ class Core {
         this.config = new Components.Config(this._options.path)
         this.distillerDB = new Components.DistillerDB(this)
         this.blocklist = new Components.Blocklist(this);
+        await Components.ipfsHandler.start(this._options.path);
         await this.config.open()
     }
     async stop() {
-
+        await Components.ipfsHandler.stop(this._options.path);
     }
 }
 export default Core;
