@@ -13,7 +13,7 @@ class Pins {
         return (await this.db.find({
             selector: {}
         })).docs
-    }3
+    }
     async add(doc) {
         if(typeof doc !== "object") {
             throw new Error("First argument must be type of object.")
