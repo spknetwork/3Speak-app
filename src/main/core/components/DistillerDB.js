@@ -6,9 +6,15 @@ const Path = require('path');
 const { Client: HiveClient } = require('@hiveio/dhive')
 PouchDB.plugin(require('pouchdb-find'));
 
-const hiveClient = new HiveClient('https://anyx.io')
+const hiveClient = new HiveClient([
+    "https://api.hive.blog",
+    "https://anyx.io",
+    "https://hived.privex.io",
+    "https://techcoderx.com"
+])
 const hive = require('@hiveio/hive-js');
-hiveClient.timeout = 5000
+hiveClient.options.timeout = 5000
+hiveClient.options.failoverThreshold = 10;
 
 const queue = new pQueue({
     concurrency: 1
@@ -55,18 +61,13 @@ class DistillerDB {
         switch (sourceSystem) {
             case "hive": {
                 if (id) {
-                    var out = await new Promise((resolve, reject) => {
+                    /*var out = await new Promise((resolve, reject) => {
                         hive.api.getContent(author, id, (err, ret) => {
                             if (err) return reject(err);
                             return resolve(ret);
                         })
-                    });
-                    /*var out = (await hiveClient.database.getDiscussions("blog", {
-                        tag: author,
-                        limit: 1,
-                        start_author: author,
-                        start_permlink: id
-                    }))[0];*/
+                    });*/
+                    var out = await hiveClient.database.call('get_content', [author, id])
                     if(out) {
                         try {
                             out.json_metadata = JSON.parse(out.json_metadata)
