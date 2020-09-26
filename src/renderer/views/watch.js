@@ -2,7 +2,7 @@ import React from 'react';
 import Player from '../components/video/Player';
 import { Col, Row, Container, Dropdown } from 'react-bootstrap';
 import utils from '../utils';
-import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload, FaBell } from 'react-icons/fa';
+import {FaCogs, FaDownload} from 'react-icons/fa';
 import DateTime from 'date-and-time';
 import ReactMarkdown from 'react-markdown';
 import CollapsibleText from '../components/CollapsibleText';
@@ -13,6 +13,7 @@ import Follow from "../components/widgets/Follow";
 import RefLink from '../../main/RefLink'
 import axios from 'axios';
 import PromiseIpc from 'electron-promise-ipc'
+import Vote from "../components/video/Vote";
 
 class watch extends React.Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class watch extends React.Component {
             profilePictureURL: EmptyProfile,
             commentGraph: null,
             videoLink: "",
-            recommendedVideos: []
+            recommendedVideos: [],
         };
         this.player = React.createRef()
         this.gearSelect = this.gearSelect.bind(this);
@@ -90,9 +91,6 @@ class watch extends React.Component {
         })
     }
     render() {
-        console.log(this.props);
-        console.log(this.state.post_info)
-        console.log(this.state.video_info)
         const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
             <button style={{ float: "right" }} ref={ref} onClick={(e) => {
                 e.preventDefault();
@@ -118,18 +116,7 @@ class watch extends React.Component {
                             </div>
                             <div className="float-right" style={{ textAlign: "right !important", float: "right !important", display: "inline-block !important" }}>
                                 <span>
-                                    <span style={{ padding: "0 !important" }}>
-                                        <FaThumbsUp style={{ color: "#d3d3d3" }} />
-                                        {
-                                            //TODO: Implement likes
-                                        }
-                                    </span>
-                                    <span style={{ padding: "0 !important" }}>
-                                        <FaThumbsDown style={{ color: "#d3d3d3" }} />
-                                        {
-                                            //TODO: Implement dislikes
-                                        }
-                                    </span>
+                                    <Vote reflink={this.state.reflink} />
                                 </span>
                                 <Dropdown onSelect={this.gearSelect}>
                                     <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">

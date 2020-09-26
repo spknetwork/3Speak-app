@@ -56,7 +56,7 @@ class DistillerDB {
             case "hive": {
                 if (id) {
                     var out = await new Promise((resolve, reject) => {
-                        hive.api.getContent(author, id, (err, ret) => {
+                        hiveClient.database.call('get_content', [author, id]).then((err, ret) => {
                             if (err) return reject(err);
                             return resolve(ret);
                         })

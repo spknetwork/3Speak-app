@@ -50,12 +50,14 @@ const accounts = {
                 let title;
                 let description;
                 let duration;
+                let active_votes;
                 try {
                     const video_info = json_metadata.video.info;
                     const video_content = json_metadata.video.content;
                     description = video_content.description;
                     title = video_info.title
                     duration = video_info.duration
+                    active_votes = post_content.active_votes
 
                     let urls = [];
                     if (video_info.ipfs != null && video_info.ipfs) {
@@ -79,12 +81,10 @@ const accounts = {
                         })
                     }
 
-
                     sources.push({
                         type: "thumbnail",
                         url: `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
                     })
-                    console.log(sources)
                 } catch (ex) {
                     title = post_content.title;
                     description = post_content.body
@@ -94,6 +94,8 @@ const accounts = {
                     creation: new Date(post_content.created + "Z").toISOString(),
                     title,
                     description,
+                    active_votes: json_metadata.active_votes,
+                    payout: new Date(json_metadata.last_payout) > new Date(0) ? json_metadata.total_payout_value : json_metadata.total_pending_payout_value,
                     tags: json_metadata.tags,
                     refs: [`hive:${post_content.author}:${post_content.permlink}`], //Reserved for future use when multi account system support is added.
                     meta: {duration}, //Reserved for future use.
