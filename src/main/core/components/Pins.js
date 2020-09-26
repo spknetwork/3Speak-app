@@ -60,7 +60,10 @@ class Pins {
         }
     }
     async start() {
-        Schedule.scheduleJob("*/15 * * * *", this.clean);
+        Schedule.scheduleJob("pins.clean", "*/15 * * * *", this.clean);
+    }
+    async stop() {
+        Schedule.cancelJob("pins.clean")
     }
 }
 export default Pins

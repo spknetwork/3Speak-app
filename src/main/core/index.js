@@ -30,6 +30,7 @@ class Core {
     }
     async stop() {
         await Components.ipfsHandler.stop(this._options.path);
+        await this.pins.stop()
     }
 }
 export default Core;

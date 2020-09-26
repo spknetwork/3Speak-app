@@ -54,4 +54,7 @@ describe("DistillerDB", function () {
     it("Fetch posts cached", async () => {
         await client.distillerDB.getPosts("hive:evagavilan");
     })
+    this.afterAll(async() => {
+        await client.stop();
+    })
 })
