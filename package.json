@@ -5,7 +5,7 @@
   "main": "./dist/main.prod.js",
   "scripts": {
     "clear": "rm -rf ./dist",
-    "dev": "npm run start-renderer",
+    "dev": "cross-env DEBUG=blasio:* npm run start-renderer",
     "prod": "run-electron .",
     "package": "npm run build && electron-packager --electron-version=8.3.1 . --overwrite --out=build --icon=src/renderer/assets/img/app.ico",
     "build": "npm run clear && npm-run-all --parallel build-main build-renderer",
