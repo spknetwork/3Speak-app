@@ -7,7 +7,6 @@ const { Client: HiveClient } = require('@hiveio/dhive')
 PouchDB.plugin(require('pouchdb-find'));
 
 const hiveClient = new HiveClient([
-    "https://api.hive.blog",
     "https://anyx.io",
     "https://hived.privex.io",
     "https://techcoderx.com"
