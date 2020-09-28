@@ -5,6 +5,7 @@ import Blocklist from './Blocklist'
 import Communities from './Communities'
 import Leaderboard from './Leaderboard'
 import Community from './Community'
+import Pins from './Pins'
 export default {
     watch,
     GridFeed,
@@ -12,5 +13,6 @@ export default {
     Blocklist,
     Communities,
     Community,
-    Leaderboard
+    Leaderboard,
+    Pins
 }
