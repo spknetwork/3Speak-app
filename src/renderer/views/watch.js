@@ -13,6 +13,10 @@ import Follow from "../components/widgets/Follow";
 import RefLink from '../../main/RefLink'
 import axios from 'axios';
 import PromiseIpc from 'electron-promise-ipc'
+import CID from 'cids'
+import convert from 'convert-units';
+import Debug from 'debug';
+const debug = Debug("blasio:watch")
 
 class watch extends React.Component {
     constructor(props) {
@@ -30,9 +34,11 @@ class watch extends React.Component {
         this.player = React.createRef()
         this.gearSelect = this.gearSelect.bind(this);
     }
-    componentDidMount() {
-        this.mountPlayer();
-        this.retrieveRecommended()
+    async componentDidMount() {
+        console.log(this.state)
+        await this.generalFetch() 
+        await this.mountPlayer();
+        await this.retrieveRecommended()
     }
     componentDidUpdate(prevProps) {
         if (this.props.match.params.reflink !== prevProps.match.params.reflink) {
@@ -40,29 +46,61 @@ class watch extends React.Component {
             window.scrollTo(0, 0)
             this.setState({
                 reflink: this.props.match.params.reflink
-            }, () => {
-                this.mountPlayer();
-                this.retrieveRecommended()
+            }, async () => {
+                await this.generalFetch() 
+                await this.mountPlayer();
+                await this.retrieveRecommended()
                 this.player.current.ExecUpdate()
             })
         }
     }
-    async mountPlayer() {
-        var playerType = "standard";
-        switch (playerType) {
-            case "standard": {
-                this.setState({
-                    video_info: await utils.accounts.permalinkToVideoInfo(this.state.reflink),
-                    post_info: await utils.accounts.permalinkToPostInfo(this.state.reflink),
-                    videoLink: await utils.video.getVideoSourceURL(this.state.reflink)
-                })
-            }
-        }
+    async generalFetch() {
+        this.setState({
+            video_info: await utils.accounts.permalinkToVideoInfo(this.state.reflink),
+            post_info: await utils.accounts.permalinkToPostInfo(this.state.reflink)
+        })
         try {
             //Leave profileURL default if error is thrown when attempting to retrieve profile picture
             this.setState({ profilePictureURL: await utils.accounts.getProfilePictureURL(this.state.reflink) })
-        } catch {
+        } catch (ex) {
+            console.log(ex)
+        }
+        document.title = `3Speak - ${this.state.video_info.title}`
+    }
+    async mountPlayer() {
+        try {
+            var playerType = "standard";
+            switch (playerType) {
+                case "standard": {
+                    this.setState({
+                        videoLink: await utils.video.getVideoSourceURL(this.state.reflink)
+                    })
+                }
+            }
+            await this.recordView();
+        } catch(ex) {
+            console.log(ex)
+        }
+    }
+    async recordView() {
+        let cids = [];
+        for(const source of this.state.video_info.sources) {
+            const url = new (require('url').URL)(source.url)
+            try {
+                new CID(url.host)
+                cids.push(url.host)
+            } catch  {
 
+            }
+        }
+        debug(`CIDs to cache ${JSON.stringify(cids)}`)
+        if(cids.length !== 0) {
+            await PromiseIpc.send("pins.add", {
+                _id: this.state.reflink,
+                source: "Watch Page",
+                cids,
+                expire: (new Date() / 1) + convert("1").from("d").to("ms")
+            })
         }
     }
     async gearSelect(eventKey) {
