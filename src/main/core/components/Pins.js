@@ -1,6 +1,7 @@
 import PouchDB from 'pouchdb'
 import RefLink from '../../RefLink'
 const Path = require('path');
+const debug = require('debug')('blasio:pins')
 const Schedule = require('node-schedule')
 PouchDB.plugin(require('pouchdb-find'));
 class Pins {
@@ -9,12 +10,13 @@ class Pins {
         this.db = new PouchDB(Path.join(this.self._options.path, "pins"))
         this.clean = this.clean.bind(this);
     }
-    async ls() {
+    async ls(selector = {}) {
         return (await this.db.find({
-            selector: {}
+            selector
         })).docs
     }
     async add(doc) {
+        debug(`received add with id of ${doc._id}`)
         if(typeof doc !== "object") {
             throw new Error("First argument must be type of object.")
         }
@@ -47,17 +49,28 @@ class Pins {
         var pinsToDestroy = (await this.db.find({
             selector: {
                 expire: {
-                    $gte: currentTS,
+                    $lte: currentTS,
                     $type: "number"
                 }
             }
         })).docs;
-        console.log(`Cycle pin removal ${JSON.stringify(pinsToDestroy)}`)
+        debig(`Cycle pin removal ${JSON.stringify(pinsToDestroy)}`)
         for(var pin of pinsToDestroy) {
-            for await (var cid of this.self.ipfs.pin.rm(pin.cids)) {};
+            try {
+                await this.self.ipfs.pin.rm(pin.cids)
+            } catch {}; //If not pinned locally
             pin._deleted = true;
             await this.db.put(pin);
         }
+    }
+    /**
+     * IPFS garbage collection
+     * @returns {Promise<null>}
+     */
+    async gc() {
+        this.self.events.emit("pins.gc_started")
+        await this.self.ipfs.repo.gc();
+        this.self.events.emit("pins.gc_complete")
     }
     async start() {
         Schedule.scheduleJob("pins.clean", "*/15 * * * *", this.clean);
