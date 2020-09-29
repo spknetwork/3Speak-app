@@ -81,6 +81,7 @@
     "p-queue": "^6.6.0",
     "pouchdb": "^7.1.1",
     "pouchdb-find": "^7.2.1",
+    "pouchdb-upsert": "^2.2.0",
     "query-string": "^6.13.1",
     "react": "^16.8.5",
     "react-bootstrap": "^1.0.1",
