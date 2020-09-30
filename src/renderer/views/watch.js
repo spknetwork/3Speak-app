@@ -16,6 +16,7 @@ import PromiseIpc from 'electron-promise-ipc'
 import CID from 'cids'
 import convert from 'convert-units';
 import Debug from 'debug';
+import {LoopCircleLoading} from 'react-loadingg';
 const debug = Debug("blasio:watch")
 
 class watch extends React.Component {
@@ -29,7 +30,8 @@ class watch extends React.Component {
             profilePictureURL: EmptyProfile,
             commentGraph: null,
             videoLink: "",
-            recommendedVideos: []
+            recommendedVideos: [],
+            loaded: false
         };
         this.player = React.createRef()
         this.gearSelect = this.gearSelect.bind(this);
@@ -38,6 +40,9 @@ class watch extends React.Component {
         console.log(this.state)
         await this.generalFetch() 
         await this.mountPlayer();
+        this.setState({
+            loaded: true
+        })
         await this.retrieveRecommended()
     }
     componentDidUpdate(prevProps) {
@@ -142,6 +147,7 @@ class watch extends React.Component {
 
         var ref = RefLink.parse(this.state.reflink)
         return <div>
+            {this.state.loaded ?
             <Container fluid pb={0}>
                 <Row fluid="md">
                     <Col md={6}>
@@ -236,10 +242,8 @@ class watch extends React.Component {
                             </Col>
                         </Row>
                     </Col>
-
                 </Row>
-
-            </Container>
+            </Container> : <LoopCircleLoading/>}
         </div>;
     }
 }
