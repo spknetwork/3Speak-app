@@ -150,7 +150,7 @@ class watch extends React.Component {
             {this.state.loaded ?
             <Container fluid pb={0}>
                 <Row fluid="md">
-                    <Col md={6}>
+                    <Col md={8}>
                         <div>
                             <Player ref={this.player} reflink={this.props.match.params.reflink}></Player>
                         </div>
@@ -231,7 +231,7 @@ class watch extends React.Component {
                         </div>
                         <CommentSection reflink={this.state.reflink.toString()} />
                     </Col>
-                    <Col md={5}>
+                    <Col md={4}>
                         <Row>
                             <Col md={12}>
                                 {
