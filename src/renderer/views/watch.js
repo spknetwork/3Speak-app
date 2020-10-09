@@ -17,6 +17,7 @@ import CID from 'cids'
 import convert from 'convert-units';
 import Debug from 'debug';
 import {LoopCircleLoading} from 'react-loadingg';
+import DOMPurify from 'dompurify';
 const debug = Debug("blasio:watch")
 
 class watch extends React.Component {
@@ -210,7 +211,7 @@ class watch extends React.Component {
                         <div className="single-video-info-content box mb-3">
                             <h6>About :</h6>
                             <CollapsibleText>
-                                <ReactMarkdown source={this.state.video_info.description}></ReactMarkdown>
+                                <ReactMarkdown escapeHtml={false} source={DOMPurify.sanitize(this.state.video_info.description)}></ReactMarkdown>
                             </CollapsibleText>
                             <h6>Tags: </h6>
                             <p className="tags mb-0">

@@ -66,6 +66,7 @@
     "datastore-level": "^1.1.0",
     "date-and-time": "^0.13.1",
     "dlv": "^1.1.3",
+    "dompurify": "^2.1.1",
     "electron-packager": "^14.2.1",
     "electron-promise-ipc": "^2.1.0",
     "go-ipfs": "^0.7.0",

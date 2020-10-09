@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { FaThumbsUp, FaThumbsDown, FaDollarSign, FaTimesCircle } from "react-icons/fa";
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { Dropdown } from 'react-bootstrap';
+import DOMPurify from 'dompurify';
 const electronIpc = require('electron-promise-ipc');
 const { clipboard } = require('electron');
 
@@ -101,7 +102,7 @@ class PostComment extends Component {
                         <strong><a href={`#/user?=${this.props.reflink}`}>{RefLink.parse(this.props.reflink).root}</a> </strong>• <span className="text-muted">6 days ago</span>
                     </div>
                     <div className="panel-body mt-1">
-                        <ReactMarkdown source={this.state.commentInfo.description}></ReactMarkdown>
+                        <ReactMarkdown escapeHtml={false} source={DOMPurify.sanitize(this.state.commentInfo.description)}></ReactMarkdown>
                     </div>
                     <div className="panel-footer ml-0 ml-md-4">
                         <FaDollarSign className="fa fa-dollar-sign" /> <span id="" className="post-payout">0.03</span>
