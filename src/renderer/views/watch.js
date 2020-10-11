@@ -18,6 +18,7 @@ import convert from 'convert-units';
 import Debug from 'debug';
 import {LoopCircleLoading} from 'react-loadingg';
 import DOMPurify from 'dompurify';
+import {NotificationManager} from 'react-notifications';
 const debug = Debug("blasio:watch")
 
 class watch extends React.Component {
@@ -36,6 +37,7 @@ class watch extends React.Component {
         };
         this.player = React.createRef()
         this.gearSelect = this.gearSelect.bind(this);
+        this.PinLocally = this.PinLocally.bind(this);
     }
     async componentDidMount() {
         console.log(this.state)
@@ -83,7 +85,7 @@ class watch extends React.Component {
                     })
                 }
             }
-            await this.recordView();
+            this.recordView();
         } catch(ex) {
             console.log(ex)
         }
@@ -132,6 +134,31 @@ class watch extends React.Component {
         this.setState({
             recommendedVideos: data
         })
+    }
+    async PinLocally() {
+        let cids = [];
+        for(const source of this.state.video_info.sources) {
+            const url = new (require('url').URL)(source.url)
+            try {
+                new CID(url.host)
+                cids.push(url.host)
+            } catch {
+
+            }
+        }
+        debug(`CIDs to store ${JSON.stringify(cids)}`)
+        if(cids.length !== 0) {
+            NotificationManager.info("Pinning in progress")
+            await PromiseIpc.send("pins.add", {
+                _id: this.state.reflink,
+                source: "Watch Page",
+                cids,
+                expire: null
+            })
+            NotificationManager.success(`Video with reflink of ${this.state.reflink} has been successfully pinned! Thank you for contributing!`, "Pin Successful")
+        } else {
+            NotificationManager.warning("This video is not available on IPFS")
+        }
     }
     render() {
         console.log(this.props);
@@ -188,11 +215,15 @@ class watch extends React.Component {
                         </div>
                         <div className="single-video-author box mb-3">
                             <div className="float-right">
-                                <Follow reflink={this.state.reflink} />
-
-                                <a target="_blank" className="btn btn-light btn-sm" href={this.state.videoLink}>
-                                    <FaDownload /> Download
-                                </a>
+                                <Row>
+                                    <Follow reflink={this.state.reflink} />
+                                    <a target="_blank" style={{marginRight: "5px", marginLeft: "5px"}} className="btn btn-light btn-sm" onClick={this.PinLocally}>
+                                        <FaDownload /> Download to IPFS node
+                                    </a>
+                                    <a target="_blank" style={{marginRight: "5px"}} className="btn btn-light btn-sm" href={this.state.videoLink}>
+                                        <FaDownload /> Download
+                                    </a>
+                                </Row>
                             </div>
                             <img className="img-fluid" src={this.state.profilePictureURL} alt="" />
                             <p>

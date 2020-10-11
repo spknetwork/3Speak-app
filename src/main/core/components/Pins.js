@@ -4,6 +4,7 @@ const Path = require('path');
 const debug = require('debug')('blasio:pins')
 const Schedule = require('node-schedule')
 PouchDB.plugin(require('pouchdb-find'));
+PouchDB.plugin(require('pouchdb-upsert'));
 class Pins {
     constructor(self) {
         this.self = self;
@@ -17,20 +18,22 @@ class Pins {
     }
     async add(doc) {
         debug(`received add with id of ${doc._id}`)
-        if(typeof doc !== "object") {
+        if (typeof doc !== "object") {
             throw new Error("First argument must be type of object.")
         }
-        if(!doc.expire) {
+        if (!doc.expire) {
             doc.expire = null;
         }
         var totalSize = 0;
-        for(var cid of doc.cids) {
+        for (var cid of doc.cids) {
             await this.self.ipfs.pin.add(cid);
             var objectInfo = await this.self.ipfs.object.stat(cid);
-            totalSize =+ objectInfo.CumulativeSize
+            totalSize = + objectInfo.CumulativeSize
         }
         doc.size = totalSize;
-        await this.db.put(doc);
+        await this.db.upsert(doc._id, () => {
+            return doc;
+        })
     }
     async rm(reflink) {
         var doc = (await this.db.find({
@@ -55,10 +58,10 @@ class Pins {
             }
         })).docs;
         debug(`Cycle pin removal ${JSON.stringify(pinsToDestroy)}`)
-        for(var pin of pinsToDestroy) {
+        for (var pin of pinsToDestroy) {
             try {
                 await this.self.ipfs.pin.rm(pin.cids)
-            } catch {}; //If not pinned locally
+            } catch { }; //If not pinned locally
             pin._deleted = true;
             await this.db.put(pin);
         }

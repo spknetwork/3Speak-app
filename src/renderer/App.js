@@ -12,11 +12,14 @@ import './css/App.css';
 import './css/main.css';
 import Sidebar from './components/Navbar';
 import TopNavbar from './components/TopNavbar';
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer} from 'react-notifications';
 
 export class App extends React.PureComponent {
   render() {
     return (
       <div>
+          <NotificationContainer/>
           <TopNavbar />
           <Sidebar />
           <HashRouter>
