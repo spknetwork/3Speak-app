@@ -14,11 +14,21 @@ import Sidebar from './components/Navbar';
 import TopNavbar from './components/TopNavbar';
 import 'react-notifications/lib/notifications.css';
 import {NotificationContainer} from 'react-notifications';
+import Popup from 'react-popup';
+import './css/Popup.css'
 
 export class App extends React.PureComponent {
   render() {
     return (
       <div>
+          <Popup className="mm-popup"
+            btnClass="mm-popup__btn"
+            closeBtn={false}
+            closeHtml={null}
+            defaultOk="Ok"
+            defaultCancel="Cancel"
+            wildClasses={false}
+            escToClose={true}/>
           <NotificationContainer/>
           <TopNavbar />
           <Sidebar />

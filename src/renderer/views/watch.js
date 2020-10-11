@@ -1,8 +1,9 @@
 import React from 'react';
 import Player from '../components/video/Player';
-import { Col, Row, Container, Dropdown } from 'react-bootstrap';
+import { Col, Row, Container, Dropdown, Tabs, Tab } from 'react-bootstrap';
 import utils from '../utils';
-import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload, FaBell } from 'react-icons/fa';
+import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload } from 'react-icons/fa';
+import { BsInfoSquare } from 'react-icons/bs';
 import DateTime from 'date-and-time';
 import ReactMarkdown from 'react-markdown';
 import CollapsibleText from '../components/CollapsibleText';
@@ -19,6 +20,12 @@ import Debug from 'debug';
 import {LoopCircleLoading} from 'react-loadingg';
 import DOMPurify from 'dompurify';
 import {NotificationManager} from 'react-notifications';
+import Popup from 'react-popup';
+import { JsonEditor as Editor } from 'jsoneditor-react';
+import 'jsoneditor-react/es/editor.min.css';
+import ace from 'brace';
+import 'brace/mode/json';
+import 'brace/theme/github';
 const debug = Debug("blasio:watch")
 
 class watch extends React.Component {
@@ -160,6 +167,33 @@ class watch extends React.Component {
             NotificationManager.warning("This video is not available on IPFS")
         }
     }
+    async showDebug() {
+        const metadata = this.state.video_info
+        Popup.registerPlugin('watch_debug', async function () {
+            this.create({
+                content: <div>
+                    <Tabs defaultActiveKey="meta" id="uncontrolled-tab-example">
+                        <Tab eventKey="meta" title="Metadata">
+                            <Editor value={metadata}
+                            ace={ace}
+                            theme="ace/theme/github">
+                            </Editor>
+                        </Tab>
+                    </Tabs>
+                    </div>,
+                buttons: {
+                    right: [{
+                        text: 'Close',
+                        className: 'success',
+                        action: function () {
+                            Popup.close();
+                        }
+                    }]
+                }
+            });
+        })
+        Popup.plugins().watch_debug();
+    }
     render() {
         console.log(this.props);
         console.log(this.state.post_info)
@@ -243,6 +277,12 @@ class watch extends React.Component {
                             <h6>About :</h6>
                             <CollapsibleText>
                                 <ReactMarkdown escapeHtml={false} source={DOMPurify.sanitize(this.state.video_info.description)}></ReactMarkdown>
+                                <hr/>
+                                <Container style={{marginBottom: "10px", textAlign:"center"}}>
+                                    <a target="_blank" style={{marginRight: "5px"}} className="btn btn-light btn-sm" onClick={() => this.showDebug()}>
+                                        <BsInfoSquare/> Debug Info
+                                    </a>
+                                </Container>
                             </CollapsibleText>
                             <h6>Tags: </h6>
                             <p className="tags mb-0">
