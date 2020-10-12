@@ -92,6 +92,9 @@ class SideBar extends Component {
                         <Nav.Link href="#/pins">
                             <FaGlobe /> Pins
                         </Nav.Link>
+                        <Nav.Link href="#/ipfsconsole">
+                            <FaGlobe /> Ipfs Console
+                        </Nav.Link>
                     </NavDropdown>
                 </Nav>
 

@@ -53,6 +53,7 @@ export class App extends React.PureComponent {
               <Route path="/community/:reflink" component={views.Community}/>
               <Route path="/leaderboard/" component={views.Leaderboard} />
               <Route path="/pins/" component={views.Pins} />
+              <Route path="/ipfsconsole/" component={views.IpfsConsole} />
               <Route component={views.NotFound} />
             </Switch>
           </HashRouter>
