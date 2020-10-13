@@ -36,11 +36,11 @@ class Pins {
         })
     }
     async rm(reflink) {
-        var doc = (await this.db.find({
-            selector: {
-                _id: reflink
-            }
-        }))
+        var doc = (await this.db.get(reflink))
+        try {
+            await this.self.ipfs.pin.rm(doc.cids)
+        } catch { }; //If not pinned locally
+        
         doc._deleted = true;
         await this.db.put(doc);
     }
