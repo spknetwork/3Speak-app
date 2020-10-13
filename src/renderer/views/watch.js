@@ -224,20 +224,20 @@ class watch extends React.Component {
                             </div>
                             <div className="float-right" style={{ textAlign: "right !important", float: "right !important", display: "inline-block !important" }}>
                                 <span>
-                                    <span style={{ padding: "0 !important" }}>
+                                    <span className="p-1" style={{ padding: "0 !important" }}>
                                         <FaThumbsUp style={{ color: "#d3d3d3" }} />
                                         {
                                             //TODO: Implement likes
                                         }
                                     </span>
-                                    <span style={{ padding: "0 !important" }}>
+                                    <span className="p-1" style={{ padding: "0 !important" }}>
                                         <FaThumbsDown style={{ color: "#d3d3d3" }} />
                                         {
                                             //TODO: Implement dislikes
                                         }
                                     </span>
                                 </span>
-                                <Dropdown onSelect={this.gearSelect}>
+                                <Dropdown onSelect={this.gearSelect} style={{paddingTop: "10px"}}>
                                     <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
