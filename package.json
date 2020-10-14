@@ -8,6 +8,7 @@
     "dev": "cross-env DEBUG=blasio:* npm run start-renderer",
     "prod": "run-electron .",
     "package": "npm run build && electron-packager --electron-version=8.3.1 . --overwrite --out=build --icon=src/renderer/assets/img/app.ico",
+    "package:mac": "npm run build && electron-packager --platform=darwin --electron-version=8.3.1 . --overwrite --out=build --icon=src/renderer/assets/img/app.ico",
     "build": "npm run clear && npm-run-all --parallel build-main build-renderer",
     "build-main": "webpack --config webpack/main.config.js",
     "build-renderer": "webpack --config webpack/renderer.prod.config.js",

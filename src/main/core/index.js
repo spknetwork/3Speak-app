@@ -24,7 +24,7 @@ class Core {
         this.blocklist = new Components.Blocklist(this);
         await this.config.open()
         await Components.ipfsHandler.start(this._options.path);
-        await Components.ipfsHandler.ready;
+        //await Components.ipfsHandler.ready;
         var {ipfs} = await Components.ipfsHandler.getIpfs();
         this.ipfs = ipfs;
         this.pins = new Components.Pins(this)

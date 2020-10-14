@@ -32,11 +32,13 @@ class TopNavbar extends React.Component {
     finishEdit(e) {
         if (e.keyCode === 13) {
             console.log(e.target.value)
-            location.replace(`#${e.target.value}`)
+            if(location.hash !== `#${e.target.value}`) {
+                location.replace(`#${e.target.value}`)
+                location.reload();
+            }
             this.setState({
                 inEdit: false
             })
-            location.reload();
         } else if(e.keyCode === 27) {
             this.exitEdit();
         }
@@ -153,7 +155,7 @@ class TopNavbar extends React.Component {
                                     (el === this.state.urlSplit[1] && this.state.urlSplit[0] === 'watch') ? <Breadcrumb.Item href={userProfileUrl} key={el} id={el}>{el}</Breadcrumb.Item>:<Breadcrumb.Item href={'#'} key={el} id={el}>{el}</Breadcrumb.Item>
                                 ))}
                             </Breadcrumb>
-                            <Button className="btn btn-light btn-sm" style={{marginLeft: "5px", width: "10%", height: "10%", padding:"3.5%", verticalAlign: "baseline"}}onClick={this.startEdit}>
+                            <Button className="btn btn-light btn-sm" style={{marginLeft: "5px", width: "40px", height: "40px", padding:"3.5%", verticalAlign: "baseline"}}onClick={this.startEdit}>
                                 <FaEdit style={{ textAlign: "center", verticalAlign: "initial"}}/>
                             </Button>
                             </React.Fragment>:<FormControl 
