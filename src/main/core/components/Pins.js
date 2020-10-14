@@ -31,8 +31,12 @@ class Pins {
             totalSize = + objectInfo.CumulativeSize
         }
         doc.size = totalSize;
-        await this.db.upsert(doc._id, () => {
-            return doc;
+        await this.db.upsert(doc._id, (oldDoc) => {
+            if((oldDoc.expire < doc.expire && oldDoc.expire !== null) || doc.expire === null) {
+                return doc;
+            } else {
+                return oldDoc;
+            }
         })
     }
     async rm(reflink) {
