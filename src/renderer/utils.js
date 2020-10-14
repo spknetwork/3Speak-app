@@ -2,17 +2,39 @@ import PromiseIPC from 'electron-promise-ipc';
 import axios from 'axios';
 import ArraySearch from 'arraysearch';
 import RefLink from '../main/RefLink';
+import ipfsHandler from '../main/core/components/ipfsHandler'
+import CID from 'cids'
 const Finder = ArraySearch.Finder;
 
 const ipfs = {
     gateway: "https://gateway.originprotocol.com/ipfs/",
-    compileURL(cid) {
-        return ipfs.gateway + cid;
+    async getGateway(cid) {
+        var {ipfs:ipfsInstance} = await ipfsHandler.getIpfs();
+        var has = false;
+        for await(var pin of ipfsInstance.pin.ls({path: cid, type:"recursive"})) {
+            if(pin.cid.equals(new CID(cid))) {
+                has = true;
+                break;
+            }
+        }
+        if(has) {
+            return "http://localhost:8080/ipfs/"
+        } else {
+            return ipfs.gateway;
+        }
     },
-    urlToCID(url) {
+    urlToIpfsPath(url) {
         url = new URL(url);
         if (url.protocol === "ipfs:" && url.pathname !== "") {
             return url.pathname;
+        } else {
+            throw new Error("Invalid IPFS url");
+        }
+    },
+    urlToCID(url) {
+        url = new (require('url')).URL(url)
+        if (url.protocol === "ipfs:" && url.pathname !== "") {
+            return url.hostname;
         } else {
             throw new Error("Invalid IPFS url");
         }
@@ -116,8 +138,7 @@ const accounts = {
         if(!(reflink instanceof RefLink)) {
             reflink = RefLink.parse(reflink);
         }
-
-        switch (reflink.source.value) {
+        switch ("hive") {
             case "hive": {
                 var avatar_url = `https://images.hive.blog/u/${reflink.root}/avatar`;
                 try {
@@ -231,7 +252,15 @@ const video = {
         })
         if(videoSource) {
             try {
-                return ipfs.compileURL(ipfs.urlToCID(videoSource.url));
+                var cid = ipfs.urlToCID(videoSource.url);
+                try {
+
+                    var gateway = await ipfs.getGateway(cid);
+                } catch (ex) {
+                    console.log(ex)
+                }
+                console.log(gateway)
+                return gateway + ipfs.urlToIpfsPath(videoSource.url);
             } catch {
                 //return `https://cdn.3speakcontent.co/${reflink.root}/${reflink.permlink}`;
                 return videoSource.url;
@@ -257,7 +286,10 @@ const video = {
         })
         if(imageSource) {
             try {
-                return ipfs.compileURL(ipfs.urlToCID(imageSource.url));
+                var cid = ipfs.urlToCID(videoSource.url);
+                var gateway = await ipfs.getGateway(cid);
+                console.log(gateway)
+                return gateway + ipfs.urlToIpfsPath(videoSource.url);
             } catch {
                 return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
             }

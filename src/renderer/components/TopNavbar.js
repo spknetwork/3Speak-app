@@ -1,7 +1,8 @@
 import React from 'react';
-import { Navbar, Nav, Breadcrumb } from 'react-bootstrap'
+import { Navbar, Nav, Breadcrumb, Dropdown } from 'react-bootstrap'
 import "./Navbar.css";
-import { FaAngleRight, FaAngleLeft, FaCopy } from 'react-icons/fa'
+import { FaAngleRight, FaAngleLeft, FaCopy,FaArrowRight } from 'react-icons/fa';
+
 
 class TopNavbar extends React.Component {
 
@@ -109,6 +110,10 @@ class TopNavbar extends React.Component {
             window.history.back()
         }
 
+        function goToClip() {
+            navigator.clipboard.readText().then(clipText => {window.location.replace(clipText)});
+        }
+
         return (
            <div>
                  <Navbar bg="light" expand="lg">
@@ -121,10 +126,17 @@ class TopNavbar extends React.Component {
                         ))}
                     </Breadcrumb>
                     </Nav>
+                    <Dropdown>
+                        <Dropdown.Toggle variant="secondary" size={28}>Options</Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={copyToClip}>Copy Current URL <FaCopy size={28} onClick={copyToClip} /></Dropdown.Item>
+                            <Dropdown.Item onClick={goToClip} >Go to Copied URL <FaArrowRight size={28}/></Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                     <Nav>
                         <Nav.Link><FaAngleLeft size={28} onClick={goBack} /></Nav.Link>
                         <Nav.Link><FaAngleRight size={28} onClick={goForth} /></Nav.Link>
-                        <Nav.Link><FaCopy size={28} onClick={copyToClip} /></Nav.Link>
                     </Nav>
                     </Navbar.Collapse>
                 </Navbar>

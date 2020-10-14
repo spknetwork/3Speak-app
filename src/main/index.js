@@ -33,6 +33,11 @@ app.on('window-all-closed', () => {
 });
 let coreInstance = new Core();
 (async () => {
-  await coreInstance.start()
-  new ipcAdapter(coreInstance).start()
+  try {
+    await coreInstance.start()
+    new ipcAdapter(coreInstance).start()
+  } catch (ex) {
+    console.log(ex);
+    app.quit()
+  }
 })()

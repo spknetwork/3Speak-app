@@ -17,8 +17,8 @@ class Community extends Component {
 
             },
             videos: {
-                trending: null,
-                new: null
+                trending: [],
+                new: []
             }
         };
         console.log(client);

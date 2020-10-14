@@ -11,6 +11,8 @@ class Core {
         };
         this._options = mergeOptions(defaults, options);
         this.events = new EventEmitter();
+        this.start = this.start.bind(this);
+        this.stop = this.stop.bind(this);
     }
     
     async start() {
@@ -26,10 +28,11 @@ class Core {
         var {ipfs} = await Components.ipfsHandler.getIpfs();
         this.ipfs = ipfs;
         this.pins = new Components.Pins(this)
-        this.pins.start()
+        await this.pins.start()
     }
     async stop() {
         await Components.ipfsHandler.stop(this._options.path);
+        await this.pins.stop()
     }
 }
 export default Core;

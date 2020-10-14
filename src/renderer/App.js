@@ -14,7 +14,6 @@ import Sidebar from './components/Navbar';
 import TopNavbar from './components/TopNavbar';
 
 export class App extends React.PureComponent {
-
   render() {
     return (
       <div>
@@ -40,6 +39,7 @@ export class App extends React.PureComponent {
               <Route path="/communities/" component={views.Communities} />
               <Route path="/community/:reflink" component={views.Community}/>
               <Route path="/leaderboard/" component={views.Leaderboard} />
+              <Route path="/pins/" component={views.Pins} />
             </Switch>
           </HashRouter>
       </div>

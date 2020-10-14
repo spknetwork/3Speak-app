@@ -1,18 +1,19 @@
 import RefLink from '../../RefLink';
 import PouchDB from 'pouchdb'
-import pQueue from 'p-queue'
 const debug = require('debug')("blasio:distiller")
 const Path = require('path');
 const { Client: HiveClient } = require('@hiveio/dhive')
 PouchDB.plugin(require('pouchdb-find'));
+PouchDB.plugin(require('pouchdb-upsert'));
 
-const hiveClient = new HiveClient('https://anyx.io')
+const hiveClient = new HiveClient([
+    "https://hived.privex.io",
+    "https://techcoderx.com"
+])
 const hive = require('@hiveio/hive-js');
-hiveClient.timeout = 5000
+hiveClient.options.timeout = 5000
+hiveClient.options.failoverThreshold = 10;
 
-const queue = new pQueue({
-    concurrency: 1
-});
 
 /**
  * DistillerDB is a component meant for storing, and handling post object data.
@@ -55,23 +56,18 @@ class DistillerDB {
         switch (sourceSystem) {
             case "hive": {
                 if (id) {
-                    var out = await new Promise((resolve, reject) => {
-                        hiveClient.database.call('get_content', [author, id]).then((err, ret) => {
+                    /*var out = await new Promise((resolve, reject) => {
+                        hive.api.getContent(author, id, (err, ret) => {
                             if (err) return reject(err);
                             return resolve(ret);
                         })
-                    });
-                    /*var out = (await hiveClient.database.getDiscussions("blog", {
-                        tag: author,
-                        limit: 1,
-                        start_author: author,
-                        start_permlink: id
-                    }))[0];*/
-                    if(out) {
+                    });*/
+                    var out = await hiveClient.database.call('get_content', [author, id])
+                    if (out) {
                         try {
                             out.json_metadata = JSON.parse(out.json_metadata)
                         } catch {
-                            
+
                         }
                     }
                     return out;
@@ -184,12 +180,12 @@ class DistillerDB {
              * This is used to track the child state of a particular post.
              * If a post child is removed (for any abstract reason) it will be instantly modified. 
              */
-            await queue.add(async () => await this.pouch.put({
+            await this.pouch.put({
                 _id: `child/${reflink.toString()}`,
                 json_content: childState,
                 expire: (new Date() / 1) + this._options.defaultExpireTime,
                 type: "state.child",
-            }));
+            });
         } else {
             if ((new Date() / 1) < record.expire) {
                 //Record is not expired.
@@ -205,13 +201,13 @@ class DistillerDB {
                 for await (const result of this._processPostsInsertion(children)) {
                     childState.push(result.reflink.toString())
                 }
-                await queue.add(async () => await this.pouch.put({
+                await this.pouch.put({
                     _id: `child/${reflink}`,
                     _rev: record._rev,
                     json_content: childState,
                     expire: (new Date() / 1) + this._options.defaultExpireTime,
                     type: "state.child"
-                }));
+                })
             }
         }
 
@@ -229,6 +225,7 @@ class DistillerDB {
 
 
         return out;
+
     }
     /**
      * Retrieves content information
@@ -261,10 +258,13 @@ class DistillerDB {
                         expire: (new Date() / 1) + this._options.defaultExpireTime,
                         type: "post"
                     }
-                    if (record._rev) {
-                        toStore._rev = record._rev;
-                    }
-                    await queue.add(async () => await this.pouch.put(toStore));
+                    await this.pouch.upsert(reflink.toString(), (doc) => {
+                        doc.json_content = json_content;
+                        doc.type = "post";
+                        doc.expire = (new Date() / 1) + this._options.defaultExpireTime;
+                        doc.json_content = json_content
+                        return doc;
+                    })
                     return toStore;
                 } catch (ex) {
                     console.log(ex);
@@ -276,8 +276,10 @@ class DistillerDB {
                 }
             }
         } else {
-            
+
         }
+
+
     }
     /**
      * Retrieves state information such as trending, recent content, following content, etc.
@@ -324,12 +326,12 @@ class DistillerDB {
             for await (const result of this._processPostsInsertion(posts)) {
                 tagState.push(result.reflink.toString())
             }
-            await queue.add(async () => await this.pouch.put({
+            await this.pouch.put({
                 _id: `tag/${tag}`,
                 json_content: tagState,
                 expire: (new Date() / 1) + this._options.defaultExpireTime,
                 type: "state.tag"
-            }));
+            })
         } else {
             if ((new Date() / 1) < record.expire) {
                 //Record is not expired.
@@ -343,13 +345,13 @@ class DistillerDB {
                 for await (const result of this._processPostsInsertion(posts)) {
                     tagState.push(result.reflink.toString())
                 }
-                await queue.add(async () => await this.pouch.put({
+                await this.pouch.put({
                     _id: `tag/${tag}`,
                     _rev: record._rev,
                     json_content: tagState,
                     expire: (new Date() / 1) + this._options.defaultExpireTime,
                     type: "state.tag"
-                }));
+                })
             }
         }
 
@@ -401,20 +403,23 @@ class DistillerDB {
                 tag: reflink.root,
                 limit: options.limit
             });
-            await queue.add(async () => await this.pouch.put({
-                _id: reflink.toString(),
-                posts: latestState,
-                expire: new Date() / 1 + this._options.defaultExpireTime,
-                type: "account"
-            }));
+            await this.pouch.upsert(reflink.toString(), (doc) => {
+                doc.type = "account"
+                doc.posts = latestState;
+                doc.expire = new Date() / 1 + this._options.defaultExpireTime;
+                doc.type = "account"
+                return doc;
+            })
         } else {
             if (stateRecord.expire > (new Date / 1) && !stateRecord.posts) {
                 latestState = await hiveClient.database.getDiscussions("blog", {
                     tag: reflink.root,
                     limit: options.limit
                 });
-                stateRecord.posts = latestState;
-                await queue.add(async () => await this.pouch.put(stateRecord));
+                await this.pouch.upsert(reflink.toString(), (doc) => { 
+                    doc.posts = latestState
+                    return doc;
+                })
             } else {
                 latestState = stateRecord.posts;
             }
@@ -440,7 +445,7 @@ class DistillerDB {
 
         let accountRecord;
         try {
-            accountRecord = await queue.add(async () => await this.pouch.get(reflink.toString()));
+            accountRecord = await this.pouch.get(reflink.toString());
         } catch {
 
         }
@@ -448,21 +453,23 @@ class DistillerDB {
         if (accountRecord) {
             if (accountRecord.expire < (new Date() / 1) || !accountRecord.json_content) {
                 var account = (await hiveClient.database.getAccounts([reflink.root]))[0];
-                accountRecord.json_content = account;
-                accountRecord.expire = new Date() / 1 + this._options.defaultExpireTime;
-                await queue.add(async () => await this.pouch.put(accountRecord));
+                await this.pouch.upsert(reflink.toString(), (doc) => {
+                    doc.json_content = account;
+                    doc.expire = new Date() / 1 + this._options.defaultExpireTime;
+                    return doc;
+                })
                 return await this.pouch.get(reflink.toString());
             } else {
                 return accountRecord
             }
         } else {
-            var account = await hiveClient.database.getAccounts([reflink.root])[0];
-            await queue.add(async () => await this.pouch.put({
-                _id: reflink.toString(),
-                json_content: account,
-                expire: new Date() / 1 + this._options.defaultExpireTime,
-                type: "account"
-            }));
+            var account = (await hiveClient.database.getAccounts([reflink.root]))[0]
+            await this.pouch.upsert(reflink.toString(), (doc) => {
+                doc.json_content = account;
+                doc.expire = new Date() / 1 + this._options.defaultExpireTime;
+                doc.type = "account"
+                return doc;
+            })
             return await this.pouch.get(reflink.toString())
         }
     }
@@ -477,7 +484,7 @@ class DistillerDB {
         let followerCount = (await hiveClient.call(
             'follow_api',
             'get_follow_count',
-            {account: reflink.root})).follower_count
+            { account: reflink.root })).follower_count
 
         return followerCount
     }
