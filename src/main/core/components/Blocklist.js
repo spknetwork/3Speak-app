@@ -2,6 +2,7 @@ import PouchDB from 'pouchdb'
 import RefLink from '../../RefLink'
 const Path = require('path')
 PouchDB.plugin(require('pouchdb-find'));
+PouchDB.plugin(require('pouchdb-upsert'));
 
 /**
  * A simple interface to hide/block content from a certain author, a particular permalink or metadata tag.
@@ -27,7 +28,9 @@ class Blocklist {
         }
     }
     async rm(reflink) {
-        await this.pouch.remove(reflink.toString());
+        await this.pouch.upsert(reflink.toString(), (doc) => {
+            doc._deleted = true;
+        })
     }
     /**
      * 

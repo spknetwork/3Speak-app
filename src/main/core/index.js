@@ -1,4 +1,5 @@
 import Components from './components';
+const EventEmitter = require('events')
 const Utils = require('./utils');
 const fs = require('fs');
 const mergeOptions = require('merge-options')
@@ -9,6 +10,9 @@ class Core {
             path: Utils.getRepoPath()
         };
         this._options = mergeOptions(defaults, options);
+        this.events = new EventEmitter();
+        this.start = this.start.bind(this);
+        this.stop = this.stop.bind(this);
     }
     
     async start() {
@@ -18,11 +22,17 @@ class Core {
         this.config = new Components.Config(this._options.path)
         this.distillerDB = new Components.DistillerDB(this)
         this.blocklist = new Components.Blocklist(this);
-        await Components.ipfsHandler.start(this._options.path);
         await this.config.open()
+        await Components.ipfsHandler.start(this._options.path);
+        //await Components.ipfsHandler.ready;
+        var {ipfs} = await Components.ipfsHandler.getIpfs();
+        this.ipfs = ipfs;
+        this.pins = new Components.Pins(this)
+        await this.pins.start()
     }
     async stop() {
         await Components.ipfsHandler.stop(this._options.path);
+        await this.pins.stop()
     }
 }
 export default Core;

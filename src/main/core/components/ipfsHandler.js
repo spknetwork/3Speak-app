@@ -1,10 +1,28 @@
-import ipfsPath from 'go-ipfs'
+//import ipfsPath from 'go-ipfs'
 import Path from 'path'
 import os from 'os'
 import fs from 'fs'
 import IpfsClient from 'ipfs-http-client'
 import { exec, spawn } from 'child_process'
 const toUri = require('multiaddr-to-uri')
+
+//work around for go-ipfs-dep not working correctly with electron paths
+const ipfsPaths = [
+    Path.resolve(Path.join(__dirname, '..', 'go-ipfs', 'ipfs')),
+    Path.resolve(Path.join(__dirname, '..', 'go-ipfs', 'ipfs.exe')),
+    Path.resolve(Path.join(__dirname, '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
+    Path.resolve(Path.join(__dirname, '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs')),
+    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
+    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs')),
+    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', '..', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
+    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', '..', 'go-ipfs', 'go-ipfs', 'ipfs'))
+]
+let ipfsPath;
+for (const bin of ipfsPaths) {
+    if (fs.existsSync(bin)) {
+        ipfsPath = bin;
+    }
+}
 
 var defaultIpfsConfig = {
     "Gateway": {
@@ -27,7 +45,16 @@ var defaultIpfsConfig = {
                 "GET"
             ]
         }
-    }
+    },
+    "Bootstrap": [
+        "/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
+        "/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
+        "/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
+        "/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+        "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+        "/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+        "/ip4/209.222.98.165/tcp/4001/p2p/12D3KooWAH9FypmaduofuBTtubSHVJghxW35aykce23vDHjfhiAd"
+    ]
 }
 class ipfsHandler {
     static get ready() {
@@ -71,7 +98,7 @@ class ipfsHandler {
         }
     }
     static init(repoPath) {
-        var goIpfsPath = ipfsPath.path();
+        var goIpfsPath = ipfsPath;
         return new Promise((resolve, reject) => {
             exec(`${goIpfsPath} init`, {
                 env: {
@@ -90,7 +117,7 @@ class ipfsHandler {
         })
     }
     static run(repoPath) {
-        var goIpfsPath = ipfsPath.path();
+        var goIpfsPath = ipfsPath;
         var ipfsDaemon = spawn(goIpfsPath, [
             "daemon",
             "--enable-pubsub-experiment",

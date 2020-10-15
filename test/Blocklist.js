@@ -29,4 +29,7 @@ describe("Blocklist", function () {
     it("Checked unblocked author", async() => {
         assert.strictEqual(await client.blocklist.has("hive:username:post1"), false);
     })
+    this.afterAll(async() => {
+        await client.stop();
+    })
 })
