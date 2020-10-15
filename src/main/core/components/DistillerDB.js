@@ -7,12 +7,13 @@ PouchDB.plugin(require('pouchdb-find'));
 PouchDB.plugin(require('pouchdb-upsert'));
 
 const hiveClient = new HiveClient([
+    "https://anyx.io",
     "https://hived.privex.io",
     "https://techcoderx.com"
 ])
 const hive = require('@hiveio/hive-js');
 hiveClient.options.timeout = 5000
-hiveClient.options.failoverThreshold = 10;
+hiveClient.options.failoverThreshold = 5;
 
 
 /**

@@ -7,6 +7,7 @@ import IpfsHandler from '../../main/core/components/ipfsHandler';
 import Popup from 'react-popup';
 import Utils from '../utils';
 import CID from 'cids'
+import RefLink from '../../main/RefLink'
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
         href=""
@@ -55,9 +56,15 @@ class Pins extends Component {
         this.state = {
             pinls: []
         }
+        this.pid = null;
+        this.generate = this.generate.bind(this)
     }
     async componentDidMount() {
         await this.generate();
+        this.pid = setInterval(this.generate, 1500)
+    }
+    componentWillUnmount() {
+        clearInterval(this.pid)
     }
     async generate() {
         var pinls = await PromiseIpc.send("pins.ls")
@@ -161,6 +168,11 @@ class Pins extends Component {
             rows.push(<tr key={pin._id}>
                 <td>
                     <a href={`#/watch/${pin._id}`}>{pin._id}</a>
+                    <br/>
+                    (<strong>{RefLink.parse(pin._id).root}</strong>)
+                </td>
+                <td>
+                    {pin.meta ? pin.meta.title : null}
                 </td>
                 <td>
                     {pin.cids.length > 1 ? <a>View ({pin.cids.length})</a> : pin.cids}
@@ -204,6 +216,7 @@ class Pins extends Component {
                 <thead>
                     <tr>
                         <th>Reflink</th>
+                        <th>Title</th>
                         <th>CID(s)</th>
                         <th>Source</th>
                         <th>Expiration</th>
