@@ -1,8 +1,9 @@
 import React from 'react';
 import Player from '../components/video/Player';
-import { Col, Row, Container, Dropdown } from 'react-bootstrap';
+import { Col, Row, Container, Dropdown, Tabs, Tab } from 'react-bootstrap';
 import utils from '../utils';
-import {FaCogs, FaDownload} from 'react-icons/fa';
+import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload } from 'react-icons/fa';
+import { BsInfoSquare } from 'react-icons/bs';
 import DateTime from 'date-and-time';
 import ReactMarkdown from 'react-markdown';
 import CollapsibleText from '../components/CollapsibleText';
@@ -17,6 +18,15 @@ import Vote from "../components/video/Vote";
 import CID from 'cids'
 import convert from 'convert-units';
 import Debug from 'debug';
+import {LoopCircleLoading} from 'react-loadingg';
+import DOMPurify from 'dompurify';
+import {NotificationManager} from 'react-notifications';
+import Popup from 'react-popup';
+import { JsonEditor as Editor } from 'jsoneditor-react';
+import 'jsoneditor-react/es/editor.min.css';
+import ace from 'brace';
+import 'brace/mode/json';
+import 'brace/theme/github';
 const debug = Debug("blasio:watch")
 
 class watch extends React.Component {
@@ -31,14 +41,19 @@ class watch extends React.Component {
             commentGraph: null,
             videoLink: "",
             recommendedVideos: [],
+            loaded: false
         };
         this.player = React.createRef()
         this.gearSelect = this.gearSelect.bind(this);
+        this.PinLocally = this.PinLocally.bind(this);
     }
     async componentDidMount() {
         console.log(this.state)
         await this.generalFetch() 
         await this.mountPlayer();
+        this.setState({
+            loaded: true
+        })
         await this.retrieveRecommended()
     }
     componentDidUpdate(prevProps) {
@@ -78,7 +93,7 @@ class watch extends React.Component {
                     })
                 }
             }
-            await this.recordView();
+            this.recordView();
         } catch(ex) {
             console.log(ex)
         }
@@ -128,6 +143,58 @@ class watch extends React.Component {
             recommendedVideos: data
         })
     }
+    async PinLocally() {
+        let cids = [];
+        for(const source of this.state.video_info.sources) {
+            const url = new (require('url').URL)(source.url)
+            try {
+                new CID(url.host)
+                cids.push(url.host)
+            } catch {
+
+            }
+        }
+        debug(`CIDs to store ${JSON.stringify(cids)}`)
+        if(cids.length !== 0) {
+            NotificationManager.info("Pinning in progress")
+            await PromiseIpc.send("pins.add", {
+                _id: this.state.reflink,
+                source: "Watch Page",
+                cids,
+                expire: null
+            })
+            NotificationManager.success(`Video with reflink of ${this.state.reflink} has been successfully pinned! Thank you for contributing!`, "Pin Successful")
+        } else {
+            NotificationManager.warning("This video is not available on IPFS")
+        }
+    }
+    async showDebug() {
+        const metadata = this.state.video_info
+        Popup.registerPlugin('watch_debug', async function () {
+            this.create({
+                content: <div>
+                    <Tabs defaultActiveKey="meta" id="uncontrolled-tab-example">
+                        <Tab eventKey="meta" title="Metadata">
+                            <Editor value={metadata}
+                            ace={ace}
+                            theme="ace/theme/github">
+                            </Editor>
+                        </Tab>
+                    </Tabs>
+                    </div>,
+                buttons: {
+                    right: [{
+                        text: 'Close',
+                        className: 'success',
+                        action: function () {
+                            Popup.close();
+                        }
+                    }]
+                }
+            });
+        })
+        Popup.plugins().watch_debug();
+    }
     render() {
         const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
             <button style={{ float: "right" }} ref={ref} onClick={(e) => {
@@ -140,9 +207,10 @@ class watch extends React.Component {
 
         var ref = RefLink.parse(this.state.reflink)
         return <div>
+            {this.state.loaded ?
             <Container fluid pb={0}>
                 <Row fluid="md">
-                    <Col md={6}>
+                    <Col md={8}>
                         <div>
                             <Player ref={this.player} reflink={this.props.match.params.reflink}></Player>
                         </div>
@@ -156,7 +224,7 @@ class watch extends React.Component {
                                 <span>
                                     <Vote reflink={this.state.reflink} />
                                 </span>
-                                <Dropdown onSelect={this.gearSelect}>
+                                <Dropdown onSelect={this.gearSelect} style={{paddingTop: "10px"}}>
                                     <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
@@ -168,11 +236,15 @@ class watch extends React.Component {
                         </div>
                         <div className="single-video-author box mb-3">
                             <div className="float-right">
-                                <Follow reflink={this.state.reflink} />
-
-                                <a target="_blank" className="btn btn-light btn-sm" href={this.state.videoLink}>
-                                    <FaDownload /> Download
-                                </a>
+                                <Row>
+                                    <Follow reflink={this.state.reflink} />
+                                    <a target="_blank" style={{marginRight: "5px", marginLeft: "5px"}} className="btn btn-light btn-sm" onClick={this.PinLocally}>
+                                        <FaDownload /> Download to IPFS node
+                                    </a>
+                                    <a target="_blank" style={{marginRight: "5px"}} className="btn btn-light btn-sm" href={this.state.videoLink}>
+                                        <FaDownload /> Download
+                                    </a>
+                                </Row>
                             </div>
                             <img className="img-fluid" src={this.state.profilePictureURL} alt="" />
                             <p>
@@ -191,7 +263,13 @@ class watch extends React.Component {
                         <div className="single-video-info-content box mb-3">
                             <h6>About :</h6>
                             <CollapsibleText>
-                                <ReactMarkdown source={this.state.video_info.description}></ReactMarkdown>
+                                <ReactMarkdown escapeHtml={false} source={DOMPurify.sanitize(this.state.video_info.description)}></ReactMarkdown>
+                                <hr/>
+                                <Container style={{marginBottom: "10px", textAlign:"center"}}>
+                                    <a target="_blank" style={{marginRight: "5px"}} className="btn btn-light btn-sm" onClick={() => this.showDebug()}>
+                                        <BsInfoSquare/> Debug Info
+                                    </a>
+                                </Container>
                             </CollapsibleText>
                             <h6>Tags: </h6>
                             <p className="tags mb-0">
@@ -212,7 +290,7 @@ class watch extends React.Component {
                         </div>
                         <CommentSection reflink={this.state.reflink.toString()} />
                     </Col>
-                    <Col md={5}>
+                    <Col md={4}>
                         <Row>
                             <Col md={12}>
                                 {
@@ -223,10 +301,8 @@ class watch extends React.Component {
                             </Col>
                         </Row>
                     </Col>
-
                 </Row>
-
-            </Container>
+            </Container> : <LoopCircleLoading/>}
         </div>;
     }
 }

@@ -83,7 +83,7 @@ const accounts = {
 
                     let urls = [];
                     if (video_info.ipfs != null && video_info.ipfs) {
-                        urls.push(`ipfs://${video_info.ipfs}/default.m3u8`)
+                        urls.push(`ipfs://${video_info.ipfs}`)
                     }
                     if (video_info.file) {
                         urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`)
@@ -302,5 +302,12 @@ const video = {
 export default {
     accounts,
     video,
-    ipfs
+    ipfs,
+    formToObj: (formData) => {
+        let out = {};
+        for(var key of formData.keys()) {
+            out[key] = formData.get(key);
+        }
+        return out;
+    }
 }

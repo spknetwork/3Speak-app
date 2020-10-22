@@ -12,11 +12,24 @@ import './css/App.css';
 import './css/main.css';
 import Sidebar from './components/Navbar';
 import TopNavbar from './components/TopNavbar';
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer} from 'react-notifications';
+import Popup from 'react-popup';
+import './css/Popup.css'
 
 export class App extends React.PureComponent {
   render() {
     return (
       <div>
+          <Popup className="mm-popup"
+            btnClass="mm-popup__btn"
+            closeBtn={false}
+            closeHtml={null}
+            defaultOk="Ok"
+            defaultCancel="Cancel"
+            wildClasses={false}
+            escToClose={true}/>
+          <NotificationContainer/>
           <TopNavbar />
           <Sidebar />
           <HashRouter>
@@ -40,6 +53,8 @@ export class App extends React.PureComponent {
               <Route path="/community/:reflink" component={views.Community}/>
               <Route path="/leaderboard/" component={views.Leaderboard} />
               <Route path="/pins/" component={views.Pins} />
+              <Route path="/ipfsconsole/" component={views.IpfsConsole} />
+              <Route component={views.NotFound} />
             </Switch>
           </HashRouter>
       </div>

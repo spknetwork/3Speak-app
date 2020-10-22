@@ -26,7 +26,7 @@ module.exports = {
         loader: 'style-loader!css-loader!sass-loader'
       },
       {
-        test: /\.(ico|gif|png|jpg|jpeg|webp|svg)$/,
+        test: /\.(eot|woff|woff2|ttf|ico|gif|png|jpg|jpeg|webp|svg)$/,
         loader: 'file-loader',
         options: {
           limit: 1024,

@@ -192,3 +192,6 @@ body {
         margin-left: 232px;
     }
 }
+img {
+    max-width: 100% !important;
+}

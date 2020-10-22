@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, Nav, Breadcrumb, Dropdown } from 'react-bootstrap'
+import { Navbar, Nav, Breadcrumb, Dropdown, FormControl, Button } from 'react-bootstrap'
 import "./Navbar.css";
 import { FaAngleRight, FaAngleLeft, FaCopy,FaArrowRight } from 'react-icons/fa';
 
@@ -9,8 +9,40 @@ class TopNavbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            urlSplit: []
+            urlSplit: [],
+            inEdit: false
         };
+        this.startEdit = this.startEdit.bind(this);
+        this.exitEdit = this.exitEdit.bind(this);
+        this.finishEdit = this.finishEdit.bind(this);
+        this.UrlForm = React.createRef();
+    }
+    startEdit() {
+        this.setState({
+            inEdit: true
+        }, () => {
+            console.log(this.UrlForm)
+            this.UrlForm.current.focus();
+        })
+    }
+    exitEdit() {
+        this.setState({
+            inEdit: false
+        })
+    }
+    finishEdit(e) {
+        if (e.keyCode === 13) {
+            console.log(e.target.value)
+            if(location.hash !== `#${e.target.value}`) {
+                location.replace(`#${e.target.value}`)
+                location.reload();
+            }
+            this.setState({
+                inEdit: false
+            })
+        } else if(e.keyCode === 27) {
+            this.exitEdit();
+        }
     }
     
     HeaderView() {
@@ -119,12 +151,26 @@ class TopNavbar extends React.Component {
                  <Navbar bg="light" expand="lg">
                     <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                    <Breadcrumb>
-                        <Breadcrumb.Item href="#/">Home</Breadcrumb.Item>
-                        {this.state.urlSplit.map(el => (
-                            (el === this.state.urlSplit[1] && this.state.urlSplit[0] === 'watch') ? <Breadcrumb.Item href={userProfileUrl} key={el} id={el}>{el}</Breadcrumb.Item>:<Breadcrumb.Item href={'#'} key={el} id={el}>{el}</Breadcrumb.Item>
-                        ))}
-                    </Breadcrumb>
+                    {
+                        !this.state.inEdit ? 
+                        <React.Fragment>
+                            <Breadcrumb>
+                                <Breadcrumb.Item href="#/">Home</Breadcrumb.Item>
+                                {this.state.urlSplit.map(el => (
+                                    (el === this.state.urlSplit[1] && this.state.urlSplit[0] === 'watch') ? <Breadcrumb.Item href={userProfileUrl} key={el} id={el}>{el}</Breadcrumb.Item>:<Breadcrumb.Item href={'#'} key={el} id={el}>{el}</Breadcrumb.Item>
+                                ))}
+                            </Breadcrumb>
+                            <Button className="btn btn-light btn-sm" style={{marginLeft: "5px", width: "40px", height: "40px", padding:"3.5%", verticalAlign: "baseline"}}onClick={this.startEdit}>
+                                <FaEdit style={{ textAlign: "center", verticalAlign: "initial"}}/>
+                            </Button>
+                            </React.Fragment>:<FormControl 
+                            ref={this.UrlForm}
+                            defaultValue={(() => {
+                                return location.hash.slice(1)
+                            })()} 
+                            onKeyDown={this.finishEdit}
+                            onBlur={this.exitEdit}/>
+                    }
                     </Nav>
                     <Dropdown>
                         <Dropdown.Toggle variant="secondary" size={28}>Options</Dropdown.Toggle>

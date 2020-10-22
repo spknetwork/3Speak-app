@@ -1,10 +1,28 @@
-import ipfsPath from 'go-ipfs'
+//import ipfsPath from 'go-ipfs'
 import Path from 'path'
 import os from 'os'
 import fs from 'fs'
 import IpfsClient from 'ipfs-http-client'
 import { exec, spawn } from 'child_process'
 const toUri = require('multiaddr-to-uri')
+
+//work around for go-ipfs-dep not working correctly with electron paths
+const ipfsPaths = [
+    Path.resolve(Path.join(__dirname, '..', 'go-ipfs', 'ipfs')),
+    Path.resolve(Path.join(__dirname, '..', 'go-ipfs', 'ipfs.exe')),
+    Path.resolve(Path.join(__dirname, '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
+    Path.resolve(Path.join(__dirname, '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs')),
+    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
+    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs')),
+    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', '..', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
+    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', '..', 'go-ipfs', 'go-ipfs', 'ipfs'))
+]
+let ipfsPath;
+for (const bin of ipfsPaths) {
+    if (fs.existsSync(bin)) {
+        ipfsPath = bin;
+    }
+}
 
 var defaultIpfsConfig = {
     "Gateway": {
@@ -80,7 +98,7 @@ class ipfsHandler {
         }
     }
     static init(repoPath) {
-        var goIpfsPath = ipfsPath.path();
+        var goIpfsPath = ipfsPath;
         return new Promise((resolve, reject) => {
             exec(`${goIpfsPath} init`, {
                 env: {
@@ -99,7 +117,7 @@ class ipfsHandler {
         })
     }
     static run(repoPath) {
-        var goIpfsPath = ipfsPath.path();
+        var goIpfsPath = ipfsPath;
         var ipfsDaemon = spawn(goIpfsPath, [
             "daemon",
             "--enable-pubsub-experiment",
