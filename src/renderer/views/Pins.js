@@ -115,8 +115,9 @@ class Pins extends Component {
                     });
                 })
                 var ret = await func();
+                var video_info = (await Utils.accounts.permalinkToVideoInfo(ret.reflink))
                 let cids = [];
-                for(const source of (await Utils.accounts.permalinkToVideoInfo(ret.reflink)).sources) {
+                for(const source of video_info.sources) {
                     const url = new (require('url').URL)(source.url)
                     try {
                         new CID(url.host)
@@ -131,7 +132,10 @@ class Pins extends Component {
                         _id: ret.reflink,
                         source: "Manual Add",
                         cids,
-                        expire: null
+                        expire: null,
+                        meta: {
+                            title: video_info.title
+                        }
                     })
                     NotificationManager.success(`Video with reflink of ${ret.reflink} has been successfully pinned! Thank you for contributing!`, "Pin Successful")
                 } else {

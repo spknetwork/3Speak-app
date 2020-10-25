@@ -110,13 +110,17 @@ class watch extends React.Component {
 
             }
         }
-        debug(`CIDs to cache ${JSON.stringify(cids)}`)
+        console.log(`CIDs to cache ${JSON.stringify(cids)}`)
+
         if(cids.length !== 0) {
             await PromiseIpc.send("pins.add", {
                 _id: this.state.reflink,
                 source: "Watch Page",
                 cids,
-                expire: (new Date() / 1) + convert("1").from("d").to("ms")
+                expire: (new Date() / 1) + convert("1").from("d").to("ms"),
+                meta: {
+                    title: this.state.video_info.title
+                }
             })
         }
     }
