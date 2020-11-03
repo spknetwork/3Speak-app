@@ -7,7 +7,7 @@ import iconNewcomer from '../assets/img/icon_newcomer.svg'
 import iconBlog from '../assets/img/blog.png'
 import shakeHands from '../assets/img/shake-hands.svg'
 import SpeakLogo from '../assets/img/3S_logo.svg'
-import { FaDiscord, FaTwitter, FaGlobe, FaUsers, FaTelegram } from 'react-icons/fa'
+import { FaDiscord, FaTwitter, FaGlobe, FaUsers, FaTelegram, FaToolbox } from 'react-icons/fa'
 import { BsFillGearFill } from 'react-icons/bs'
 import { Navbar, Nav, NavDropdown, ButtonGroup, Dropdown } from 'react-bootstrap'
 import "./Navbar.css"
@@ -81,6 +81,11 @@ class SideBar extends Component {
                         <div className="nav_icons"><img src={iconNewcomer} height="19px" />
                         </div>
                             First Uploads
+                    </Nav.Link>
+                    <Nav.Link href="https://studio.3speak.co">
+                        <div className="nav_icons"><FaToolbox/>
+                        </div>
+                            Creator Studio
                     </Nav.Link>
                     <NavDropdown title={<React.Fragment>
                         <div className="nav_icons"><BsFillGearFill style={{ height: "21px" }} />

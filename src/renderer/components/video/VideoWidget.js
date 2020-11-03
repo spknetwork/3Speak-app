@@ -6,6 +6,8 @@ import { FaUser } from 'react-icons/fa'
 import convert from "convert-units";
 import {Link, HashRouter} from 'react-router-dom';
 import nsfwWarning from '../../assets/img/nsfw.png'
+import IpfsLogo from '../../assets/img/ipfs-logo-vector-ice.svg'
+import {OverlayTrigger, Tooltip} from 'react-bootstrap'
 
 class VideoWidget extends Component {
     constructor(props) {
@@ -61,6 +63,16 @@ class VideoWidget extends Component {
                             return `${Math.round(dateBest.val)} ${dateBest.singular} ago`
                         }
                     })()}</span>
+                    {this.props.isIpfs ? <div className="card-label" style={{right: "10px", bottom: "25px"}}>
+                    <OverlayTrigger
+                        overlay={
+                            <Tooltip>
+                                Video available on IPFS
+                            </Tooltip>
+                        }>
+                        <img className="play_i" src={IpfsLogo} height="17px" />
+                    </OverlayTrigger>
+                    </div> : null}
             </div>
         </div></HashRouter>);
     }

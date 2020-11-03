@@ -27,7 +27,9 @@ import 'jsoneditor-react/es/editor.min.css';
 import ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/github';
+import ArraySearch from 'arraysearch';
 const debug = Debug("blasio:watch")
+const Finder = ArraySearch.Finder;
 
 class watch extends React.Component {
     constructor(props) {
@@ -109,13 +111,17 @@ class watch extends React.Component {
 
             }
         }
-        debug(`CIDs to cache ${JSON.stringify(cids)}`)
+        console.log(`CIDs to cache ${JSON.stringify(cids)}`)
+
         if(cids.length !== 0) {
             await PromiseIpc.send("pins.add", {
                 _id: this.state.reflink,
                 source: "Watch Page",
                 cids,
-                expire: (new Date() / 1) + convert("1").from("d").to("ms")
+                expire: (new Date() / 1) + convert("1").from("d").to("ms"),
+                meta: {
+                    title: this.state.video_info.title
+                }
             })
         }
     }
@@ -161,7 +167,10 @@ class watch extends React.Component {
                 _id: this.state.reflink,
                 source: "Watch Page",
                 cids,
-                expire: null
+                expire: null,
+                meta: {
+                    title: this.state.video_info.title
+                }
             })
             NotificationManager.success(`Video with reflink of ${this.state.reflink} has been successfully pinned! Thank you for contributing!`, "Pin Successful")
         } else {
@@ -241,7 +250,12 @@ class watch extends React.Component {
                                     <a target="_blank" style={{marginRight: "5px", marginLeft: "5px"}} className="btn btn-light btn-sm" onClick={this.PinLocally}>
                                         <FaDownload /> Download to IPFS node
                                     </a>
-                                    <a target="_blank" style={{marginRight: "5px"}} className="btn btn-light btn-sm" href={this.state.videoLink}>
+                                    <a target="_blank" style={{marginRight: "5px"}} className="btn btn-light btn-sm" href={(() => {
+                                        var videoSource = Finder.one.in(this.state.video_info.sources).with({
+                                            format: "mp4"
+                                        })
+                                        return videoSource.url
+                                    })()}>
                                         <FaDownload /> Download
                                     </a>
                                 </Row>

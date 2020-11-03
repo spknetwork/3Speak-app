@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Breadcrumb, Dropdown, FormControl, Button } from 'react-bootstrap'
 import "./Navbar.css";
-import { FaAngleRight, FaAngleLeft, FaCopy,FaArrowRight } from 'react-icons/fa';
+import { FaAngleRight, FaAngleLeft, FaCopy,FaArrowRight, FaEdit } from 'react-icons/fa';
 
 
 class TopNavbar extends React.Component {

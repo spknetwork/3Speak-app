@@ -2,11 +2,12 @@ import React, { Component, useState } from 'react';
 import PromiseIpc from 'electron-promise-ipc';
 import { Table, Button, Row, Col, Dropdown, FormControl, Form } from 'react-bootstrap';
 import Convert from 'convert-units';
-import {NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 import IpfsHandler from '../../main/core/components/ipfsHandler';
 import Popup from 'react-popup';
 import Utils from '../utils';
 import CID from 'cids'
+import RefLink from '../../main/RefLink'
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
         href=""
@@ -23,30 +24,30 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 // Dropdown needs access to the DOM of the Menu to measure it
 const CustomMenu = React.forwardRef(
     ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
-    const [value, setValue] = useState('');
+        const [value, setValue] = useState('');
 
-    return (
-        <div
-        ref={ref}
-        style={style}
-        className={className}
-        aria-labelledby={labeledBy}
-        >
-        <FormControl
-            autoFocus
-            className="mx-3 my-2 w-auto"
-            placeholder="Type to filter..."
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
-        />
-        <ul className="list-unstyled">
-            {React.Children.toArray(children).filter(
-            (child) =>
-                !value || child.props.children.toLowerCase().startsWith(value),
-            )}
-        </ul>
-        </div>
-    );
+        return (
+            <div
+                ref={ref}
+                style={style}
+                className={className}
+                aria-labelledby={labeledBy}
+            >
+                <FormControl
+                    autoFocus
+                    className="mx-3 my-2 w-auto"
+                    placeholder="Type to filter..."
+                    onChange={(e) => setValue(e.target.value)}
+                    value={value}
+                />
+                <ul className="list-unstyled">
+                    {React.Children.toArray(children).filter(
+                        (child) =>
+                            !value || child.props.children.toLowerCase().startsWith(value),
+                    )}
+                </ul>
+            </div>
+        );
     },
 );
 class Pins extends Component {
@@ -55,9 +56,15 @@ class Pins extends Component {
         this.state = {
             pinls: []
         }
+        this.pid = null;
+        this.generate = this.generate.bind(this)
     }
     async componentDidMount() {
         await this.generate();
+        this.pid = setInterval(this.generate, 1500)
+    }
+    componentWillUnmount() {
+        clearInterval(this.pid)
     }
     async generate() {
         var pinls = await PromiseIpc.send("pins.ls")
@@ -73,7 +80,7 @@ class Pins extends Component {
     }
     async actionSelect(key) {
         console.log(key)
-        switch(key) {
+        switch (key) {
             case "1": {
                 var func = () => new Promise(async (resolve, reject) => {
                     var ref = React.createRef();
@@ -90,11 +97,11 @@ class Pins extends Component {
                         </div>,
                         buttons: {
                             left: [{
-                                    text: 'Cancel',
-                                    className: 'secondary',
-                                    action: function () {
-                                        Popup.close();
-                                } 
+                                text: 'Cancel',
+                                className: 'secondary',
+                                action: function () {
+                                    Popup.close();
+                                }
                             }],
                             right: [{
                                 text: 'Done',
@@ -108,8 +115,9 @@ class Pins extends Component {
                     });
                 })
                 var ret = await func();
+                var video_info = (await Utils.accounts.permalinkToVideoInfo(ret.reflink))
                 let cids = [];
-                for(const source of (await Utils.accounts.permalinkToVideoInfo(ret.reflink)).sources) {
+                for (const source of video_info.sources) {
                     const url = new (require('url').URL)(source.url)
                     try {
                         new CID(url.host)
@@ -118,13 +126,16 @@ class Pins extends Component {
                         console.log(ex)
                     }
                 }
-                if(cids.length !== 0) {
+                if (cids.length !== 0) {
                     NotificationManager.info("Pinning in progress")
                     await PromiseIpc.send("pins.add", {
                         _id: ret.reflink,
                         source: "Manual Add",
                         cids,
-                        expire: null
+                        expire: null,
+                        meta: {
+                            title: video_info.title
+                        }
                     })
                     NotificationManager.success(`Video with reflink of ${ret.reflink} has been successfully pinned! Thank you for contributing!`, "Pin Successful")
                 } else {
@@ -134,7 +145,7 @@ class Pins extends Component {
             }
             case "2": {
                 NotificationManager.info("GC has started");
-                var {ipfs} = await IpfsHandler.getIpfs();
+                var { ipfs } = await IpfsHandler.getIpfs();
                 ipfs.repo.gc()
                 break;
             }
@@ -161,6 +172,11 @@ class Pins extends Component {
             rows.push(<tr key={pin._id}>
                 <td>
                     <a href={`#/watch/${pin._id}`}>{pin._id}</a>
+                    <br />
+                    (<strong>{RefLink.parse(pin._id).root}</strong>)
+                </td>
+                <td>
+                    {pin.meta ? pin.meta.title : null}
                 </td>
                 <td>
                     {pin.cids.length > 1 ? <a>View ({pin.cids.length})</a> : pin.cids}
@@ -186,11 +202,11 @@ class Pins extends Component {
         }
         return (<div>
             <Row>
-                <Col style={{textAlign: "right"}}>
+                <Col style={{ textAlign: "right" }}>
                     <Dropdown onSelect={this.actionSelect}>
                         <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                        <Button>
-                            Actions</Button>
+                            <Button>
+                                Actions</Button>
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu as={CustomMenu}>
@@ -204,6 +220,7 @@ class Pins extends Component {
                 <thead>
                     <tr>
                         <th>Reflink</th>
+                        <th>Title</th>
                         <th>CID(s)</th>
                         <th>Source</th>
                         <th>Expiration</th>

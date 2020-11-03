@@ -1,5 +1,6 @@
 import PouchDB from 'pouchdb'
 import RefLink from '../../RefLink'
+import IpfsHandler from './ipfsHandler'
 const Path = require('path');
 const debug = require('debug')('blasio:pins')
 const Schedule = require('node-schedule')
@@ -24,6 +25,16 @@ class Pins {
         if (!doc.expire) {
             doc.expire = null;
         }
+        var {ipfs} = await IpfsHandler.getIpfs();
+
+        (await ipfs.config.get("Bootstrap")).forEach(async (bt) => {
+            try {
+                await ipfs.swarm.connect(bt)
+            } catch (ex) {
+                console.log(ex)
+            }
+        });
+
         var totalSize = 0;
         for (var cid of doc.cids) {
             await this.self.ipfs.pin.add(cid);
@@ -31,8 +42,9 @@ class Pins {
             totalSize = + objectInfo.CumulativeSize
         }
         doc.size = totalSize;
+        //Prevet old and new docs from stepping on eachother.
         await this.db.upsert(doc._id, (oldDoc) => {
-            if((oldDoc.expire < doc.expire && oldDoc.expire !== null) || doc.expire === null) {
+            if((oldDoc.expire < doc.expire && oldDoc.expire) || doc.expire === null || typeof oldDoc.expire === "undefined") {
                 return doc;
             } else {
                 return oldDoc;
