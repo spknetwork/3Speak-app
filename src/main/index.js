@@ -3,6 +3,7 @@ import {app, BrowserWindow} from 'electron';
 import debug from 'debug'
 import Core from './core'
 import ipcAdapter from './ipcAdapter'
+import AutoUpdator from './AutoUpdater'
 
 const entryUrl = process.env.NODE_ENV === 'development'
   ? 'http://localhost:6789/index.html'
@@ -33,6 +34,7 @@ app.on('window-all-closed', () => {
 });
 let coreInstance = new Core();
 (async () => {
+  new AutoUpdator().run();
   try {
     await coreInstance.start()
     new ipcAdapter(coreInstance).start()

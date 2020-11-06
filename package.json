@@ -63,6 +63,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "brace": "^0.11.1",
+    "compare-versions": "^3.6.0",
     "compressjs": "^1.0.3",
     "convert-units": "^2.3.4",
     "country-list": "^2.2.0",
@@ -103,6 +104,7 @@
   },
   "build": {
     "productName": "3Speak-app",
+    "appId": "co.3speak.app",
     "asar": false,
     "files": [
       "dist/",
@@ -136,7 +138,7 @@
       "icon": "./src/renderer/assets/img/app.ico",
       "target": [
         {
-          "target": "squirrel",
+          "target": "nsis",
           "arch": [
             "x64"
           ]
