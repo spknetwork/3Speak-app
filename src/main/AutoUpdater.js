@@ -1,10 +1,11 @@
-import { app, dialog } from "electron";
+import { app, dialog, shell } from "electron";
 import Path from "path";
 import fs from "fs";
 import axios from 'axios';
 import compareVersions from 'compare-versions';
 import tmp from 'tmp';
 import { spawn } from 'child_process'
+const isWin = process.platform === 'win32'
 var version = require('../../package.json').version;
 
 class AutoUpdater {
@@ -16,7 +17,7 @@ class AutoUpdater {
                 if (compareVersions.compare(tag_name, version, '>')) {
                     //Update available
                     for (var asset of data.assets) {
-                        if (asset.name.includes("Setup") && asset.name.includes("exe")) {
+                        if (asset.name.includes("Setup") && asset.name.includes("exe") && isWin) {
                             var tmpDir = tmp.dirSync()
                             var filePath = Path.join(tmpDir.name, asset.name);
                             const file = fs.createWriteStream(filePath);
@@ -43,6 +44,24 @@ class AutoUpdater {
                                 type: "question", 
                                 buttons: [
                                     "Remind me later",
+                                    "View release log",
+                                    "Update"
+                                ],
+                                title: "Update available",
+                                message: `New update available version ${tag_name.slice(1)}\nWould you like to update your local 3Speak installation?`
+                            })
+                            if(dialogResponse === 2) {
+                                spawn(filePath, [], {detached: true});
+                                app.exit(1);
+                            } else if(dialogResponse === 1) {
+                                shell.openExternal(data.html_url)
+                            } else {
+                                break;
+                            }
+                            var dialogResponse = dialog.showMessageBoxSync({
+                                type: "question", 
+                                buttons: [
+                                    "Remind me later",
                                     "Update"
                                 ],
                                 title: "Update available",
@@ -52,6 +71,7 @@ class AutoUpdater {
                                 spawn(filePath, [], {detached: true});
                                 app.exit(1);
                             }
+                            break;
                         }
                     }
                 }
