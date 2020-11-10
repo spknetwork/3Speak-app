@@ -53,6 +53,7 @@ class AutoUpdater {
                             if(dialogResponse === 2) {
                                 spawn(filePath, [], {detached: true});
                                 app.exit(1);
+                                break;
                             } else if(dialogResponse === 1) {
                                 shell.openExternal(data.html_url)
                             } else {
