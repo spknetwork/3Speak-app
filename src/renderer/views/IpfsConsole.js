@@ -158,6 +158,10 @@ class IpfsDebug extends Component {
     }
     render() { 
         return ( <div style={{padding: "5px", overflow:"hidden"}}>
+            <h3>
+                This is the IPFS Debug Console. 
+                This is for advanced users only, if you don't know what you are doing stay out of this area.
+            </h3>
             <div style={{overflow:"show"}}>
                 <Row>
                     <Col style={{background:"#f8f9fa", margin: "5px"}}>
