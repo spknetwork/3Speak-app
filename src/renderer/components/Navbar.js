@@ -108,10 +108,10 @@ class SideBar extends Component {
                         <div className="pad_l"><h5>3Speak</h5></div>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="/intl/about_us">About us</a>
+                        <a className="nav-link" href="https://3speak.co/intl/about_us">About us</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="/intl/faq">FAQ</a>
+                        <a className="nav-link" href="https://3speak.co/intl/about_us">FAQ</a>
                     </li>
 
                     <li className="nav-item text-center">
