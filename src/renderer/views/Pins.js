@@ -191,7 +191,7 @@ class Pins extends Component {
                     })() : "Permanent"}
                 </td>
                 <td>
-                    {pin.size === 0 ? "" : sizeBest}
+                    {pin.size === 0 ? <strong>Pinning In Progress</strong> : sizeBest}
                 </td>
                 <td>
                     <Button variant="danger" onClick={() => this.removePin(pin._id)}>
@@ -224,7 +224,7 @@ class Pins extends Component {
                         <th>CID(s)</th>
                         <th>Source</th>
                         <th>Expiration</th>
-                        <th>Size</th>
+                        <th>Size/Status</th>
                         <th>Remove?</th>
                     </tr>
                 </thead>

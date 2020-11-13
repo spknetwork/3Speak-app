@@ -11,11 +11,15 @@ class Pins {
         this.self = self;
         this.db = new PouchDB(Path.join(this.self._options.path, "pins"))
         this.clean = this.clean.bind(this);
+        this.inProgressPins = {};
     }
     async ls(selector = {}) {
-        return (await this.db.find({
+        var out = [];
+        out.push(...Object.values(this.inProgressPins));
+        out.push(...((await this.db.find({
             selector
-        })).docs
+        })).docs));
+        return out;
     }
     async add(doc) {
         debug(`received add with id of ${doc._id}`)
@@ -34,7 +38,8 @@ class Pins {
                 console.log(ex)
             }
         });
-
+        doc.size = 0;
+        this.inProgressPins[doc._id] = doc;
         var totalSize = 0;
         for (var cid of doc.cids) {
             await this.self.ipfs.pin.add(cid);
@@ -50,6 +55,7 @@ class Pins {
                 return oldDoc;
             }
         })
+        delete this.inProgressPins[doc._id];
     }
     async rm(reflink) {
         var doc = (await this.db.get(reflink))
