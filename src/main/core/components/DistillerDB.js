@@ -53,7 +53,6 @@ class DistillerDB {
         const author = splitted[1];
         const id = splitted[2];
 
-        let json_content;
         switch (sourceSystem) {
             case "hive": {
                 if (id) {
@@ -63,15 +62,22 @@ class DistillerDB {
                             return resolve(ret);
                         })
                     });*/
-                    var out = await hiveClient.database.call('get_content', [author, id])
-                    if (out) {
+                    for(var x = 0; x < 5; x++) {
                         try {
-                            out.json_metadata = JSON.parse(out.json_metadata)
-                        } catch {
-
-                        }
+                            var out = await hiveClient.database.call('get_content', [author, id])
+                            if (out) {
+                                try {
+                                    out.json_metadata = JSON.parse(out.json_metadata)
+                                } catch {
+        
+                                }
+                            }
+                            return out;
+                        } catch (ex) {
+                            console.log(ex)
+                            continue;
+                        }  
                     }
-                    return out;
                 } else {
                     return (await hiveClient.database.getAccounts([author]))[0];
                 }
