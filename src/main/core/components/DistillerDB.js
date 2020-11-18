@@ -7,9 +7,10 @@ PouchDB.plugin(require('pouchdb-find'));
 PouchDB.plugin(require('pouchdb-upsert'));
 
 const hiveClient = new HiveClient([
-    "https://anyx.io",
+    "https://api.openhive.network",
     "https://hived.privex.io",
-    "https://techcoderx.com"
+    "https://api.hive.blog",
+    "https://anyx.io"
 ])
 const hive = require('@hiveio/hive-js');
 hiveClient.options.timeout = 5000
@@ -48,6 +49,7 @@ class DistillerDB {
      */
     async _fetch(permalink) {
         debug(`Fetching permalink "${permalink}" from fresh source`);
+        this.self.log.verbose(`Fetching permalink "${permalink}" from fresh source`)
         const splitted = permalink.split(":");
         const sourceSystem = splitted[0];
         const author = splitted[1];
@@ -75,6 +77,7 @@ class DistillerDB {
                             return out;
                         } catch (ex) {
                             console.log(ex)
+                            this.self.log.error(ex)
                             continue;
                         }  
                     }
