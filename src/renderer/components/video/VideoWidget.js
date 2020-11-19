@@ -39,7 +39,7 @@ class VideoWidget extends Component {
                 </div>
                 <a href={`#/watch/${this.props.reflink}`}>
                     <img style={{width: "100% !important", padding: "5px"}} className="img-fluid bg-dark" src={(() => {
-                        if(this.props.isNSFW) {
+                        if(this.props.isNsfw === true) {
                             return nsfwWarning;
                         } else {
                             return "https://img.3speakcontent.co/"+this.state.reflink.permlink+"/thumbnail.png"

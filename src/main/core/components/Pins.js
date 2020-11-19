@@ -80,6 +80,7 @@ class Pins {
             }
         })).docs;
         debug(`Cycle pin removal ${JSON.stringify(pinsToDestroy)}`)
+        this.self.log.verbose(`Cycle pin removal ${JSON.stringify(pinsToDestroy)}`)
         for (var pin of pinsToDestroy) {
             try {
                 await this.self.ipfs.pin.rm(pin.cids)
