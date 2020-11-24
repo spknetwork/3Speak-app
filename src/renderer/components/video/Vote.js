@@ -6,9 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Utils from "../../utils";
 import RefLink from "../../../main/RefLink";
 
-const {Component} = require("react");
-
-class Vote extends Component {
+class Vote extends React.Component {
     constructor(props) {
         super(props)
 
