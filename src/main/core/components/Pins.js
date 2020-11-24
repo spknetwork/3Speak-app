@@ -1,5 +1,6 @@
 import PouchDB from 'pouchdb'
 import RefLink from '../../RefLink'
+import IpfsHandler from './ipfsHandler'
 const Path = require('path');
 const debug = require('debug')('blasio:pins')
 const Schedule = require('node-schedule')
@@ -10,11 +11,15 @@ class Pins {
         this.self = self;
         this.db = new PouchDB(Path.join(this.self._options.path, "pins"))
         this.clean = this.clean.bind(this);
+        this.inProgressPins = {};
     }
     async ls(selector = {}) {
-        return (await this.db.find({
+        var out = [];
+        out.push(...Object.values(this.inProgressPins));
+        out.push(...((await this.db.find({
             selector
-        })).docs
+        })).docs));
+        return out;
     }
     async add(doc) {
         debug(`received add with id of ${doc._id}`)
@@ -24,6 +29,17 @@ class Pins {
         if (!doc.expire) {
             doc.expire = null;
         }
+        var {ipfs} = await IpfsHandler.getIpfs();
+
+        (await ipfs.config.get("Bootstrap")).forEach(async (bt) => {
+            try {
+                await ipfs.swarm.connect(bt)
+            } catch (ex) {
+                console.log(ex)
+            }
+        });
+        doc.size = 0;
+        this.inProgressPins[doc._id] = doc;
         var totalSize = 0;
         for (var cid of doc.cids) {
             await this.self.ipfs.pin.add(cid);
@@ -31,13 +47,15 @@ class Pins {
             totalSize = + objectInfo.CumulativeSize
         }
         doc.size = totalSize;
+        //Prevet old and new docs from stepping on eachother.
         await this.db.upsert(doc._id, (oldDoc) => {
-            if((oldDoc.expire < doc.expire && oldDoc.expire !== null) || doc.expire === null) {
+            if((oldDoc.expire < doc.expire && oldDoc.expire) || doc.expire === null || typeof oldDoc.expire === "undefined") {
                 return doc;
             } else {
                 return oldDoc;
             }
         })
+        delete this.inProgressPins[doc._id];
     }
     async rm(reflink) {
         var doc = (await this.db.get(reflink))
@@ -62,6 +80,7 @@ class Pins {
             }
         })).docs;
         debug(`Cycle pin removal ${JSON.stringify(pinsToDestroy)}`)
+        this.self.log.verbose(`Cycle pin removal ${JSON.stringify(pinsToDestroy)}`)
         for (var pin of pinsToDestroy) {
             try {
                 await this.self.ipfs.pin.rm(pin.cids)

@@ -7,7 +7,7 @@ import CID from 'cids'
 const Finder = ArraySearch.Finder;
 
 const ipfs = {
-    gateway: "https://gateway.originprotocol.com/ipfs/",
+    gateway: "https://ipfs.3speak.co/ipfs/",
     async getGateway(cid) {
         var {ipfs:ipfsInstance} = await ipfsHandler.getIpfs();
         var has = false;

@@ -3,6 +3,7 @@ import {app, BrowserWindow} from 'electron';
 import debug from 'debug'
 import Core from './core'
 import ipcAdapter from './ipcAdapter'
+import AutoUpdator from './AutoUpdater'
 
 const entryUrl = process.env.NODE_ENV === 'development'
   ? 'http://localhost:6789/index.html'
@@ -13,6 +14,7 @@ if(process.env.NODE_ENV === 'development') {
 }
 
 let window = null;
+let coreInstance = new Core();
 
 app.on('ready', () => {
   window = new BrowserWindow({width: 800, height: 600,
@@ -26,13 +28,14 @@ app.on('ready', () => {
   window.on('closed', () => window = null);
 });
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
   if(process.platform !== 'darwin') {
+    await coreInstance.stop();
     app.quit();
   }
 });
-let coreInstance = new Core();
 (async () => {
+  new AutoUpdator().run();
   try {
     await coreInstance.start()
     new ipcAdapter(coreInstance).start()

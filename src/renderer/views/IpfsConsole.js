@@ -12,6 +12,7 @@ import 'brace/mode/json';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
 import 'brace/theme/solarized_dark';
+const {shell} = require('electron') // deconstructing assignment
 
 class IpfsStatsLive extends Component {
     constructor(props) {
@@ -30,7 +31,7 @@ class IpfsStatsLive extends Component {
         clearInterval(this.pid);
     }
     async update() {
-        const {ipfs} = await IpfsHandler.getIpfs()
+        const {ipfs, ipfsPath} = await IpfsHandler.getIpfs()
         var out = {};
         for await (var e of ipfs.stats.bw()) {
             for(var key in e) {
@@ -39,6 +40,7 @@ class IpfsStatsLive extends Component {
         }
         var repo = await ipfs.stats.repo()
         repo.repoSize = repo.repoSize.toNumber();
+        repo.path = ipfsPath;
         this.setState({
             stats: out,
             repo
@@ -90,12 +92,19 @@ class IpfsStatsLive extends Component {
                 <tr>
                     <th>#</th>
                     <th>Repo Size</th>
+                    <th>Repo Path</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <th></th>
                     <th>{(Convert(this.state.repo.repoSize).from("B").toBest().val || 0).toFixed(2) + " " + Convert(this.state.repo.repoSize).from("B").toBest().unit}</th>
+                    <th>
+                        {this.state.repo.path} 
+                        <Button style={{marginLeft: "5px"}} className="btn-sm" onClick={() => {shell.openItem(this.state.repo.path)}}>
+                            Open
+                        </Button>
+                    </th>
                 </tr>
             </tbody>
         </Table>);
@@ -107,6 +116,7 @@ class IpfsDebug extends Component {
         super(props);
         this.state = { ipfsConfig: {}, ipfsInfo: {} }
         this.editor = React.createRef();
+        this.pid = null;
     }
     componentDidMount() {
         this.getIpfsConfig();
@@ -135,7 +145,7 @@ class IpfsDebug extends Component {
         })
         
         var configError;
-        setInterval(() => {
+        this.pid = setInterval(() => {
             const annotations = this.editor.current.jsonEditor.aceEditor.getSession().getAnnotations();
             configError = annotations.length === 0 ? false : true
             this.setState({
@@ -143,8 +153,15 @@ class IpfsDebug extends Component {
             })
         }, 150)
     }
+    componentWillUnmount() {
+        clearInterval(this.pid)
+    }
     render() { 
         return ( <div style={{padding: "5px", overflow:"hidden"}}>
+            <h3>
+                This is the IPFS Debug Console. 
+                This is for advanced users only, if you don't know what you are doing stay out of this area.
+            </h3>
             <div style={{overflow:"show"}}>
                 <Row>
                     <Col style={{background:"#f8f9fa", margin: "5px"}}>
