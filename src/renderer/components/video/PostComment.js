@@ -107,8 +107,8 @@ class PostComment extends Component {
                         <ReactMarkdown escapeHtml={false} source={DOMPurify.sanitize(this.state.commentInfo.description)}></ReactMarkdown>
                     </div>
                     <div className="panel-footer ml-0 ml-md-4">
-                        <FaDollarSign className="fa fa-dollar-sign" /> <span id="" className="post-payout">{this.state.commentInfo.payout}</span>
-                        <span id=""> • <Vote reflink={this.props.reflink} /> </span>
+                        {/*<FaDollarSign className="fa fa-dollar-sign" /> <span id="" className="post-payout">{this.state.commentInfo.payout}</span>
+                        <span id=""> • */}<Vote reflink={this.props.reflink} />{/* </span>*/}
                     </div>
                 </div>
             </div>
