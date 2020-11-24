@@ -43,7 +43,7 @@ const ipfs = {
 const accounts = {
     /**
      * Retrieves post information from reflink.
-     * @param {String|RefLink} reflink 
+     * @param {String|RefLink} reflink
      */
     async permalinkToPostInfo(reflink) {
         if(!(reflink instanceof RefLink)) {
@@ -54,7 +54,7 @@ const accounts = {
     },
     /**
      * Retrieves post information as videoInfo from reflink.
-     * @param {String|RefLink} reflink 
+     * @param {String|RefLink} reflink
      */
     async permalinkToVideoInfo(reflink) {
         if(!(reflink instanceof RefLink)) {
@@ -132,7 +132,7 @@ const accounts = {
     /**
      * Retrieves Account profile picture URL.
      * @todo Future item: Pull image from URL, then store locally for later use.
-     * @param {String|RefLink} reflink 
+     * @param {String|RefLink} reflink
      */
     async getProfilePictureURL(reflink) {
         if(!(reflink instanceof RefLink)) {
@@ -217,12 +217,10 @@ const accounts = {
                         "distiller.getAccount",
                         `hive:${reflink.root}`)
                 ).json_content
-                console.log(accountBalances)
                 accountBalances = {
                     hive: accountBalances.balance,
                     hbd: accountBalances.sbd_balance
                 }
-                console.log(accountBalances)
                 return accountBalances
             }
             case "orbitdb": {
@@ -238,7 +236,7 @@ const video = {
     /**
      * Retrieves video source URL. Basic, gets first video source in list.
      * @todo Implement handling for multi video sources.
-     * @param {String} permalink 
+     * @param {String} permalink
      */
     async getVideoSourceURL(permalink) {
         let post_content;
@@ -259,7 +257,6 @@ const video = {
                 } catch (ex) {
                     console.log(ex)
                 }
-                console.log(gateway)
                 return gateway + ipfs.urlToIpfsPath(videoSource.url);
             } catch {
                 //return `https://cdn.3speakcontent.co/${reflink.root}/${reflink.permlink}`;
@@ -271,7 +268,7 @@ const video = {
     },
     /**
      * Retrieves thumbnail URL.
-     * @param {String|Object} permalink 
+     * @param {String|Object} permalink
      */
     async getThumbnailURL(permalink) {
         let post_content;
@@ -288,7 +285,6 @@ const video = {
             try {
                 var cid = ipfs.urlToCID(videoSource.url);
                 var gateway = await ipfs.getGateway(cid);
-                console.log(gateway)
                 return gateway + ipfs.urlToIpfsPath(videoSource.url);
             } catch {
                 return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`

@@ -19,7 +19,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
             onClick(e);
         }}>
         <BsThreeDotsVertical/>
-        {children}      
+        {children}
     </a>
 ));
 
@@ -73,7 +73,7 @@ class PostComment extends Component {
                 clipboard.writeText(reflink, clipboard)
             }
             default: {
-                
+
             }
         }
     }

@@ -24,12 +24,10 @@ class Vote extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.reflink)
         Utils.accounts.permalinkToPostInfo(this.props.reflink).then(post => {
             let votes = post.active_votes.sort((e,i) => {
                 return i.rshares - e.rshares
             });
-            console.log(votes, post)
             this.setState({
                 downvoters: votes.filter(vote => vote.percent < 0),
                 upvoters: votes.filter(vote => vote.percent >= 0).reverse()
