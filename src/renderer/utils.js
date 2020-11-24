@@ -116,8 +116,6 @@ const accounts = {
                     creation: new Date(post_content.created + "Z").toISOString(),
                     title,
                     description,
-                    active_votes: json_metadata.active_votes,
-                    /*payout: new Date(json_metadata.cashout_time) > new Date() ? json_metadata.pending_payout_value : json_metadata.total_payout_value,*/
                     tags: json_metadata.tags,
                     refs: [`hive:${post_content.author}:${post_content.permlink}`], //Reserved for future use when multi account system support is added.
                     meta: {duration}, //Reserved for future use.
