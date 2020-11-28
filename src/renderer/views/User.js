@@ -197,8 +197,6 @@ class User extends Component {
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/`}>Videos <span className="sr-only">(current)</span></Nav.Link>
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/earning`}>Earnings</Nav.Link>
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/about`}>About</Nav.Link>
-                            <Nav.Link href={`#/user/${this.state.reflink.toString()}/native-ads`}>Ads Manager</Nav.Link>
-                            <Nav.Link href={`#/user/${this.state.reflink.toString()}/playlists`}>Playlists</Nav.Link>
                         </Nav>
                         <div className="form-inline my-2 my-lg-0">
                             <Follow reflink={this.state.reflink.toString()} />
