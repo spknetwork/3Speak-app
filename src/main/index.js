@@ -21,7 +21,8 @@ app.on('ready', () => {
     icon: path.resolve(__dirname, "../renderer/assets/img/app.png"),
     webPreferences: {
       nodeIntegration: true,
-      webSecurity: false
+      webSecurity: false,
+      webviewTag: true
     }
   });
   window.loadURL(entryUrl);

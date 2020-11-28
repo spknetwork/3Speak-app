@@ -175,6 +175,9 @@ class User extends Component {
         document.getElementById('ad-spaces-list').innerHTML = allTitle
 
     }
+    async newPlaylistInit() {
+        console.log('Creating new playlist')
+    }
     render() {
         return (<div>
             <div className="single-channel-image">
@@ -195,6 +198,7 @@ class User extends Component {
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/earning`}>Earnings</Nav.Link>
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/about`}>About</Nav.Link>
                             <Nav.Link href={`#/user/${this.state.reflink.toString()}/native-ads`}>Ads Manager</Nav.Link>
+                            <Nav.Link href={`#/user/${this.state.reflink.toString()}/playlists`}>Playlists</Nav.Link>
                         </Nav>
                         <div className="form-inline my-2 my-lg-0">
                             <Follow reflink={this.state.reflink.toString()} />
@@ -352,6 +356,38 @@ class User extends Component {
                             </Col>
                         </Row>
                     </div>
+                </Route>
+                <Route path={`/user/${this.state.reflink.toString()}/playlists`}>
+                    <Row>
+                    <Col md={12} className="playlist-enclose">
+                            <Card className="status create-playlist-btn-area">
+                                <Card.Body className="bg-white text-center">
+                                    <Button className="btn btn-light" style={{marginTop: "3%", verticalAlign: "baseline", position: "relative", float: "right"}} onClick={this.newPlaylistInit}>
+                                        NEW PLAYLIST
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+
+                            <Card className="status view-playlists">
+                                <Card.Body className="bg-white text-center">
+                                    View list of playlists
+                                </Card.Body>
+                            </Card>
+
+                            <Card className="status new-playlist-form-area">
+                                <Card.Body className="bg-white text-center">
+                                    Create a new playlist
+
+                                    <Button className="btn btn-light" style={{marginTop: "3%", verticalAlign: "baseline", position: "relative", float: "right"}}>
+                                        CREATE
+                                    </Button>
+                                    <Button className="btn btn-light" style={{marginTop: "3%", verticalAlign: "baseline", position: "relative", float: "right"}}>
+                                        CANCEL
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
                 </Route>
             </Switch>
         </div>);
