@@ -317,10 +317,10 @@ class Pins extends Component {
                                             this.updateSearchTables()
                                         }}>X</Button>
                                     ) : (
-                                        <button variant="success" onClick={async() => {
+                                        <Button variant="success" onClick={async() => {
                                             await this.PinLocally([video.ipfs], video.title, video.id)
                                             this.updateSearchTables()
-                                        }}>O</button>
+                                        }}>O</Button>
                                     )}</td>
                                 </tr>
                             ))}
