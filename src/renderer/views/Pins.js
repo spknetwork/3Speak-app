@@ -295,7 +295,7 @@ class Pins extends Component {
             }} />
             <Row>
                 {['new', 'trending'].map(type => (
-                    <Col>
+                    <Col key={type}>
                         <Table striped bordered hover size='sm'>
                             <thead>
                             <tr>
@@ -307,7 +307,7 @@ class Pins extends Component {
                             </thead>
                             <tbody>
                             {this.state[`${type}Videos`].map(video => (
-                                <tr>
+                                <tr key={`${type}-${video.author}-${video.permlink}`}>
                                     <td><img src={video.images.thumbnail} /></td>
                                     <td>{video.title}</td>
                                     <td>{video.author}</td>
