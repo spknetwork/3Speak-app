@@ -71,11 +71,12 @@ class Pins extends Component {
     updateSearchTables( community = null ) {
         let ids = this.state.pinls.map(x => {return x._id})
         console.log(ids)
-        let newUrl = 'https://3speak.co/apiv2/feeds/new?limit=10'
-        let trendingUrl = 'https://3speak.co/apiv2/feeds/trending?limit=10'
+        let params = '?limit=10&ipfsOnly=true'
+        let newUrl = `https://3speak.co/apiv2/feeds/new${params}`
+        let trendingUrl = `https://3speak.co/apiv2/feeds/trending${params}`
         if (community) {
-            newUrl = `https://3speak.co/apiv2/feeds/community/${community}/new?limit=10`
-            trendingUrl = `https://3speak.co/apiv2/feeds/community/${community}/trending?limit=10`
+            newUrl = `https://3speak.co/apiv2/feeds/community/${community}/new${params}`
+            trendingUrl = `https://3speak.co/apiv2/feeds/community/${community}/trending${params}`
         }
         fetch(newUrl)
             .then(r => r.json())
