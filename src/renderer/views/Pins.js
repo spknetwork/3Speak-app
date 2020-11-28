@@ -9,6 +9,7 @@ import Utils from '../utils';
 import CID from 'cids'
 import RefLink from '../../main/RefLink'
 import Debug from "debug";
+import DateTime from "date-and-time";
 const debug = Debug("blasio:pins")
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
@@ -309,7 +310,17 @@ class Pins extends Component {
                             <tbody>
                             {this.state[`${type}Videos`].map(video => (
                                 <tr key={`${type}-${video.author}-${video.permlink}`}>
-                                    <td><img src={video.images.thumbnail} /></td>
+                                    <td><div className="teaser_holder video-card-image">
+                                        <div className="card-label">
+                                            {(() => {
+                                                const pattern = DateTime.compile('mm:ss');
+                                                return DateTime.format(new Date(video.duration * 1000), pattern)
+                                            })()}
+                                        </div>
+                                        <a href={`#/watch/hive:${video.author}:${video.permlink}`}>
+                                            <img className="img-fluid bg-dark" src={video.images.thumbnail} alt="" />
+                                        </a>
+                                    </div></td>
                                     <td>{video.title}</td>
                                     <td>{video.author}</td>
                                     <td>{video.isPinned ? (
