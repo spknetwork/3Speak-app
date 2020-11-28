@@ -72,14 +72,12 @@ const accounts = {
                 let title;
                 let description;
                 let duration;
-                let active_votes;
                 try {
                     const video_info = json_metadata.video.info;
                     const video_content = json_metadata.video.content;
                     description = video_content.description;
                     title = video_info.title
                     duration = video_info.duration
-                    active_votes = post_content.active_votes
 
                     let urls = [];
                     if (video_info.ipfs != null && video_info.ipfs) {
