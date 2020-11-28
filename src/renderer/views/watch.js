@@ -42,7 +42,8 @@ class watch extends React.Component {
             commentGraph: null,
             videoLink: "",
             recommendedVideos: [],
-            loaded: false
+            loaded: false,
+            loadingMessage: "loading"
         };
         this.player = React.createRef()
         this.gearSelect = this.gearSelect.bind(this);
@@ -50,8 +51,14 @@ class watch extends React.Component {
     }
     async componentDidMount() {
         console.log(this.state)
-        await this.generalFetch() 
-        await this.mountPlayer();
+        try {
+            await this.generalFetch() 
+            this.setState({loadingMessage: "Loading: Mounting player..."})
+            await this.mountPlayer();
+        } catch (ex) {
+            this.setState({loadingMessage: "Loading resulted in error"})
+            throw ex;
+        }
         this.setState({
             loaded: true
         })
@@ -73,7 +80,7 @@ class watch extends React.Component {
     }
     async generalFetch() {
         this.setState({
-            video_info: await utils.accounts.permalinkToVideoInfo(this.state.reflink),
+            video_info: await utils.accounts.permalinkToVideoInfo(this.state.reflink, {type:"video"}),
             post_info: await utils.accounts.permalinkToPostInfo(this.state.reflink)
         })
         try {
@@ -81,6 +88,7 @@ class watch extends React.Component {
             this.setState({ profilePictureURL: await utils.accounts.getProfilePictureURL(this.state.reflink) })
         } catch (ex) {
             console.log(ex)
+            throw ex;
         }
         document.title = `3Speak - ${this.state.video_info.title}`
     }
@@ -329,7 +337,12 @@ class watch extends React.Component {
                         </Row>
                     </Col>
                 </Row>
-            </Container> : <LoopCircleLoading/>}
+            </Container> : <div>
+             <LoopCircleLoading/> 
+             <center style={{margin: "auto", position: "absolute", left: "0px", right: "0px", top: "60%", bottom: "0px"}}>
+                <h1 style={{top: "60%", fontSize:"20px"}}>{this.state.loadingMessage}</h1>
+             </center>
+             </div>}
         </div>;
     }
 }

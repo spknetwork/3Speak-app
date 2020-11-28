@@ -56,9 +56,12 @@ const accounts = {
      * Retrieves post information as videoInfo from reflink.
      * @param {String|RefLink} reflink 
      */
-    async permalinkToVideoInfo(reflink) {
+    async permalinkToVideoInfo(reflink, options = {}) {
         if(!(reflink instanceof RefLink)) {
             reflink = RefLink.parse(reflink)
+        }
+        if(!options.type) {
+            options.type == "*"
         }
         var post_content = (await PromiseIPC.send("distiller.getContent", reflink.toString())).json_content
         if(!post_content) {
@@ -67,7 +70,9 @@ const accounts = {
         switch (reflink.source.value) {
             case "hive": {
                 const json_metadata = post_content.json_metadata;
-
+                if(!json_metadata.app.includes("3speak") && options.type === "video") {
+                    throw new Error("Invalid post content. Not a video");
+                }
                 let sources = [];
                 let title;
                 let description;
