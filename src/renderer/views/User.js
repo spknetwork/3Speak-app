@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import GridFeed from "./GridFeed";
 import Follow from "../components/widgets/Follow";
-import { Navbar, Nav, Card, Col, Row } from "react-bootstrap";
+import { Navbar, Nav, Card, Col, Row, Button } from "react-bootstrap";
 import RefLink from "../../main/RefLink";
 import {
     Switch,
@@ -30,7 +30,8 @@ class User extends Component {
             profileURL: await Utils.accounts.getProfilePictureURL(this.state.reflink),
             profileAbout: await Utils.accounts.getProfileAbout(this.state.reflink),
             hiveBalance: (await accountBalances).hive,
-            hbdBalance: (await accountBalances).hbd
+            hbdBalance: (await accountBalances).hbd,
+            username: this.state.reflink.root
         })
     }
     get coverURL() {

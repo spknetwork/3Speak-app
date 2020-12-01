@@ -82,7 +82,7 @@ class SideBar extends Component {
                         </div>
                             First Uploads
                     </Nav.Link>
-                    <Nav.Link href="https://studio.3speak.co">
+                    <Nav.Link href="#/creatorstudio">
                         <div className="nav_icons"><FaToolbox/>
                         </div>
                             Creator Studio
