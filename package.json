@@ -57,7 +57,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@hiveio/dhive": "^0.14.1",
+    "@hiveio/dhive": "^0.14.8",
     "@hiveio/hive-js": "^0.8.2",
     "arraysearch": "^1.2.0",
     "axios": "^0.19.2",
