@@ -5,8 +5,8 @@ const fs = require('fs');
 require('winston-daily-rotate-file');
 
 module.exports = function (workingDirectory) {
-    if (fs.existsSync(workingDirectory)) {
-        fs.link
+    if (!fs.existsSync(workingDirectory)) {
+        fs.mkdirSync(workingDirectory)
     }
     const Logger = winston.createLogger({
         level: 'info',
