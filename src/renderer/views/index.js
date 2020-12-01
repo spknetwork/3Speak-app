@@ -8,6 +8,7 @@ import Community from './Community'
 import NotFound from './NotFound'
 import Pins from './Pins'
 import IpfsConsole from './IpfsConsole'
+import CreatorStudio from './CreatorStudio'
 export default {
     watch,
     GridFeed,
@@ -18,5 +19,6 @@ export default {
     Community,
     Leaderboard,
     Pins,
-    IpfsConsole
+    IpfsConsole,
+    CreatorStudio
 }

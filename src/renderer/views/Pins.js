@@ -233,7 +233,7 @@ class Pins extends Component {
                     (<strong>{RefLink.parse(pin._id).root}</strong>)
                 </td>
                 <td>
-                    {pin.meta ? pin.meta.title : null}
+                    <a href={`#/watch/${pin._id}`}>{pin.meta ? pin.meta.title : null} </a>
                 </td>
                 <td>
                     {pin.cids.length > 1 ? <a>View ({pin.cids.length})</a> : pin.cids}

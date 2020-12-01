@@ -28,9 +28,12 @@ class Core {
         //await Components.ipfsHandler.ready;
         var {ipfs} = await Components.ipfsHandler.getIpfs();
         this.ipfs = ipfs;
-        this.ipfs.id().then(peerInfo => {
+        try {
+            var peerInfo = await this.ipfs.id()
             this.log.info(`IPFS operational with PeerID of ${peerInfo.id}`)
-        })
+        } catch (ex) {
+            this.log.error(ex)
+        }
         this.pins = new Components.Pins(this)
         await this.pins.start()
     }
