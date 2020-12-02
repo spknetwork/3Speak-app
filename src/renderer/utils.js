@@ -11,11 +11,15 @@ const ipfs = {
     async getGateway(cid) {
         var {ipfs:ipfsInstance} = await ipfsHandler.getIpfs();
         var has = false;
-        for await(var pin of ipfsInstance.pin.ls({path: cid, type:"recursive"})) {
-            if(pin.cid.equals(new CID(cid))) {
-                has = true;
-                break;
+        try {
+            for await(var pin of ipfsInstance.pin.ls({path: cid, type:"recursive"})) {
+                if(pin.cid.equals(new CID(cid))) {
+                    has = true;
+                    break;
+                }
             }
+        } catch (ex) {
+            console.log(ex)
         }
         if(has) {
             return "http://localhost:8080/ipfs/"
@@ -252,11 +256,12 @@ const video = {
         if(videoSource) {
             try {
                 var cid = ipfs.urlToCID(videoSource.url);
+                let gateway;
                 try {
-
-                    var gateway = await ipfs.getGateway(cid);
+                    gateway = await ipfs.getGateway(cid);
                 } catch (ex) {
                     console.log(ex)
+                    throw ex;
                 }
                 return gateway + ipfs.urlToIpfsPath(videoSource.url);
             } catch {
