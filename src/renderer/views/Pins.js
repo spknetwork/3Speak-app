@@ -69,7 +69,7 @@ class Pins extends Component {
         this.pid = setInterval(this.generate, 1500)
         this.updateSearchTables()
     }
-    updateSearchTables( community = null ) {
+    updateSearchTables( community = null , creator = null) {
         let ids = this.state.pinls.map(x => {return x._id})
         console.log(ids)
         let params = '?limit=10&ipfsOnly=true'
@@ -78,7 +78,11 @@ class Pins extends Component {
         if (community) {
             newUrl = `https://3speak.co/apiv2/feeds/community/${community}/new${params}`
             trendingUrl = `https://3speak.co/apiv2/feeds/community/${community}/trending${params}`
+        } else if (creator && creator.length > 2) {
+            newUrl = `https://3speak.co/apiv2/feeds/@${creator}`
+            trendingUrl = null
         }
+
         fetch(newUrl)
             .then(r => r.json())
             .then(r => {
@@ -90,16 +94,21 @@ class Pins extends Component {
                 console.log(r)
                 this.setState({newVideos: r})
             })
-        fetch(trendingUrl)
-            .then(r => r.json())
-            .then(r => {
-                for (let video of r) {
-                    let id = `hive:${video.author}:${video.permlink}`;
-                    video.isPinned = ids.includes(id);
-                    video.id = id;
-                }
-                this.setState({trendingVideos: r})
-            })
+
+        if (!trendingUrl) {
+            this.setState({trendingVideos: []})
+        } else {
+            fetch(trendingUrl)
+                .then(r => r.json())
+                .then(r => {
+                    for (let video of r) {
+                        let id = `hive:${video.author}:${video.permlink}`;
+                        video.isPinned = ids.includes(id);
+                        video.id = id;
+                    }
+                    this.setState({trendingVideos: r})
+                })
+        }
     }
     componentWillUnmount() {
         clearInterval(this.pid)
@@ -292,8 +301,11 @@ class Pins extends Component {
             <h6>Select to pin and help secure the network by backing up videos</h6>
             <input type='text' placeholder='Enter community ID...' onChange={(event) => {
                 if (event.target.value.match(/\bhive-\d{6}\b/g)) {
-                    this.updateSearchTables(event.target.value)
+                    this.updateSearchTables(event.target.value, null)
                 }
+            }} />
+            <input type='text' placeholder='Enter a username' onChange={(event) => {
+                this.updateSearchTables(null, event.target.value)
             }} />
             <Row>
                 {['new', 'trending'].map(type => (
