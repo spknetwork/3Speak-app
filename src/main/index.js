@@ -38,8 +38,8 @@ app.on('window-all-closed', async () => {
 (async () => {
   new AutoUpdator().run();
   try {
-    await coreInstance.start()
     new ipcAdapter(coreInstance).start()
+    await coreInstance.start()
   } catch (ex) {
     console.log(ex);
     app.quit()

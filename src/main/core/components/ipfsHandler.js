@@ -4,25 +4,8 @@ import os from 'os'
 import fs from 'fs'
 import IpfsClient from 'ipfs-http-client'
 import { exec, spawn } from 'child_process'
+const waIpfs = require('wa-go-ipfs')
 const toUri = require('multiaddr-to-uri')
-
-//work around for go-ipfs-dep not working correctly with electron paths
-const ipfsPaths = [
-    Path.resolve(Path.join(__dirname, '..', 'go-ipfs', 'ipfs')),
-    Path.resolve(Path.join(__dirname, '..', 'go-ipfs', 'ipfs.exe')),
-    Path.resolve(Path.join(__dirname, '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
-    Path.resolve(Path.join(__dirname, '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs')),
-    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
-    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs')),
-    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', '..', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
-    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', '..', 'go-ipfs', 'go-ipfs', 'ipfs'))
-]
-let ipfsPath;
-for (const bin of ipfsPaths) {
-    if (fs.existsSync(bin)) {
-        ipfsPath = bin;
-    }
-}
 
 var defaultIpfsConfig = {
     "Gateway": {
@@ -97,8 +80,8 @@ class ipfsHandler {
 
         }
     }
-    static init(repoPath) {
-        var goIpfsPath = ipfsPath;
+    static async init(repoPath) {
+        var goIpfsPath = await waIpfs.getPath(waIpfs.getDefaultPath())
         return new Promise((resolve, reject) => {
             exec(`${goIpfsPath} init`, {
                 env: {
@@ -117,18 +100,29 @@ class ipfsHandler {
         })
     }
     static run(repoPath) {
-        var goIpfsPath = ipfsPath;
-        var ipfsDaemon = spawn(goIpfsPath, [
-            "daemon",
-            "--enable-pubsub-experiment",
-            "--enable-gc"
-        ], {
-            env: {
-                IPFS_Path: repoPath
-            },
-            detached: true
-        });
-        return ipfsDaemon.pid;
+        return new Promise(async(resolve, reject) => {
+            try {
+                var goIpfsPath = await waIpfs.getPath(waIpfs.getDefaultPath())
+                var ipfsDaemon = spawn(goIpfsPath, [
+                    "daemon",
+                    "--enable-pubsub-experiment",
+                    "--enable-gc"
+                ], {
+                    env: {
+                        IPFS_Path: repoPath
+                    },
+                    detached: true
+                });
+                ipfsDaemon.stdout.on('data', (data) => {
+                    if(data.toString().includes("Daemon is ready")) {
+                        ipfsDaemon.removeAllListeners('data');
+                        resolve(ipfsDaemon.pid);
+                    }
+                })
+            } catch (ex) {
+                reject(ex);
+            }
+        })
     }
     static async getIpfs() {
         const AppPath = Path.join(os.homedir(), ".blasio-app")

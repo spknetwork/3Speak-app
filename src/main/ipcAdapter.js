@@ -42,6 +42,16 @@ class ipcAdapter {
         PromiseIPC.on("blocklist.ls", async (query) => {
             return await this.core.blocklist.ls(query);
         })
+        //Core
+        PromiseIPC.on("core.install", async () => {
+            return await this.core.install()
+        })
+        PromiseIPC.on("core.status", async () => {
+            return await this.core.status();
+        })
+        PromiseIPC.on("core.ready", async () => {
+            return await this.core.ready();
+        })
         //Pins
         PromiseIPC.on("pins.add", async (doc) => {
             return await this.core.pins.add(doc);

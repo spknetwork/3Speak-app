@@ -26,8 +26,8 @@ class CommunityTile extends Component {
                     {this.props.info.title}
                 </div>
                 <div className="text-right" style={{display: "inline-block", paddingTop: "2px", float: "right"}}>
-                    <div>Pending payouts</div>
-                    <span className="text-success">$14929</span>
+                    <div></div>
+                    <span className="text-success"></span>
                     <FaChevronCircleRight/>
                 </div>
                 <div style={{clear: "both"}}></div>

@@ -15,12 +15,14 @@ import TopNavbar from './components/TopNavbar';
 import 'react-notifications/lib/notifications.css';
 import {NotificationContainer} from 'react-notifications';
 import Popup from 'react-popup';
-import './css/Popup.css'
+import './css/Popup.css';
+import StartUp from './StartUp';
 
 export class App extends React.PureComponent {
   render() {
     return (
       <div>
+        <StartUp/>
           <Popup className="mm-popup"
             btnClass="mm-popup__btn"
             closeBtn={false}
