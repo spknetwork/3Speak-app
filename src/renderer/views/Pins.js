@@ -59,7 +59,8 @@ class Pins extends Component {
         this.state = {
             pinls: [],
             newVideos: [],
-            trendingVideos: []
+            trendingVideos: [],
+            showExplorer: false
         }
         this.pid = null;
         this.generate = this.generate.bind(this)
@@ -298,62 +299,70 @@ class Pins extends Component {
                     {rows}
                 </tbody>
             </Table>
-            <h6>Select to pin and help secure the network by backing up videos</h6>
-            <input type='text' placeholder='Enter community ID...' onChange={(event) => {
-                if (event.target.value.match(/\bhive-\d{6}\b/g)) {
-                    this.updateSearchTables(event.target.value, null)
-                }
-            }} />
-            <input type='text' placeholder='Enter a username' onChange={(event) => {
-                this.updateSearchTables(null, event.target.value)
-            }} />
-            <Row>
-                {['new', 'trending'].map(type => (
-                    <Col key={type}>
-                        <Table striped bordered hover size='sm'>
-                            <thead>
-                            <tr>
-                                <th>{type} videos</th>
-                                <th>Title</th>
-                                <th>Creator</th>
-                                <th>pinned</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {this.state[`${type}Videos`].map(video => (
-                                <tr key={`${type}-${video.author}-${video.permlink}`}>
-                                    <td><div className="teaser_holder video-card-image">
-                                        <div className="card-label">
-                                            {(() => {
-                                                const pattern = DateTime.compile('mm:ss');
-                                                return DateTime.format(new Date(video.duration * 1000), pattern)
-                                            })()}
-                                        </div>
-                                        <a href={`#/watch/hive:${video.author}:${video.permlink}`}>
-                                            <img className="img-fluid bg-dark" src={video.images.thumbnail} alt="" />
-                                        </a>
-                                    </div></td>
-                                    <td>{video.title}</td>
-                                    <td>{video.author}</td>
-                                    <td>{video.isPinned ? (
-                                        <Button variant="danger" onClick={async() => {
-                                            await this.removePin(video.id)
-                                            this.updateSearchTables()
-                                        }}>X</Button>
-                                    ) : (
-                                        <Button variant="success" onClick={async() => {
-                                            await this.PinLocally([video.ipfs], video.title, video.id)
-                                            this.updateSearchTables()
-                                        }}>O</Button>
-                                    )}</td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                    </Col>
-                ))}
+            <Button onClick={() => {
+                this.setState({showExplorer: !this.state.showExplorer})
+            }}>Toggle pin explorer</Button>
+            {this.state.showExplorer && (
+                <>
+                    <h6>Select to pin and help secure the network by backing up videos</h6>
+                    <input type='text' placeholder='Enter community ID...' onChange={(event) => {
+                        if (event.target.value.match(/\bhive-\d{6}\b/g)) {
+                            this.updateSearchTables(event.target.value, null)
+                        }
+                    }} />
+                    <input type='text' placeholder='Enter a username' onChange={(event) => {
+                        this.updateSearchTables(null, event.target.value)
+                    }} />
+                    <Row>
+                        {['new', 'trending'].map(type => (
+                            <Col key={type}>
+                                <Table striped bordered hover size='sm'>
+                                    <thead>
+                                    <tr>
+                                        <th>{type} videos</th>
+                                        <th>Title</th>
+                                        <th>Creator</th>
+                                        <th>pinned</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.state[`${type}Videos`].map(video => (
+                                        <tr key={`${type}-${video.author}-${video.permlink}`}>
+                                            <td><div className="teaser_holder video-card-image">
+                                                <div className="card-label">
+                                                    {(() => {
+                                                        const pattern = DateTime.compile('mm:ss');
+                                                        return DateTime.format(new Date(video.duration * 1000), pattern)
+                                                    })()}
+                                                </div>
+                                                <a href={`#/watch/hive:${video.author}:${video.permlink}`}>
+                                                    <img className="img-fluid bg-dark" src={video.images.thumbnail} alt="" />
+                                                </a>
+                                            </div></td>
+                                            <td>{video.title}</td>
+                                            <td>{video.author}</td>
+                                            <td>{video.isPinned ? (
+                                                <Button variant="danger" onClick={async() => {
+                                                    await this.removePin(video.id)
+                                                    this.updateSearchTables()
+                                                }}>X</Button>
+                                            ) : (
+                                                <Button variant="success" onClick={async() => {
+                                                    await this.PinLocally([video.ipfs], video.title, video.id)
+                                                    this.updateSearchTables()
+                                                }}>O</Button>
+                                            )}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </Table>
+                            </Col>
+                        ))}
 
-            </Row>
+                    </Row>
+                </>
+            )}
+
         </div>);
     }
 }
