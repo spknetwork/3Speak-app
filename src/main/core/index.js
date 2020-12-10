@@ -18,10 +18,15 @@ class Core {
     }
     async install() {
         this.start_progress.message = "Installing IPFS";
-        var ipfs_path = await waIpfs.install({version:"v0.7.0"});
-        this.start_progress.message = "Initializing IPFS";
-        await Components.ipfsHandler.init(ipfs_path);
-        this.start_progress.message = null;
+        var ipfs_path = await waIpfs.install({version:"v0.7.0", dev: process.env.NODE_ENV === 'development', recursive: true});
+        await new Promise(resolve => {
+            setTimeout(async () => {
+                this.start_progress.message = "Initializing IPFS";
+                await Components.ipfsHandler.init(ipfs_path);
+                this.start_progress.message = null;
+                resolve();
+            }, 5000);
+        })
     }
     async status() {
         var ipfs_path = waIpfs.getDefaultPath();
@@ -49,7 +54,7 @@ class Core {
         }
 
         try {
-            await waIpfs.getPath(waIpfs.getDefaultPath())
+            await waIpfs.getPath(waIpfs.getDefaultPath({dev: process.env.NODE_ENV === 'development'}))
         } catch {
             await this.install()
         }
@@ -77,8 +82,10 @@ class Core {
         this.start_progress.ready = true;
         this.start_progress.message = null;
     }
-    async stop() {
-        await Components.ipfsHandler.stop(this._options.path);
+    async stop(options = {}) {
+        if(options.background !== true) {
+            await Components.ipfsHandler.stop(this._options.path);
+        }
         await this.pins.stop()
         this.log.info(`App shutting down`)
     }

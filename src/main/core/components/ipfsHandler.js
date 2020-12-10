@@ -3,7 +3,8 @@ import Path from 'path'
 import os from 'os'
 import fs from 'fs'
 import IpfsClient from 'ipfs-http-client'
-import { exec, spawn } from 'child_process'
+import { execFile, spawn } from 'child_process'
+import execa from 'execa'
 const waIpfs = require('wa-go-ipfs')
 const toUri = require('multiaddr-to-uri')
 
@@ -81,44 +82,42 @@ class ipfsHandler {
         }
     }
     static async init(repoPath) {
-        var goIpfsPath = await waIpfs.getPath(waIpfs.getDefaultPath())
-        return new Promise((resolve, reject) => {
-            exec(`${goIpfsPath} init`, {
+        var goIpfsPath = await waIpfs.getPath(waIpfs.getDefaultPath({ dev: process.env.NODE_ENV === 'development' }))
+        await execa(goIpfsPath, ['init'], {
+            env: {
+                IPFS_Path: repoPath
+            }
+        })
+        for (var key in defaultIpfsConfig) {
+            var subTree = defaultIpfsConfig[key];
+            await execa(goIpfsPath, ["config", "--json", key, JSON.stringify(subTree)], {
                 env: {
                     IPFS_Path: repoPath
                 }
-            }, () => {
-                //console.log(`${goIpfsPath} config --json API ${JSON.stringify(JSON.stringify(defaultIpfsConfigs))}`)
-                exec(`${goIpfsPath} config --json API ${JSON.stringify(JSON.stringify(defaultIpfsConfig))}`, {
-                    env: {
-                        IPFS_Path: repoPath
-                    }
-                }, () => {
-                    resolve()
-                })
-            });
-        })
+            })
+        }
     }
     static run(repoPath) {
-        return new Promise(async(resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                var goIpfsPath = await waIpfs.getPath(waIpfs.getDefaultPath())
-                var ipfsDaemon = spawn(goIpfsPath, [
-                    "daemon",
-                    "--enable-pubsub-experiment",
-                    "--enable-gc"
-                ], {
+                var goIpfsPath = await waIpfs.getPath(waIpfs.getDefaultPath({ dev: process.env.NODE_ENV === 'development' }))
+                var subprocess = execa(goIpfsPath, ['daemon', '--enable-pubsub-experiment', '--enable-gc'], {
                     env: {
                         IPFS_Path: repoPath
-                    },
-                    detached: true
-                });
-                ipfsDaemon.stdout.on('data', (data) => {
-                    if(data.toString().includes("Daemon is ready")) {
-                        ipfsDaemon.removeAllListeners('data');
-                        resolve(ipfsDaemon.pid);
                     }
                 })
+                subprocess.stderr.on('data', data => console.error(data.toString()))
+                subprocess.stdout.on('data', data => console.log(data.toString()))
+                let output = '';
+                const readyHandler = data => {
+                    output += data.toString()
+                    if (output.match(/(?:daemon is running|Daemon is ready)/)) {
+                        // we're good
+                        subprocess.stdout.off('data', readyHandler)
+                        resolve(subprocess.pid)
+                    }
+                }
+                subprocess.stdout.on('data', readyHandler)
             } catch (ex) {
                 reject(ex);
             }
@@ -167,7 +166,7 @@ class ipfsHandler {
             }
         }
 
-        if (ipfs) {
+        if (ipfs !== null && ipfs) {
             var gma = await ipfs.config.get("Addresses.Gateway");
             gateway = toUri(gma) + "/ipfs/";
         } else {
