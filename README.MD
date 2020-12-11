@@ -1,5 +1,5 @@
 # Blasio-App
-[![Build Status](https://travis-ci.com/vaultec81/blasio-app.svg?branch=master)](https://travis-ci.com/vaultec81/blasio-app)
+![Node.js CI](https://github.com/vaultec81/blasio-app/workflows/Node.js%20CI/badge.svg)
 
 Decentralized video platform
 

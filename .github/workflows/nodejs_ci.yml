@@ -10,16 +10,17 @@ on:
     branches: [ master ]
 
 env:
-  NODE_OPTIONS: "--max-old-space-size=4096"
+  NODE_OPTIONS: "--max-old-space-size=8096"
 
 jobs:
-  build:
+  unit_tests:
     name: Running Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [12.x]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -31,5 +32,5 @@ jobs:
       run: npm install
     - name: Test
       run: npm test
-    - name: Package
-      run: npm run package
+    - name: Build
+      run: npm run build
