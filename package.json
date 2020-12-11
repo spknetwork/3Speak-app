@@ -5,10 +5,11 @@
   "main": "./dist/main.prod.js",
   "scripts": {
     "clear": "rm -rf ./dist",
-    "dev": "cross-env DEBUG=blasio:* npm run start-renderer",
+    "dev": "cross-env DEBUG=blasio:* NODE_OPTIONS='--max_old_space_size=8096' npm run start-renderer",
     "prod": "run-electron .",
-    "package": "cross-env USE_HARD_LINKS=false & npm run build && electron-builder build --win --x64 --dir=build",
-    "package:mac": "cross-env USE_HARD_LINKS=false & npm run build && electron-builder --mac --x64 --dir=build",
+    "package": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder build --win --x64 --dir=build",
+    "package:mac": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder --mac --x64 --dir=build",
+    "package:linux": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder --linux --x64 --dir=build",
     "build": "npm run clear && npm-run-all --parallel build-main build-renderer",
     "build-main": "webpack --config webpack/main.config.js",
     "build-renderer": "webpack --config webpack/renderer.prod.config.js",
@@ -121,16 +122,10 @@
       "output": "build"
     },
     "mac": {
-      "icon": "./src/renderer/assets/img/app.ico",
+      "icon": "./src/renderer/assets/img/app.icns",
       "target": [
         {
           "target": "dmg",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "squirrel",
           "arch": [
             "x64"
           ]
@@ -142,6 +137,17 @@
       "target": [
         {
           "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "icon": "./src/renderer/assets/img/app.png",
+      "target": [
+        {
+          "target": "appimage",
           "arch": [
             "x64"
           ]
