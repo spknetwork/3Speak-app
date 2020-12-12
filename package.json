@@ -59,6 +59,8 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/react-fontawesome": "^0.1.11",
     "@hiveio/dhive": "^0.14.8",
     "@hiveio/hive-js": "^0.8.2",
     "arraysearch": "^1.2.0",
@@ -93,6 +95,7 @@
     "query-string": "^6.13.1",
     "react": "^16.8.5",
     "react-bootstrap": "^1.0.1",
+    "react-bootstrap-range-slider": "^1.2.2",
     "react-dom": "^16.8.5",
     "react-i18next": "^11.6.0",
     "react-icons": "^3.10.0",

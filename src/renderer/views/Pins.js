@@ -8,6 +8,9 @@ import Popup from 'react-popup';
 import Utils from '../utils';
 import CID from 'cids'
 import RefLink from '../../main/RefLink'
+import Debug from "debug";
+import DateTime from "date-and-time";
+const debug = Debug("blasio:pins")
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
         href=""
@@ -54,7 +57,10 @@ class Pins extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pinls: []
+            pinls: [],
+            newVideos: [],
+            trendingVideos: [],
+            showExplorer: false
         }
         this.pid = null;
         this.generate = this.generate.bind(this)
@@ -62,6 +68,48 @@ class Pins extends Component {
     async componentDidMount() {
         await this.generate();
         this.pid = setInterval(this.generate, 1500)
+        this.updateSearchTables()
+    }
+    updateSearchTables( community = null , creator = null) {
+        let ids = this.state.pinls.map(x => {return x._id})
+        console.log(ids)
+        let params = '?limit=10&ipfsOnly=true'
+        let newUrl = `https://3speak.co/apiv2/feeds/new${params}`
+        let trendingUrl = `https://3speak.co/apiv2/feeds/trending${params}`
+        if (community) {
+            newUrl = `https://3speak.co/apiv2/feeds/community/${community}/new${params}`
+            trendingUrl = `https://3speak.co/apiv2/feeds/community/${community}/trending${params}`
+        } else if (creator && creator.length > 2) {
+            newUrl = `https://3speak.co/apiv2/feeds/@${creator}`
+            trendingUrl = null
+        }
+
+        fetch(newUrl)
+            .then(r => r.json())
+            .then(r => {
+                for (let video of r) {
+                    let id = `hive:${video.author}:${video.permlink}`
+                    video.isPinned = ids.includes(id);
+                    video.id = id;
+                }
+                console.log(r)
+                this.setState({newVideos: r})
+            })
+
+        if (!trendingUrl) {
+            this.setState({trendingVideos: []})
+        } else {
+            fetch(trendingUrl)
+                .then(r => r.json())
+                .then(r => {
+                    for (let video of r) {
+                        let id = `hive:${video.author}:${video.permlink}`;
+                        video.isPinned = ids.includes(id);
+                        video.id = id;
+                    }
+                    this.setState({trendingVideos: r})
+                })
+        }
     }
     componentWillUnmount() {
         clearInterval(this.pid)
@@ -71,6 +119,25 @@ class Pins extends Component {
         this.setState({
             pinls
         })
+    }
+    async PinLocally(cids, title, _id) {
+        debug(`CIDs to store ${JSON.stringify(cids)}`)
+        if(cids.length !== 0) {
+            NotificationManager.info("Pinning in progress")
+            await PromiseIpc.send("pins.add", {
+                _id,
+                source: "Pins page",
+                cids,
+                expire: null,
+                meta: {
+                    title
+                }
+            })
+            NotificationManager.success(`Video with reflink of ${this.state.reflink} has been successfully pinned! Thank you for contributing!`, "Pin Successful")
+        } else {
+            NotificationManager.warning("This video is not available on IPFS")
+        }
+        await this.generate()
     }
     async ManualAdd() {
 
@@ -232,6 +299,70 @@ class Pins extends Component {
                     {rows}
                 </tbody>
             </Table>
+            <Button onClick={() => {
+                this.setState({showExplorer: !this.state.showExplorer})
+            }}>Toggle pin explorer</Button>
+            {this.state.showExplorer && (
+                <>
+                    <h6>Select to pin and help secure the network by backing up videos</h6>
+                    <input type='text' placeholder='Enter community ID...' onChange={(event) => {
+                        if (event.target.value.match(/\bhive-\d{6}\b/g)) {
+                            this.updateSearchTables(event.target.value, null)
+                        }
+                    }} />
+                    <input type='text' placeholder='Enter a username' onChange={(event) => {
+                        this.updateSearchTables(null, event.target.value)
+                    }} />
+                    <Row>
+                        {['new', 'trending'].map(type => (
+                            <Col key={type}>
+                                <Table striped bordered hover size='sm'>
+                                    <thead>
+                                    <tr>
+                                        <th>{type} videos</th>
+                                        <th>Title</th>
+                                        <th>Creator</th>
+                                        <th>pinned</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.state[`${type}Videos`].map(video => (
+                                        <tr key={`${type}-${video.author}-${video.permlink}`}>
+                                            <td><div className="teaser_holder video-card-image">
+                                                <div className="card-label">
+                                                    {(() => {
+                                                        const pattern = DateTime.compile('mm:ss');
+                                                        return DateTime.format(new Date(video.duration * 1000), pattern)
+                                                    })()}
+                                                </div>
+                                                <a href={`#/watch/hive:${video.author}:${video.permlink}`}>
+                                                    <img className="img-fluid bg-dark" src={video.images.thumbnail} alt="" />
+                                                </a>
+                                            </div></td>
+                                            <td>{video.title}</td>
+                                            <td>{video.author}</td>
+                                            <td>{video.isPinned ? (
+                                                <Button variant="danger" onClick={async() => {
+                                                    await this.removePin(video.id)
+                                                    this.updateSearchTables()
+                                                }}>X</Button>
+                                            ) : (
+                                                <Button variant="success" onClick={async() => {
+                                                    await this.PinLocally([video.ipfs], video.title, video.id)
+                                                    this.updateSearchTables()
+                                                }}>O</Button>
+                                            )}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </Table>
+                            </Col>
+                        ))}
+
+                    </Row>
+                </>
+            )}
+
         </div>);
     }
 }
