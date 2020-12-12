@@ -59,6 +59,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/react-fontawesome": "^0.1.11",
     "@hiveio/dhive": "^0.14.8",
     "@hiveio/hive-js": "^0.8.2",
