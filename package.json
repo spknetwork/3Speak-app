@@ -1,6 +1,6 @@
 {
   "name": "blasio-app",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Blasio video platform desktop app",
   "main": "./dist/main.prod.js",
   "scripts": {
