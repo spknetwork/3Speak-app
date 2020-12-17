@@ -92,6 +92,7 @@ const accounts = {
                     if (video_info.ipfs != null && video_info.ipfs) {
                         urls.push(`ipfs://${video_info.ipfs}`)
                     }
+                    urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/default.m3u8`)
                     if (video_info.file) {
                         urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`)
                     }
