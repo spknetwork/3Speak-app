@@ -16,18 +16,33 @@ if(process.env.NODE_ENV === 'development') {
 let window = null;
 let coreInstance = new Core();
 
-app.on('ready', () => {
-  window = new BrowserWindow({width: 800, height: 600,
-    icon: path.resolve(__dirname, "../renderer/assets/img/app.png"),
-    webPreferences: {
-      nodeIntegration: true,
-      webSecurity: false,
-      webviewTag: true
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (window) {
+      if (window.isMinimized()) window.restore()
+      window.focus()
     }
+  })
+
+  app.on('ready', () => {
+    window = new BrowserWindow({width: 800, height: 600,
+      icon: path.resolve(__dirname, "../renderer/assets/img/app.png"),
+      webPreferences: {
+        nodeIntegration: true,
+        webSecurity: false,
+        webviewTag: true
+      }
+    });
+    window.loadURL(entryUrl);
+    window.on('closed', () => window = null);
   });
-  window.loadURL(entryUrl);
-  window.on('closed', () => window = null);
-});
+}
+
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 app.on('window-all-closed', async () => {
   if(process.platform !== 'darwin') {
