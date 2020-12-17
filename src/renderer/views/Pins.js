@@ -66,6 +66,7 @@ class Pins extends Component {
         this.generate = this.generate.bind(this)
     }
     async componentDidMount() {
+        document.title = "3Speak - Tokenised video communities"
         await this.generate();
         this.pid = setInterval(this.generate, 1500)
         this.updateSearchTables()

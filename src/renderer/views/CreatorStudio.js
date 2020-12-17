@@ -6,7 +6,9 @@ class CreatorStudio extends Component {
         super(props);
         this.state = {};
     }
-    componentDidMount() {}
+    componentDidMount() {
+        document.title = "3Speak - Tokenised video communities"
+    }
     render() {
         return (
         <Container fluid>

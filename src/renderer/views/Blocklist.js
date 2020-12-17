@@ -10,6 +10,7 @@ class Blocklist extends Component {
         };
     }
     componentDidMount() {
+        document.title = "3Speak - Tokenised video communities"
         this.generate();
     }
     generate() {
