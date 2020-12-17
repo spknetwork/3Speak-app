@@ -29,6 +29,9 @@ module.exports = function (workingDirectory) {
                 datePattern: 'YYYY-MM-DD',
                 extension: ".log",
                 level: 'error',
+                zippedArchive: true,
+                maxSize: '20m',
+                maxFiles: '31d',
                 format: winston.format.combine(
                     winston.format.timestamp({ format: 'YYYY/MM/DD HH:mm:ss' }),
                     winston.format.printf(
@@ -47,14 +50,20 @@ module.exports = function (workingDirectory) {
                 name: "log",
                 datePattern: 'YYYY-MM-DD',
                 extension: ".log",
-                level: 'info'
+                level: 'info',
+                zippedArchive: true,
+                maxSize: '20m',
+                maxFiles: '31d',
             }),
             new winston.transports.DailyRotateFile({
                 filename: Path.join(workingDirectory, 'logs', "verbose"),
                 name: "log",
                 datePattern: 'YYYY-MM-DD',
                 extension: ".log",
-                level: 'verbose'
+                level: 'verbose',
+                zippedArchive: true,
+                maxSize: '20m',
+                maxFiles: '31d',
             })
         ]
     });
