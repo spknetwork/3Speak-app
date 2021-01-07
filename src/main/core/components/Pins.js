@@ -50,6 +50,9 @@ class Pins {
         //Prevet old and new docs from stepping on eachother.
         await this.db.upsert(doc._id, (oldDoc) => {
             if((oldDoc.expire < doc.expire && oldDoc.expire) || doc.expire === null || typeof oldDoc.expire === "undefined") {
+                if(!doc.meta.pin_date) {
+                    doc.meta.pin_date = new Date() / 1;
+                }
                 return doc;
             } else {
                 return oldDoc;

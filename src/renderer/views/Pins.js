@@ -259,6 +259,12 @@ class Pins extends Component {
                     })() : "Permanent"}
                 </td>
                 <td>
+                    {pin.meta.pin_date ? (() => {
+                        console.log(pin.meta.pin_date)
+                        return (new Date(pin.meta.pin_date).toLocaleString())
+                    })(): null}
+                </td>
+                <td>
                     {pin.size === 0 ? <strong>Pinning In Progress</strong> : sizeBest}
                 </td>
                 <td>
@@ -292,6 +298,7 @@ class Pins extends Component {
                         <th>CID(s)</th>
                         <th>Source</th>
                         <th>Expiration</th>
+                        <th>Pin Date</th>
                         <th>Size/Status</th>
                         <th>Remove?</th>
                     </tr>
