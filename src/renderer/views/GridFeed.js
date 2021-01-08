@@ -84,11 +84,13 @@ class GridFeed extends React.Component {
                                     delete video['owner'];
                                 });
                                 json = this.state.data.concat(json)
-                                json = json.filter((video, index, self) =>
-                                    index === self.findIndex((v) => (
-                                        v.author === video.author && v.permlink === video.permlink
-                                    ))
-                                )
+                                json = json.filter((video, index, self) => {
+                                    return index === self.findIndex((v) => {
+                                        if(v) {
+                                            return v.author === video.author && v.permlink === video.permlink
+                                        }
+                                    })
+                                })
                                 for (var e in json) {
                                     if (await PromiseIpc.send("blocklist.has", `hive:${json[e].author}:${json[e].permlink}`)) {
                                         delete json[e];
