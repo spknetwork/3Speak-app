@@ -74,7 +74,7 @@ const accounts = {
         switch (reflink.source.value) {
             case "hive": {
                 const json_metadata = post_content.json_metadata;
-                if(!json_metadata.app.includes("3speak") && options.type === "video") {
+                if(!(json_metadata.app && json_metadata.app.includes("3speak")) && options.type === "video") {
                     throw new Error("Invalid post content. Not a video");
                 }
                 let sources = [];
