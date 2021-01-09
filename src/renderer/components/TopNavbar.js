@@ -143,7 +143,9 @@ class TopNavbar extends React.Component {
         }
 
         function goToClip() {
-            navigator.clipboard.readText().then(clipText => {window.location.replace(clipText)});
+            navigator.clipboard.readText().then(clipText => {
+                window.location.hash = clipText;
+            });
         }
 
         return (
