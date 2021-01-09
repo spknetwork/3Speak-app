@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import PromiseIpc from 'electron-promise-ipc';
+import {NotificationManager} from 'react-notifications'
 
 class Blocklist extends Component {
     constructor(props) {
@@ -20,8 +21,10 @@ class Blocklist extends Component {
             })
         })
     }
-    handleRemove(reflink, rev) {
-        PromiseIpc.send("blocklist.rm", reflink, rev);
+    async handleRemove(reflink) {
+        await PromiseIpc.send("blocklist.rm", reflink);
+        NotificationManager.success(`Unblocked ${reflink}`);
+        this.generate()
     }
     render() {
         return (<div>
@@ -40,7 +43,7 @@ class Blocklist extends Component {
                                 <td>{value._id}</td>
                                 <td>{value.reason}</td>
                                 <td>
-                                    <Button variant="danger" onClick={() => this.handleRemove(value)}>X</Button>
+                                    <Button variant="danger" onClick={() => this.handleRemove(value._id)}>X</Button>
                                 </td>
                             </tr>
                         ))

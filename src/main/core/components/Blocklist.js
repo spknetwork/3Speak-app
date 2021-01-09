@@ -30,6 +30,7 @@ class Blocklist {
     async rm(reflink) {
         await this.pouch.upsert(reflink.toString(), (doc) => {
             doc._deleted = true;
+            return doc;
         })
     }
     /**
