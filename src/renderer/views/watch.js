@@ -109,7 +109,8 @@ class watch extends React.Component {
         }
     }
     async recordView() {
-        let cids = [];
+        return;
+        /*let cids = [];
         for(const source of this.state.video_info.sources) {
             const url = new (require('url').URL)(source.url)
             try {
@@ -131,7 +132,7 @@ class watch extends React.Component {
                     title: this.state.video_info.title
                 }
             })
-        }
+        }*/
     }
     async gearSelect(eventKey) {
         var ref = RefLink.parse(this.state.reflink)

@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactJWPlayer from 'react-jw-player';
 import mergeOptions from 'merge-options'
-import PromiseIPC from 'electron-promise-ipc'
-import queryString from 'query-string';
+import PromiseIpc from 'electron-promise-ipc'
 import utils from '../../utils';
+import CID from 'cids';
+import convert from 'convert-units'
 
 class Player extends React.Component {
     constructor(props) {
@@ -14,7 +15,8 @@ class Player extends React.Component {
             videoUrl: null,
             videoInfo: null
         }
-        this.player = React.createRef()
+        this.player = React.createRef();
+        this.onPlay = this.onPlay.bind(this)
     }
     async componentDidMount() {
         this.fireUp();
@@ -70,14 +72,39 @@ class Player extends React.Component {
             videoUrl: await utils.video.getVideoSourceURL(videoInfo)
         })
     }
+    async onPlay(event) {
+        let cids = [];
+        console.log(this.state.videoInfo.sources)
+        for(const source of this.state.videoInfo.sources) {
+            const url = new (require('url').URL)(source.url)
+            try {
+                new CID(url.host)
+                cids.push(url.host)
+            } catch  {
+            }
+        }
+        console.log(`CIDs to cache ${JSON.stringify(cids)}`)
+
+        if(cids.length !== 0) {
+            await PromiseIpc.send("pins.add", {
+                _id: this.props.reflink,
+                source: "Watch Page",
+                cids,
+                expire: (new Date() / 1) + convert("1").from("d").to("ms"),
+                meta: {
+                    title: this.state.videoInfo.title
+                }
+            })
+        }
+    }
     ExecUpdate() {
         this.fireUp()
         this.player.current.componentDidMount()
     }
     render() {
         return <React.Fragment>
-            {this.state.videoUrl ? <ReactJWPlayer licenseKey="64HPbvSQorQcd52B8XFuhMtEoitbvY/EXJmMBfKcXZQU2Rnn" customProps={{playbackRateControls: true}}
-            file={this.state.videoUrl} image={this.state.thumbnail} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} ref={this.player} playerScript="https://cdn.jwplayer.com/libraries/JyghCNnw.js?v=3">
+            {this.state.videoUrl ? <ReactJWPlayer licenseKey="64HPbvSQorQcd52B8XFuhMtEoitbvY/EXJmMBfKcXZQU2Rnn" customProps={{playbackRateControls: true, autostart: false}}
+            file={this.state.videoUrl} onPlay={this.onPlay} image={this.state.thumbnail} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} ref={this.player} playerScript="https://cdn.jwplayer.com/libraries/JyghCNnw.js?v=3">
                 
             </ReactJWPlayer> : <center> 
                 [Player] videoInfo not specified [Player]

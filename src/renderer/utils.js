@@ -74,7 +74,7 @@ const accounts = {
         switch (reflink.source.value) {
             case "hive": {
                 const json_metadata = post_content.json_metadata;
-                if(!json_metadata.app.includes("3speak") && options.type === "video") {
+                if(!(json_metadata.app && json_metadata.type.includes("3speak/video")) && options.type === "video") {
                     throw new Error("Invalid post content. Not a video");
                 }
                 let sources = [];
@@ -92,6 +92,7 @@ const accounts = {
                     if (video_info.ipfs != null && video_info.ipfs) {
                         urls.push(`ipfs://${video_info.ipfs}`)
                     }
+                    urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/default.m3u8`)
                     if (video_info.file) {
                         urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`)
                     }

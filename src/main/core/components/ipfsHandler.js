@@ -9,6 +9,27 @@ const waIpfs = require('wa-go-ipfs')
 const toUri = require('multiaddr-to-uri')
 
 var defaultIpfsConfig = {
+    "API": {
+        "HTTPHeaders": {
+            "Access-Control-Allow-Credentials": [
+                "true"
+            ],
+            "Access-Control-Allow-Headers": [
+                "Authorization"
+            ],
+            "Access-Control-Allow-Origin": [
+                "*"
+            ],
+            "Access-Control-Expose-Headers": [
+                "Location"
+            ],
+            "HTTPHeaders.Access-Control-Allow-Methods": [
+                "PUT",
+                "POST",
+                "GET"
+            ]
+        }
+    },
     "Gateway": {
         "HTTPHeaders": {
             "Access-Control-Allow-Credentials": [
@@ -42,7 +63,7 @@ var defaultIpfsConfig = {
 }
 class ipfsHandler {
     static get ready() {
-        return new Promise(async(resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             var ipfsInfo = await ipfsHandler.getIpfs();
             if (ipfsInfo.ipfs) {
                 return resolve(ipfsInfo.ipfs)
