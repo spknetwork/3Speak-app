@@ -60,6 +60,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@hiveio/dhive": "^0.14.12",
     "@hiveio/hive-js": "^0.8.12",
