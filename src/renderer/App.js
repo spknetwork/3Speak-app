@@ -57,6 +57,8 @@ export class App extends React.PureComponent {
               <Route path="/pins/" component={views.Pins} />
               <Route path="/ipfsconsole/" component={views.IpfsConsole} />
               <Route path="/creatorstudio/" component={views.CreatorStudio} />
+              <Route path="/login" component={views.Login} />
+              <Route path="/accounts" component={views.Accounts} />
               <Route component={views.NotFound} />
             </Switch>
           </HashRouter>

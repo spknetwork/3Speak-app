@@ -15,21 +15,39 @@ import "./Navbar.css"
 class SideBar extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+
+        this.state = {
+            login: 'test'
+            //login: false
+        }
     }
+
+    logOut() {
+        //TODO: logout logic
+    }
+    
     render() {
+
         return (<Navbar bg="white" expand="lg" id="layoutNav" className="bg_white fixed-left">
             <Navbar.Brand><img src={SpeakLogo} /></Navbar.Brand>
-            <a href="#/auth/login" className="display-mobile">
-                <button className="btn btn-dark text-white btn-sm">
-                    Log In / Sign Up
-                </button>
-            </a>
             <Navbar.Toggle aria-controls="basic-navbar-nav">
                 <span className="navbar-toggler-icon"></span>
             </Navbar.Toggle>
             <Navbar.Collapse >
                 <Nav className="mr-auto nav_dist">
+                    {this.state.login && (
+                        <NavDropdown title={<React.Fragment><div className="nav_icons">@{this.state.login}</div></React.Fragment>}>
+                            <NavDropdown.Item href='#/accounts'>Switch account</NavDropdown.Item>
+                            <NavDropdown.Item onClick={() => {this.logOut()}}>Log out</NavDropdown.Item>
+                        </NavDropdown>
+                    )}
+                    {!this.state.login && (
+                        <Nav.Link href="#/login" className="display-mobile">
+                            <button className="btn btn-dark text-white btn-sm">
+                                Add account
+                            </button>
+                        </Nav.Link>
+                    )}
                     <Nav.Link href="#/">
                             <div className="nav_icons"><img src={iconHome} height="14px" /></div>
                             Home

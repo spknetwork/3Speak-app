@@ -9,6 +9,8 @@ import NotFound from './NotFound'
 import Pins from './Pins'
 import IpfsConsole from './IpfsConsole'
 import CreatorStudio from './CreatorStudio'
+import Login from './Login'
+import Accounts from './Accounts';
 export default {
     watch,
     GridFeed,
@@ -20,5 +22,7 @@ export default {
     Leaderboard,
     Pins,
     IpfsConsole,
-    CreatorStudio
+    CreatorStudio,
+    Login,
+    Accounts
 }
