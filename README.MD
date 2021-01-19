@@ -1,20 +1,22 @@
-# Blasio-App
-![Node.js CI](https://github.com/vaultec81/blasio-app/workflows/Node.js%20CI/badge.svg)
+# 3Speak-App
+![Node.js CI](https://github.com/vaultec81/3Speak-app/workflows/Node.js%20CI/badge.svg)
 
-Decentralized video platform
+The 3Speak decentralized desktop app.
+
+![3Speak Preview](https://raw.githubusercontent.com/vaultec81/3Speak-app/master/media/media1.PNG)
 
 ## Usage Guide
 
 First, you should clone this repo to your computer via git like this: 
 
 ```bash
-git clone https://github.com/vaultec81/blasio-app
+git clone https://github.com/vaultec81/3Speak-app
 ```
 
 Then, install npm dependancies:
 
 ```bash
-cd blasio-app
+cd 3Speak-app
 npm install
 ```
 

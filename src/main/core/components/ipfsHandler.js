@@ -59,7 +59,28 @@ var defaultIpfsConfig = {
         "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
         "/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
         "/ip4/209.222.98.165/tcp/4001/p2p/12D3KooWAH9FypmaduofuBTtubSHVJghxW35aykce23vDHjfhiAd"
-    ]
+    ],
+    "Swarm": {
+        "ConnMgr": {
+            "GracePeriod": "20s",
+            "HighWater": 1500,
+            "LowWater": 450,
+            "Type": "basic"
+        },
+        "EnableAutoRelay": true,
+        "EnableRelayHop": false
+    },
+    "Addresses": {
+        "API": "/ip4/127.0.0.1/tcp/5001",
+        "Announce": [],
+        "Gateway": "/ip4/127.0.0.1/tcp/8080",
+        "NoAnnounce": [],
+        "Swarm": [
+            "/ip4/0.0.0.0/tcp/4001",
+            "/ip6/::/tcp/4001",
+            "/ip6/::/udp/4001/quic"
+        ]
+    }
 }
 class ipfsHandler {
     static get ready() {
