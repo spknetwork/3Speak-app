@@ -6,7 +6,7 @@ function getRepoPath() {
     if (process.env.speak_path) {
         appPath = process.env.speak_path;
     } else {
-        speakPath = Path.join(os.homedir(), ".blasio");
+        appPath = Path.join(os.homedir(), ".blasio");
     }
     return appPath;
 }
