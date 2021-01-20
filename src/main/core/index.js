@@ -1,4 +1,5 @@
 import Components from './components';
+const goENV = require('go-platform')
 const EventEmitter = require('events')
 const Utils = require('./utils');
 const fs = require('fs');
@@ -54,7 +55,14 @@ class Core {
         }
 
         try {
-            await waIpfs.getPath(waIpfs.getDefaultPath({dev: process.env.NODE_ENV === 'development'}))
+            var ipfsPath = await waIpfs.getPath(waIpfs.getDefaultPath({dev: process.env.NODE_ENV === 'development'}))
+            if(goENV.GOOS === "darwin" || goENV.GOOS === "linux") {
+                try {
+                    fs.accessSync(ipfsPath, fs.constants.X_OK);
+                } catch {
+                    fs.chmodSync(ipfsPath, 755);
+                }
+            }
         } catch {
             await this.install()
         }

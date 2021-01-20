@@ -10,7 +10,12 @@ import CID from 'cids'
 import RefLink from '../../main/RefLink'
 import Debug from "debug";
 import DateTime from "date-and-time";
-const debug = Debug("blasio:pins")
+import { JsonEditor as Editor } from 'jsoneditor-react';
+import 'jsoneditor-react/es/editor.min.css';
+import ace from 'brace';
+import 'brace/mode/json';
+import 'brace/theme/github';
+const debug = Debug("3speak:pins")
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
         href=""
@@ -247,7 +252,28 @@ class Pins extends Component {
                     <a href={`#/watch/${pin._id}`}>{pin.meta ? pin.meta.title : null} </a>
                 </td>
                 <td>
-                    {pin.cids.length > 1 ? <a>View ({pin.cids.length})</a> : pin.cids}
+                    {pin.cids.length > 1 ? <a onClick={(() => {
+                        Popup.create({
+                            title: 'CIDs',
+                            content: <div>
+                                <Editor value={pin.cids}
+                                ace={ace}
+                                theme="ace/theme/github">
+                                </Editor>
+                            </div>,
+                            buttons: {
+                                left: [],
+                                right: [{
+                                    text: 'close',
+                                    key: '⌘+s',
+                                    className: 'success',
+                                    action: function () {
+                                        Popup.close();
+                                    }
+                                }]
+                            }
+                        });
+                    })}>View ({pin.cids.length})</a> : pin.cids}
                 </td>
                 <td>
                     {pin.source}

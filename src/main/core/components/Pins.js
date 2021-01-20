@@ -38,6 +38,10 @@ class Pins {
                 console.log(ex)
             }
         });
+        doc.cids = doc.cids.filter(function(item, pos, self) {
+            return self.indexOf(item) == pos;
+        })
+        console.log(doc.cids)
         doc.size = 0;
         this.inProgressPins[doc._id] = doc;
         var totalSize = 0;
