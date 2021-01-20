@@ -2,7 +2,7 @@ import PouchDB from 'pouchdb'
 import RefLink from '../../RefLink'
 import IpfsHandler from './ipfsHandler'
 const Path = require('path');
-const debug = require('debug')('blasio:pins')
+const debug = require('debug')('3speak:pins')
 const Schedule = require('node-schedule')
 PouchDB.plugin(require('pouchdb-find'));
 PouchDB.plugin(require('pouchdb-upsert'));

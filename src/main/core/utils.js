@@ -2,13 +2,13 @@ const Path = require('path');
 const os = require('os');
 
 function getRepoPath() {
-    let blasioPath;
-    if (process.env.blasio_path) {
-        blasioPath = process.env.blasio_path;
+    let appPath;
+    if (process.env.speak_path) {
+        appPath = process.env.speak_path;
     } else {
-        blasioPath = Path.join(os.homedir(), ".blasio");
+        speakPath = Path.join(os.homedir(), ".blasio");
     }
-    return blasioPath;
+    return appPath;
 }
 module.exports = {
     getRepoPath

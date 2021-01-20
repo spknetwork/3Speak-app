@@ -1,11 +1,11 @@
 {
-  "name": "blasio-app",
+  "name": "3speak-app",
   "version": "0.1.7",
-  "description": "Blasio video platform desktop app",
+  "description": "3Speak decentralized desktop app",
   "main": "./dist/main.prod.js",
   "scripts": {
     "clear": "rm -rf ./dist",
-    "dev": "cross-env DEBUG=blasio:* NODE_OPTIONS='--max_old_space_size=8096' npm run start-renderer",
+    "dev": "cross-env DEBUG=3speak:* NODE_OPTIONS='--max_old_space_size=8096' npm run start-renderer",
     "prod": "run-electron .",
     "package": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder build --win --x64 --dir=build",
     "package:mac": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder --mac --x64 --dir=build",
@@ -20,7 +20,6 @@
   "keywords": [
     "electron",
     "react",
-    "blasio",
     "video",
     "decentralized",
     "orbitdb"
@@ -76,6 +75,7 @@
     "date-and-time": "^0.14.2",
     "dlv": "^1.1.3",
     "dompurify": "^2.2.6",
+    "electron-context-menu": "^2.4.0",
     "electron-promise-ipc": "^2.2.4",
     "execa": "^5.0.0",
     "i18next": "^19.8.4",
