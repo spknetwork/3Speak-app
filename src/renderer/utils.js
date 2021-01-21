@@ -8,7 +8,10 @@ const Finder = ArraySearch.Finder;
 
 const ipfs = {
     gateway: "https://ipfs.3speak.co/ipfs/",
-    async getGateway(cid) {
+    async getGateway(cid, bypass) {
+        if(bypass === true) {
+            return ipfs.gateway;
+        }
         var {ipfs:ipfsInstance} = await ipfsHandler.getIpfs();
         var has = false;
         try {
@@ -302,7 +305,7 @@ const video = {
         if(thumbnailSource) {
             try {
                 var cid = ipfs.urlToCID(thumbnailSource.url);
-                var gateway = await ipfs.getGateway(cid);
+                var gateway = await ipfs.getGateway(cid, true);
                 return gateway + ipfs.urlToIpfsPath(thumbnailSource.url);
             } catch (ex) {
                 return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
