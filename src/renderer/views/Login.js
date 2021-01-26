@@ -56,7 +56,7 @@ class Login extends Component {
                             <Form.Control type="text" value={this.state.username} onChange={this.onUsernameChange.bind(this)} className='bg-secondary text-light' />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label className='text-secondary'>Hive Private Active Key</Form.Label>
+                            <Form.Label className='text-secondary'>Hive Private Posting Key</Form.Label>
                             <Form.Control type="password" value={this.state.key} onChange={this.onKeyChange.bind(this)} className='bg-secondary text-light' />
                         </Form.Group>
                         <span className='tag-wrap'>
