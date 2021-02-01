@@ -10,7 +10,7 @@ const entryUrl = process.env.NODE_ENV === 'development'
   : `file://${path.join(__dirname, 'index.html')}`;
 
 if(process.env.NODE_ENV === 'development') {
-  debug.enable("blasio:*");
+  debug.enable("3speak:*");
 }
 
 let window = null;

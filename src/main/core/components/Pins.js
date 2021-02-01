@@ -2,7 +2,7 @@ import PouchDB from 'pouchdb'
 import RefLink from '../../RefLink'
 import IpfsHandler from './ipfsHandler'
 const Path = require('path');
-const debug = require('debug')('blasio:pins')
+const debug = require('debug')('3speak:pins')
 const Schedule = require('node-schedule')
 PouchDB.plugin(require('pouchdb-find'));
 PouchDB.plugin(require('pouchdb-upsert'));
@@ -38,6 +38,10 @@ class Pins {
                 console.log(ex)
             }
         });
+        doc.cids = doc.cids.filter(function(item, pos, self) {
+            return self.indexOf(item) == pos;
+        })
+        console.log(doc.cids)
         doc.size = 0;
         this.inProgressPins[doc._id] = doc;
         var totalSize = 0;

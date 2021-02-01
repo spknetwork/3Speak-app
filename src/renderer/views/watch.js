@@ -28,7 +28,7 @@ import ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/github';
 import ArraySearch from 'arraysearch';
-const debug = Debug("blasio:watch")
+const debug = Debug("3speak:watch")
 const Finder = ArraySearch.Finder;
 
 class watch extends React.Component {

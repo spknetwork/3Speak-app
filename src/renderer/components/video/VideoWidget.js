@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Reflink from '../../../main/RefLink';
 import DateTime from 'date-and-time';
-import PlaySVG from '../../assets/img/play.svg'
-import { FaUser } from 'react-icons/fa'
+import PlaySVG from '../../assets/img/play.svg';
+import { FaUser } from 'react-icons/fa';
 import convert from "convert-units";
 import {Link, HashRouter} from 'react-router-dom';
-import nsfwWarning from '../../assets/img/nsfw.png'
-import IpfsLogo from '../../assets/img/ipfs-logo-vector-ice.svg'
-import {OverlayTrigger, Tooltip} from 'react-bootstrap'
+import nsfwWarning from '../../assets/img/nsfw.png';
+import IpfsLogo from '../../assets/img/ipfs-logo-vector-ice.svg';
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
+import Utils from '../../utils';
 
 class VideoWidget extends Component {
     constructor(props) {
@@ -19,9 +20,16 @@ class VideoWidget extends Component {
         }
     }
     async componentDidMount() {
+        let thumbnailUrl;
+        if(this.props.isNsfw === true) {
+            thumbnailUrl = nsfwWarning;
+        } else {
+            thumbnailUrl = await Utils.video.getThumbnailURL(this.props.reflink)
+        }
         this.setState({
             //video_info: await utils.accounts.permalinkToVideoInfo(this.props.reflink),
-            reflink: Reflink.parse(this.props.reflink)
+            reflink: Reflink.parse(this.props.reflink),
+            thumbnailUrl
         })
     }
     render() {
@@ -38,13 +46,7 @@ class VideoWidget extends Component {
                     })()}
                 </div>
                 <a href={`#/watch/${this.props.reflink}`}>
-                    <img style={{width: "100% !important", padding: "5px"}} className="img-fluid bg-dark" src={(() => {
-                        if(this.props.isNsfw === true) {
-                            return nsfwWarning;
-                        } else {
-                            return "https://img.3speakcontent.co/"+this.state.reflink.permlink+"/thumbnail.png"
-                        }
-                    })()} />
+                    <img style={{width: "100% !important", padding: "5px"}} className="img-fluid bg-dark" src={this.state.thumbnailUrl} />
                 </a>
             </div>
             <a href={`#/watch/${this.props.reflink}`}>

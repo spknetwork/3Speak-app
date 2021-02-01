@@ -8,7 +8,10 @@ const Finder = ArraySearch.Finder;
 
 const ipfs = {
     gateway: "https://ipfs.3speak.co/ipfs/",
-    async getGateway(cid) {
+    async getGateway(cid, bypass) {
+        if(bypass === true) {
+            return ipfs.gateway;
+        }
         var {ipfs:ipfsInstance} = await ipfsHandler.getIpfs();
         var has = false;
         try {
@@ -91,6 +94,12 @@ const accounts = {
                     let urls = [];
                     if (video_info.ipfs != null && video_info.ipfs) {
                         urls.push(`ipfs://${video_info.ipfs}`)
+                    }
+                    if (video_info.ipfsThumbnail != null && video_info.ipfsThumbnail) {
+                        sources.push({
+                            type: "thumbnail",
+                            url: `ipfs://${video_info.ipfsThumbnail}`
+                        })
                     }
                     urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/default.m3u8`)
                     if (video_info.file) {
@@ -282,18 +291,23 @@ const video = {
         if (typeof permalink === "object") {
             post_content = permalink;
         } else {
-            post_content = await accounts.permalinkToVideoInfo(permalink);
+            try {
+                post_content = await accounts.permalinkToVideoInfo(permalink);
+            } catch {
+                const reflink = RefLink.parse(permalink);
+                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
+            }
         }
         const reflink = RefLink.parse(post_content.reflink);
-        var imageSource = Finder.one.in(post_content.sources).with({
+        var thumbnailSource = Finder.one.in(post_content.sources).with({
             type: "thumbnail"
         })
-        if(imageSource) {
+        if(thumbnailSource) {
             try {
-                var cid = ipfs.urlToCID(videoSource.url);
-                var gateway = await ipfs.getGateway(cid);
-                return gateway + ipfs.urlToIpfsPath(videoSource.url);
-            } catch {
+                var cid = ipfs.urlToCID(thumbnailSource.url);
+                var gateway = await ipfs.getGateway(cid, true);
+                return gateway + ipfs.urlToIpfsPath(thumbnailSource.url);
+            } catch (ex) {
                 return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
             }
         } else {

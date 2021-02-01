@@ -143,7 +143,7 @@ class ipfsHandler {
         return new Promise(async (resolve, reject) => {
             try {
                 var goIpfsPath = await waIpfs.getPath(waIpfs.getDefaultPath({ dev: process.env.NODE_ENV === 'development' }))
-                var subprocess = execa(goIpfsPath, ['daemon', '--enable-pubsub-experiment', '--enable-gc'], {
+                var subprocess = execa(goIpfsPath, ['daemon', '--enable-pubsub-experiment', '--enable-gc', '--migrate'], {
                     env: {
                         IPFS_Path: repoPath
                     }
