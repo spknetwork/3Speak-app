@@ -21,11 +21,15 @@ class VideoWidget extends Component {
     }
     async componentDidMount() {
         let thumbnailUrl;
+
         if(this.props.isNsfw === true) {
             thumbnailUrl = nsfwWarning;
+        } else if (this.state.video_info.isIpfs) {
+            thumbnailUrl = 'https://ipfs.3speak.co' + this.state.video_info.images.ipfs_thumbnail
         } else {
-            thumbnailUrl = await Utils.video.getThumbnailURL(this.props.reflink)
+            thumbnailUrl = this.state.video_info.images.thumbnail
         }
+
         this.setState({
             //video_info: await utils.accounts.permalinkToVideoInfo(this.props.reflink),
             reflink: Reflink.parse(this.props.reflink),
