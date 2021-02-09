@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Form} from "react-bootstrap";
+import {Button, Dropdown, Form} from "react-bootstrap";
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -14,7 +14,8 @@ class Login extends Component {
             isOpen: false,
             submit: 'Submit',
             encryption: false,
-            symKey: ''
+            symKey: '',
+            accountType: 'hive'
         }
         this.submitRef = React.createRef()
     }
@@ -68,6 +69,18 @@ class Login extends Component {
             <>
                 <Form id="contact-form" onSubmit={(event) => {this.handleSubmit(event)}} style={{'maxWidth': '600px', 'width': '100%', 'padding': '20px', 'alignItems': 'center'}}>
                     <div className='p-3' style={{width: '100%'}}>
+                        <Form.Label className='text-secondary'>Account type</Form.Label>
+                        <Dropdown className='mb-2'>
+                            <Dropdown.Toggle variant="secondary">
+                                {this.state.accountType}
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => {this.setState({accountType: 'hive'})}}>Hive</Dropdown.Item>
+                                <Dropdown.Item onClick={() => {this.setState({accountType: 'orbitdb'})}}>OrbitDB</Dropdown.Item>
+                                <Dropdown.Item onClick={() => {this.setState({accountType: 'other'})}}>Other</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                         <Form.Group>
                             <Form.Label className='text-secondary'>Profile name</Form.Label>
                             <Form.Control type="text" value={this.state.profile} onChange={this.onProfileChange.bind(this)} className='bg-secondary text-light' />
@@ -76,10 +89,12 @@ class Login extends Component {
                             <Form.Label className='text-secondary'>Username</Form.Label>
                             <Form.Control type="text" value={this.state.username} onChange={this.onUsernameChange.bind(this)} className='bg-secondary text-light' />
                         </Form.Group>
-                        <Form.Group>
-                            <Form.Label className='text-secondary'>Hive Private Posting Key</Form.Label>
-                            <Form.Control type="password" value={this.state.key} onChange={this.onKeyChange.bind(this)} className='bg-secondary text-light' />
-                        </Form.Group>
+                        {this.state.accountType === 'hive' && (
+                            <Form.Group>
+                                <Form.Label className='text-secondary'>Hive Private Posting Key</Form.Label>
+                                <Form.Control type="password" value={this.state.key} onChange={this.onKeyChange.bind(this)} className='bg-secondary text-light' />
+                            </Form.Group>
+                        )}
                         <label className='text-secondary mr-2' for='enable-encryption'>Enable Encryption</label>
                         <input name='enable-encryption' type="checkbox" checked={this.state.encryption} onChange={this.onEncryptionChange.bind(this)} />
                         {this.state.encryption && (
