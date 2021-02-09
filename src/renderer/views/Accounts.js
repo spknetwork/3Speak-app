@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import hive from '../assets/img/hive.svg';
 
 class Accounts extends Component {
     constructor(props) {
@@ -46,7 +47,7 @@ class Accounts extends Component {
                     {this.state.accounts.map(acc => (
                         <tr>
                             <td>
-                                <b className='pr-2'>@{acc}</b>
+                                <b className='pr-2'>@{acc}</b> <img className='float-right mr-2' src={hive} width={15} height={15}/>
                             </td>
                             <td>
                                 <input type="checkbox" disabled checked/>
