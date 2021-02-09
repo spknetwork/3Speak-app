@@ -15,7 +15,7 @@ class VideoWidget extends Component {
         super(props);
         this.state = {
             video_info: props,
-            permlink: props.permlink,
+            permlink: this.props.permlink,
             reflink:Reflink.parse(this.props.reflink)
         }
     }
@@ -25,7 +25,7 @@ class VideoWidget extends Component {
         if(this.props.isNsfw === true) {
             thumbnailUrl = nsfwWarning;
         } else if (this.state.video_info.isIpfs) {
-            thumbnailUrl = 'https://ipfs.3speak.co' + this.state.video_info.images.ipfs_thumbnail
+            thumbnailUrl = await Utils.video.getThumbnailURL(this.state.reflink.toString())
         } else {
             thumbnailUrl = this.state.video_info.images.thumbnail
         }
