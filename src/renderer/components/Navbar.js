@@ -36,7 +36,7 @@ class SideBar extends Component {
             <Navbar.Collapse >
                 <Nav className="mr-auto nav_dist">
                     {this.state.login && (
-                        <NavDropdown title={<React.Fragment><div className="nav_icons">@{this.state.login}</div></React.Fragment>}>
+                        <NavDropdown title={<React.Fragment><div className="nav_icons"><h6>@{this.state.login}</h6></div></React.Fragment>}>
                             <NavDropdown.Item href='#/accounts'>Switch account</NavDropdown.Item>
                             <NavDropdown.Item onClick={() => {this.logOut()}}>Log out</NavDropdown.Item>
                         </NavDropdown>
