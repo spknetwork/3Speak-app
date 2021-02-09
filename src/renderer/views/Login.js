@@ -10,6 +10,7 @@ class Login extends Component {
         this.state = {
             username: '',
             key: '',
+            profile: '',
             isOpen: false,
             submit: 'Submit'
         }
@@ -21,7 +22,8 @@ class Login extends Component {
 
         let login = {
             'username': this.state.username,
-            'key': this.state.key
+            'key': this.state.key,
+            'profile': this.state.profile
         }
 
         this.submitRef.current.setAttribute('disabled', 'disabled')
@@ -46,11 +48,19 @@ class Login extends Component {
         this.setState({key: event.target.value})
     }
 
+    onProfileChange(event) {
+        this.setState({profile: event.target.value})
+    }
+
     render() {
         return(
             <>
                 <Form id="contact-form" onSubmit={(event) => {this.handleSubmit(event)}} style={{'maxWidth': '600px', 'width': '100%', 'padding': '20px', 'alignItems': 'center'}}>
                     <div className='p-3' style={{width: '100%'}}>
+                        <Form.Group>
+                            <Form.Label className='text-secondary'>Profile name</Form.Label>
+                            <Form.Control type="text" value={this.state.profile} onChange={this.onProfileChange.bind(this)} className='bg-secondary text-light' />
+                        </Form.Group>
                         <Form.Group>
                             <Form.Label className='text-secondary'>Username</Form.Label>
                             <Form.Control type="text" value={this.state.username} onChange={this.onUsernameChange.bind(this)} className='bg-secondary text-light' />
