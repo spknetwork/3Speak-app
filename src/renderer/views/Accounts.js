@@ -34,6 +34,9 @@ class Accounts extends Component {
                         <th>
                             Account
                         </th>
+                        <th className={'pr-2'}>
+                            Encrypted
+                        </th>
                         <th>
                             Active
                         </th>
@@ -44,6 +47,9 @@ class Accounts extends Component {
                         <tr>
                             <td>
                                 <b className='pr-2'>@{acc}</b>
+                            </td>
+                            <td>
+                                <input type="checkbox" disabled checked/>
                             </td>
                             <td>
                                 {acc === this.state.login && (
