@@ -12,7 +12,9 @@ class Login extends Component {
             key: '',
             profile: '',
             isOpen: false,
-            submit: 'Submit'
+            submit: 'Submit',
+            encryption: false,
+            symKey: ''
         }
         this.submitRef = React.createRef()
     }
@@ -23,7 +25,7 @@ class Login extends Component {
         let login = {
             'username': this.state.username,
             'key': this.state.key,
-            'profile': this.state.profile
+            'profile': this.state.profile,
         }
 
         this.submitRef.current.setAttribute('disabled', 'disabled')
@@ -52,6 +54,15 @@ class Login extends Component {
         this.setState({profile: event.target.value})
     }
 
+    onEncryptionChange(event) {
+        console.log(event.target.checked)
+        this.setState({encryption: event.target.checked})
+    }
+
+    onSymKeyChange(event) {
+        this.setState({symKey: event.target.value})
+    }
+
     render() {
         return(
             <>
@@ -69,6 +80,15 @@ class Login extends Component {
                             <Form.Label className='text-secondary'>Hive Private Posting Key</Form.Label>
                             <Form.Control type="password" value={this.state.key} onChange={this.onKeyChange.bind(this)} className='bg-secondary text-light' />
                         </Form.Group>
+                        <label className='text-secondary mr-2' for='enable-encryption'>Enable Encryption</label>
+                        <input name='enable-encryption' type="checkbox" checked={this.state.encryption} onChange={this.onEncryptionChange.bind(this)} />
+                        {this.state.encryption && (
+                            <Form.Group>
+                                <Form.Label className='text-secondary'>Symmetric Key</Form.Label>
+                                <Form.Control type="text" value={this.state.symKey} onChange={this.onSymKeyChange.bind(this)} className='bg-secondary text-light' />
+                            </Form.Group>
+                        )}
+                        <br />
                         <span className='tag-wrap'>
                             <Button type="submit" ref={this.submitRef} variant='secondary'>{this.state.submit}</Button>
                         </span>
