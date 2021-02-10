@@ -25,7 +25,9 @@ class VideoWidget extends Component {
         if(this.props.isNsfw === true) {
             thumbnailUrl = nsfwWarning;
         } else if (this.state.video_info.isIpfs) {
-            thumbnailUrl = await Utils.video.getThumbnailURL(this.state.reflink.toString())
+            var cid = ipfs.urlToCID(thumbnailSource.url);
+            var gateway = await ipfs.getGateway(cid, true);
+            thumbnailUrl = gateway + ipfs.urlToIpfsPath(this.state.video_info.images.ipfs_thumbnail);
         } else {
             thumbnailUrl = this.state.video_info.images.thumbnail
         }
