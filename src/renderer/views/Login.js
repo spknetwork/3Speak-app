@@ -24,9 +24,12 @@ class Login extends Component {
         event.preventDefault()
 
         let login = {
-            'username': this.state.username,
-            'key': this.state.key,
-            'profile': this.state.profile,
+            username: this.state.username,
+            key: this.state.key,
+            profile: this.state.profile,
+            accountType: this.state.accountType,
+            symKey: this.state.symKey,
+            isEncrypted: this.state.encryption
         }
 
         this.submitRef.current.setAttribute('disabled', 'disabled')
