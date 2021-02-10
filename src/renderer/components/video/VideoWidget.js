@@ -25,9 +25,9 @@ class VideoWidget extends Component {
         if(this.props.isNsfw === true) {
             thumbnailUrl = nsfwWarning;
         } else if (this.state.video_info.isIpfs) {
-            var cid = ipfs.urlToCID(thumbnailSource.url);
-            var gateway = await ipfs.getGateway(cid, true);
-            thumbnailUrl = gateway + ipfs.urlToIpfsPath(this.state.video_info.images.ipfs_thumbnail);
+            var cid = Utils.ipfs.urlToCID(this.state.video_info.images.ipfs_thumbnail);
+            var gateway = await Utils.ipfs.getGateway(cid, true);
+            thumbnailUrl = gateway + Utils.ipfs.urlToIpfsPath(this.state.video_info.images.ipfs_thumbnail);
         } else {
             thumbnailUrl = this.state.video_info.images.thumbnail
         }
