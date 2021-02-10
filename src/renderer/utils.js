@@ -4,6 +4,7 @@ import ArraySearch from 'arraysearch';
 import RefLink from '../main/RefLink';
 import ipfsHandler from '../main/core/components/ipfsHandler'
 import CID from 'cids'
+import IpfsUtils from 'ipfs-core/src/utils'
 const Finder = ArraySearch.Finder;
 
 const ipfs = {
@@ -35,7 +36,7 @@ const ipfs = {
         if (url.protocol === "ipfs:" && url.pathname !== "") {
             return url.pathname;
         } else {
-            throw new Error("Invalid IPFS url");
+            return IpfsUtils.normalizeCidPath(url);
         }
     },
     urlToCID(url) {
@@ -43,7 +44,8 @@ const ipfs = {
         if (url.protocol === "ipfs:" && url.pathname !== "") {
             return url.hostname;
         } else {
-            throw new Error("Invalid IPFS url");
+            var ipfsPath = IpfsUtils.normalizeCidPath(url).split("/");
+            return ipfsPath[0]
         }
     }
 }
@@ -122,7 +124,7 @@ const accounts = {
 
                     sources.push({
                         type: "thumbnail",
-                        url: `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
+                        url: `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
                     })
                 } catch (ex) {
                     title = post_content.title;
@@ -295,7 +297,7 @@ const video = {
                 post_content = await accounts.permalinkToVideoInfo(permalink);
             } catch {
                 const reflink = RefLink.parse(permalink);
-                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
+                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
             }
         }
         const reflink = RefLink.parse(post_content.reflink);
@@ -308,10 +310,10 @@ const video = {
                 var gateway = await ipfs.getGateway(cid, true);
                 return gateway + ipfs.urlToIpfsPath(thumbnailSource.url);
             } catch (ex) {
-                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
+                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
             }
         } else {
-            return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
+            return `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
             //throw new Error("Invalid post metadata");
         }
     }
