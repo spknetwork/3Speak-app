@@ -3,28 +3,33 @@ import Path from 'path'
 import os from 'os'
 import fs from 'fs'
 import IpfsClient from 'ipfs-http-client'
-import { exec, spawn } from 'child_process'
+import { execFile, spawn } from 'child_process'
+import execa from 'execa'
+const waIpfs = require('wa-go-ipfs')
 const toUri = require('multiaddr-to-uri')
 
-//work around for go-ipfs-dep not working correctly with electron paths
-const ipfsPaths = [
-    Path.resolve(Path.join(__dirname, '..', 'go-ipfs', 'ipfs')),
-    Path.resolve(Path.join(__dirname, '..', 'go-ipfs', 'ipfs.exe')),
-    Path.resolve(Path.join(__dirname, '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
-    Path.resolve(Path.join(__dirname, '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs')),
-    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
-    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', 'node_modules', 'go-ipfs', 'go-ipfs', 'ipfs')),
-    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', '..', 'go-ipfs', 'go-ipfs', 'ipfs.exe')),
-    Path.resolve(Path.join(__dirname, '..', '..', '..', '..', '..', 'go-ipfs', 'go-ipfs', 'ipfs'))
-]
-let ipfsPath;
-for (const bin of ipfsPaths) {
-    if (fs.existsSync(bin)) {
-        ipfsPath = bin;
-    }
-}
-
 var defaultIpfsConfig = {
+    "API": {
+        "HTTPHeaders": {
+            "Access-Control-Allow-Credentials": [
+                "true"
+            ],
+            "Access-Control-Allow-Headers": [
+                "Authorization"
+            ],
+            "Access-Control-Allow-Origin": [
+                "*"
+            ],
+            "Access-Control-Expose-Headers": [
+                "Location"
+            ],
+            "HTTPHeaders.Access-Control-Allow-Methods": [
+                "PUT",
+                "POST",
+                "GET"
+            ]
+        }
+    },
     "Gateway": {
         "HTTPHeaders": {
             "Access-Control-Allow-Credentials": [
@@ -54,11 +59,32 @@ var defaultIpfsConfig = {
         "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
         "/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
         "/ip4/209.222.98.165/tcp/4001/p2p/12D3KooWAH9FypmaduofuBTtubSHVJghxW35aykce23vDHjfhiAd"
-    ]
+    ],
+    "Swarm": {
+        "ConnMgr": {
+            "GracePeriod": "20s",
+            "HighWater": 1500,
+            "LowWater": 450,
+            "Type": "basic"
+        },
+        "EnableAutoRelay": true,
+        "EnableRelayHop": false
+    },
+    "Addresses": {
+        "API": "/ip4/127.0.0.1/tcp/5001",
+        "Announce": [],
+        "Gateway": "/ip4/127.0.0.1/tcp/8080",
+        "NoAnnounce": [],
+        "Swarm": [
+            "/ip4/0.0.0.0/tcp/4001",
+            "/ip6/::/tcp/4001",
+            "/ip6/::/udp/4001/quic"
+        ]
+    }
 }
 class ipfsHandler {
     static get ready() {
-        return new Promise(async(resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             var ipfsInfo = await ipfsHandler.getIpfs();
             if (ipfsInfo.ipfs) {
                 return resolve(ipfsInfo.ipfs)
@@ -97,38 +123,47 @@ class ipfsHandler {
 
         }
     }
-    static init(repoPath) {
-        var goIpfsPath = ipfsPath;
-        return new Promise((resolve, reject) => {
-            exec(`${goIpfsPath} init`, {
+    static async init(repoPath) {
+        var goIpfsPath = await waIpfs.getPath(waIpfs.getDefaultPath({ dev: process.env.NODE_ENV === 'development' }))
+        await execa(goIpfsPath, ['init'], {
+            env: {
+                IPFS_Path: repoPath
+            }
+        })
+        for (var key in defaultIpfsConfig) {
+            var subTree = defaultIpfsConfig[key];
+            await execa(goIpfsPath, ["config", "--json", key, JSON.stringify(subTree)], {
                 env: {
                     IPFS_Path: repoPath
                 }
-            }, () => {
-                //console.log(`${goIpfsPath} config --json API ${JSON.stringify(JSON.stringify(defaultIpfsConfigs))}`)
-                exec(`${goIpfsPath} config --json API ${JSON.stringify(JSON.stringify(defaultIpfsConfig))}`, {
+            })
+        }
+    }
+    static run(repoPath) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var goIpfsPath = await waIpfs.getPath(waIpfs.getDefaultPath({ dev: process.env.NODE_ENV === 'development' }))
+                var subprocess = execa(goIpfsPath, ['daemon', '--enable-pubsub-experiment', '--enable-gc', '--migrate'], {
                     env: {
                         IPFS_Path: repoPath
                     }
-                }, () => {
-                    resolve()
                 })
-            });
+                subprocess.stderr.on('data', data => console.error(data.toString()))
+                subprocess.stdout.on('data', data => console.log(data.toString()))
+                let output = '';
+                const readyHandler = data => {
+                    output += data.toString()
+                    if (output.match(/(?:daemon is running|Daemon is ready)/)) {
+                        // we're good
+                        subprocess.stdout.off('data', readyHandler)
+                        resolve(subprocess.pid)
+                    }
+                }
+                subprocess.stdout.on('data', readyHandler)
+            } catch (ex) {
+                reject(ex);
+            }
         })
-    }
-    static run(repoPath) {
-        var goIpfsPath = ipfsPath;
-        var ipfsDaemon = spawn(goIpfsPath, [
-            "daemon",
-            "--enable-pubsub-experiment",
-            "--enable-gc"
-        ], {
-            env: {
-                IPFS_Path: repoPath
-            },
-            detached: true
-        });
-        return ipfsDaemon.pid;
     }
     static async getIpfs() {
         const AppPath = Path.join(os.homedir(), ".blasio-app")
@@ -173,7 +208,7 @@ class ipfsHandler {
             }
         }
 
-        if (ipfs) {
+        if (ipfs !== null && ipfs) {
             var gma = await ipfs.config.get("Addresses.Gateway");
             gateway = toUri(gma) + "/ipfs/";
         } else {

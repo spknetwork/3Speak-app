@@ -42,8 +42,11 @@ class User extends Component {
             profileAbout: await Utils.accounts.getProfileAbout(this.state.reflink),
             hiveBalance: (await accountBalances).hive,
             hbdBalance: (await accountBalances).hbd,
+<<<<<<< HEAD
             advertizerStatus: adsAccountStatus.advertizerResult,
             monetizerStatus: adsAccountStatus.monetizerResult,
+=======
+>>>>>>> 676c66eb4f8c79b3656eb743d9274cabc13f01d0
             username: this.state.reflink.root
         })
 

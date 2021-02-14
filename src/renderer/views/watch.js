@@ -14,6 +14,7 @@ import Follow from "../components/widgets/Follow";
 import RefLink from '../../main/RefLink'
 import axios from 'axios';
 import PromiseIpc from 'electron-promise-ipc'
+import Vote from "../components/video/Vote";
 import CID from 'cids'
 import convert from 'convert-units';
 import Debug from 'debug';
@@ -27,7 +28,7 @@ import ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/github';
 import ArraySearch from 'arraysearch';
-const debug = Debug("blasio:watch")
+const debug = Debug("3speak:watch")
 const Finder = ArraySearch.Finder;
 
 class watch extends React.Component {
@@ -108,7 +109,8 @@ class watch extends React.Component {
         }
     }
     async recordView() {
-        let cids = [];
+        return;
+        /*let cids = [];
         for(const source of this.state.video_info.sources) {
             const url = new (require('url').URL)(source.url)
             try {
@@ -130,7 +132,7 @@ class watch extends React.Component {
                     title: this.state.video_info.title
                 }
             })
-        }
+        }*/
     }
     async gearSelect(eventKey) {
         var ref = RefLink.parse(this.state.reflink)
@@ -212,9 +214,6 @@ class watch extends React.Component {
         Popup.plugins().watch_debug();
     }
     render() {
-        console.log(this.props);
-        console.log(this.state.post_info)
-        console.log(this.state.video_info)
         const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
             <button style={{ float: "right" }} ref={ref} onClick={(e) => {
                 e.preventDefault();
@@ -241,18 +240,7 @@ class watch extends React.Component {
                             </div>
                             <div className="float-right" style={{ textAlign: "right !important", float: "right !important", display: "inline-block !important" }}>
                                 <span>
-                                    <span className="p-1" style={{ padding: "0 !important" }}>
-                                        <FaThumbsUp style={{ color: "#d3d3d3" }} />
-                                        {
-                                            //TODO: Implement likes
-                                        }
-                                    </span>
-                                    <span className="p-1" style={{ padding: "0 !important" }}>
-                                        <FaThumbsDown style={{ color: "#d3d3d3" }} />
-                                        {
-                                            //TODO: Implement dislikes
-                                        }
-                                    </span>
+                                    <Vote reflink={this.state.reflink} />
                                 </span>
                                 <Dropdown onSelect={this.gearSelect} style={{paddingTop: "10px"}}>
                                     <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">

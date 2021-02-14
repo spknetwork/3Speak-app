@@ -1,0 +1,16 @@
+.modal-open.modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.start-backdrop.show {
+    opacity: .98;
+}
+.start-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+}

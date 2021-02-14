@@ -4,18 +4,26 @@ import ArraySearch from 'arraysearch';
 import RefLink from '../main/RefLink';
 import ipfsHandler from '../main/core/components/ipfsHandler'
 import CID from 'cids'
+import IpfsUtils from 'ipfs-core/src/utils'
 const Finder = ArraySearch.Finder;
 
 const ipfs = {
     gateway: "https://ipfs.3speak.co/ipfs/",
-    async getGateway(cid) {
+    async getGateway(cid, bypass) {
+        if(bypass === true) {
+            return ipfs.gateway;
+        }
         var {ipfs:ipfsInstance} = await ipfsHandler.getIpfs();
         var has = false;
-        for await(var pin of ipfsInstance.pin.ls({path: cid, type:"recursive"})) {
-            if(pin.cid.equals(new CID(cid))) {
-                has = true;
-                break;
+        try {
+            for await(var pin of ipfsInstance.pin.ls({path: cid, type:"recursive"})) {
+                if(pin.cid.equals(new CID(cid))) {
+                    has = true;
+                    break;
+                }
             }
+        } catch (ex) {
+            console.log(ex)
         }
         if(has) {
             return "http://localhost:8080/ipfs/"
@@ -28,7 +36,7 @@ const ipfs = {
         if (url.protocol === "ipfs:" && url.pathname !== "") {
             return url.pathname;
         } else {
-            throw new Error("Invalid IPFS url");
+            return IpfsUtils.normalizeCidPath(url);
         }
     },
     urlToCID(url) {
@@ -36,14 +44,15 @@ const ipfs = {
         if (url.protocol === "ipfs:" && url.pathname !== "") {
             return url.hostname;
         } else {
-            throw new Error("Invalid IPFS url");
+            var ipfsPath = IpfsUtils.normalizeCidPath(url).split("/");
+            return ipfsPath[0]
         }
     }
 }
 const accounts = {
     /**
      * Retrieves post information from reflink.
-     * @param {String|RefLink} reflink 
+     * @param {String|RefLink} reflink
      */
     async permalinkToPostInfo(reflink) {
         if(!(reflink instanceof RefLink)) {
@@ -54,7 +63,7 @@ const accounts = {
     },
     /**
      * Retrieves post information as videoInfo from reflink.
-     * @param {String|RefLink} reflink 
+     * @param {String|RefLink} reflink
      */
     async permalinkToVideoInfo(reflink, options = {}) {
         if(!(reflink instanceof RefLink)) {
@@ -70,7 +79,7 @@ const accounts = {
         switch (reflink.source.value) {
             case "hive": {
                 const json_metadata = post_content.json_metadata;
-                if(!json_metadata.app.includes("3speak") && options.type === "video") {
+                if(!(json_metadata.app && json_metadata.type.includes("3speak/video")) && options.type === "video") {
                     throw new Error("Invalid post content. Not a video");
                 }
                 let sources = [];
@@ -88,6 +97,13 @@ const accounts = {
                     if (video_info.ipfs != null && video_info.ipfs) {
                         urls.push(`ipfs://${video_info.ipfs}`)
                     }
+                    if (video_info.ipfsThumbnail != null && video_info.ipfsThumbnail) {
+                        sources.push({
+                            type: "thumbnail",
+                            url: `ipfs://${video_info.ipfsThumbnail}`
+                        })
+                    }
+                    urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/default.m3u8`)
                     if (video_info.file) {
                         urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`)
                     }
@@ -106,10 +122,9 @@ const accounts = {
                         })
                     }
 
-
                     sources.push({
                         type: "thumbnail",
-                        url: `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
+                        url: `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
                     })
                 } catch (ex) {
                     title = post_content.title;
@@ -134,7 +149,7 @@ const accounts = {
     /**
      * Retrieves Account profile picture URL.
      * @todo Future item: Pull image from URL, then store locally for later use.
-     * @param {String|RefLink} reflink 
+     * @param {String|RefLink} reflink
      */
     async getProfilePictureURL(reflink) {
         if(!(reflink instanceof RefLink)) {
@@ -219,12 +234,10 @@ const accounts = {
                         "distiller.getAccount",
                         `hive:${reflink.root}`)
                 ).json_content
-                console.log(accountBalances)
                 accountBalances = {
                     hive: accountBalances.balance,
                     hbd: accountBalances.sbd_balance
                 }
-                console.log(accountBalances)
                 return accountBalances
             }
             case "orbitdb": {
@@ -240,7 +253,7 @@ const video = {
     /**
      * Retrieves video source URL. Basic, gets first video source in list.
      * @todo Implement handling for multi video sources.
-     * @param {String} permalink 
+     * @param {String} permalink
      */
     async getVideoSourceURL(permalink) {
         let post_content;
@@ -255,13 +268,13 @@ const video = {
         if(videoSource) {
             try {
                 var cid = ipfs.urlToCID(videoSource.url);
+                let gateway;
                 try {
-
-                    var gateway = await ipfs.getGateway(cid);
+                    gateway = await ipfs.getGateway(cid);
                 } catch (ex) {
                     console.log(ex)
+                    throw ex;
                 }
-                console.log(gateway)
                 return gateway + ipfs.urlToIpfsPath(videoSource.url);
             } catch {
                 //return `https://cdn.3speakcontent.co/${reflink.root}/${reflink.permlink}`;
@@ -273,30 +286,34 @@ const video = {
     },
     /**
      * Retrieves thumbnail URL.
-     * @param {String|Object} permalink 
+     * @param {String|Object} permalink
      */
     async getThumbnailURL(permalink) {
         let post_content;
         if (typeof permalink === "object") {
             post_content = permalink;
         } else {
-            post_content = await accounts.permalinkToVideoInfo(permalink);
+            try {
+                post_content = await accounts.permalinkToVideoInfo(permalink);
+            } catch {
+                const reflink = RefLink.parse(permalink);
+                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
+            }
         }
         const reflink = RefLink.parse(post_content.reflink);
-        var imageSource = Finder.one.in(post_content.sources).with({
+        var thumbnailSource = Finder.one.in(post_content.sources).with({
             type: "thumbnail"
         })
-        if(imageSource) {
+        if(thumbnailSource) {
             try {
-                var cid = ipfs.urlToCID(videoSource.url);
-                var gateway = await ipfs.getGateway(cid);
-                console.log(gateway)
-                return gateway + ipfs.urlToIpfsPath(videoSource.url);
-            } catch {
-                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
+                var cid = ipfs.urlToCID(thumbnailSource.url);
+                var gateway = await ipfs.getGateway(cid, true);
+                return gateway + ipfs.urlToIpfsPath(thumbnailSource.url);
+            } catch (ex) {
+                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
             }
         } else {
-            return `https://img.3speakcontent.co/${reflink.permlink}/thumbnail.png`
+            return `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
             //throw new Error("Invalid post metadata");
         }
     }

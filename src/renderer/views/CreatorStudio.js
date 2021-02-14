@@ -7,27 +7,13 @@ class CreatorStudio extends Component {
         this.state = {};
     }
     componentDidMount() {
-        const webview = document.getElementById('foo')
-        const indicator = document.querySelector('.indicator')
-
-        const loadstart = () => {
-           indicator.innerText = 'loading...'
-        }
-
-        const loadstop = () => {
-           indicator.innerText = ''
-        }
-
-        webview.addEventListener('did-start-loading', loadstart)
-        webview.addEventListener('did-stop-loading', loadstop)
+        document.title = "3Speak - Tokenised video communities"
     }
     render() {
         return (
         <Container fluid>
             <Row>
-                <webview id="foo" src="https://studio.3speak.co" style={{width: "100%", height: "600px"}}>
-                    <div className="indicator"></div>
-                </webview>
+                <webview id="foo" src="https://studio.3speak.co" style={{width: "100%", height: "600px"}}></webview>
             </Row>
         </Container>);
     }

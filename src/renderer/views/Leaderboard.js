@@ -14,6 +14,7 @@ class Leaderboard extends Component {
         }
     }
     async componentDidMount() {
+        document.title = "3Speak - Tokenised video communities"
         let data = (await axios.get("https://3speak.co/apiv2/leaderboard")).data
         let state = {
             bronze: []

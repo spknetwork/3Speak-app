@@ -1,15 +1,15 @@
 import RefLink from '../../RefLink';
 import PouchDB from 'pouchdb'
-const debug = require('debug')("blasio:distiller")
+const debug = require('debug')("3speak:distiller")
 const Path = require('path');
 const { Client: HiveClient } = require('@hiveio/dhive')
 PouchDB.plugin(require('pouchdb-find'));
 PouchDB.plugin(require('pouchdb-upsert'));
 
 const hiveClient = new HiveClient([
+    "https://api.hive.blog",
     "https://api.openhive.network",
     "https://hived.privex.io",
-    "https://api.hive.blog",
     "https://anyx.io"
 ])
 const hive = require('@hiveio/hive-js');
@@ -492,9 +492,9 @@ class DistillerDB {
             reflink = RefLink.parse(reflink);
         }
         let followerCount = (await hiveClient.call(
-            'follow_api',
+            'condenser_api',
             'get_follow_count',
-            { account: reflink.root })).follower_count
+            [ reflink.root ])).follower_count
 
         return followerCount
     }

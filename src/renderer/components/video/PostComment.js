@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { FaThumbsUp, FaThumbsDown, FaDollarSign, FaTimesCircle } from "react-icons/fa";
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { Dropdown } from 'react-bootstrap';
+import Vote from "./Vote";
 import DOMPurify from 'dompurify';
 const electronIpc = require('electron-promise-ipc');
 const { clipboard } = require('electron');
@@ -18,7 +19,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
             onClick(e);
         }}>
         <BsThreeDotsVertical/>
-        {children}      
+        {children}
     </a>
 ));
 
@@ -47,6 +48,7 @@ class PostComment extends Component {
         }
         if (commentInfo) {
             profilePicture = await Utils.accounts.getProfilePictureURL(commentInfo.reflink)
+
             this.setState({
                 commentInfo,
                 profilePicture
@@ -71,7 +73,7 @@ class PostComment extends Component {
                 clipboard.writeText(reflink, clipboard)
             }
             default: {
-                
+
             }
         }
     }
@@ -105,39 +107,8 @@ class PostComment extends Component {
                         <ReactMarkdown escapeHtml={false} source={DOMPurify.sanitize(this.state.commentInfo.description)}></ReactMarkdown>
                     </div>
                     <div className="panel-footer ml-0 ml-md-4">
-                        <FaDollarSign className="fa fa-dollar-sign" /> <span id="" className="post-payout">0.03</span>
-
-                        <span id=""> •
-                            <span className="steem-like btn-light btn-sm ml-2 p-0" id="" data-upvote="" data-created="6 days ago">
-                                <span className="steem-like-icon" style={{ cursor: "pointer" }}>
-                                    <FaThumbsUp id="up-icon-aperterikk-re-silentscreamer-qditcv" className="steem-like-icon-icon text-secondary" />
-                                </span>
-
-                                <div className="slider slider-horizontal d-none" id=""><div className="slider-track"><div className="slider-track-low" style={{ left: "0px", width: "0%" }}></div><div className="slider-selection" style={{ left: "0%", width: "100%", background: "rgb(0, 85, 130)" }}></div><div className="slider-track-high" style={{ right: "0px", width: "0%" }}></div></div><div className="tooltip tooltip-main top" role="presentation" style={{ left: "100%" }}><div className="tooltip-arrow"></div><div className="tooltip-inner">100</div></div><div className="tooltip tooltip-min top" role="presentation"><div className="tooltip-arrow"></div><div className="tooltip-inner"></div></div><div className="tooltip tooltip-max top" role="presentation" style={{}}><div className="tooltip-arrow"></div><div className="tooltip-inner"></div></div><div className="slider-handle min-slider-handle round" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" tabindex="0" style={{ left: "100%" }}></div><div className="slider-handle max-slider-handle round hide" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0" style={{ left: "0%" }}></div></div><input id="slider-input-aperterikk-re-silentscreamer-qditcv-up" className="steem-upvote-slider" data-slider-id="slider-aperterikk-re-silentscreamer-qditcv-up" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100" data-value="100" value="100" style={{ display: "none" }} />
-                                <span className="steem-upvote-val ml-2 d-none">100%</span>
-                                <i data-post="" style={{ cursor: "pointer" }} className="fa fa-lg fa-chevron-circle-up d-none steem-upvote-cast"></i>
-                                <FaTimesCircle style={{ cursor: "pointer" }} className="text-danger d-none steem-upvote-cancel"></FaTimesCircle>
-                            </span>
-                            <span className="likes p-1" style={{ cursor: "pointer" }} data-likes="" data-toggle="popover" data-trigger="click" data-html="true" data-placement="bottom" title="" data-content="<a href='https://peakd.com/@felix.herrmann' target='_blank'>@felix.herrmann</a>: 100%<br><a href='https://peakd.com/@silentscreamer' target='_blank'>@silentscreamer</a>: 100%<br><a id='upvotes|aperterikk|re-silentscreamer-qditcv' className='seemore'>See more...</span>" data-original-title="Upvoters">
-                                <b>
-                                    0
-                                </b>
-                            </span>
-
-                            <span className="steem-like btn-light btn-sm ml-2 p-0" id="n" data-upvote="" data-created="6 days ago">
-                                <span className="steem-like-icon" style={{ cursor: "pointer" }}>
-                                    <FaThumbsDown id="" className="steem-like-icon-icon text-secondary" />
-                                </span>
-
-                                <div className="slider slider-horizontal d-none" id="slider-aperterikk-re-silentscreamer-qditcv-down"><div className="slider-track"><div className="slider-track-low" style={{ left: "0px", width: "0%" }}></div><div className="slider-selection" style={{ left: "0%", width: "100%", background: "rgb(0, 85, 130)" }}></div><div className="slider-track-high" style={{ right: "0px", width: "0%" }}></div></div><div className="tooltip tooltip-main top" role="presentation" style={{ left: "100%" }}><div className="tooltip-arrow"></div><div className="tooltip-inner">100</div></div><div className="tooltip tooltip-min top" role="presentation"><div className="tooltip-arrow"></div><div className="tooltip-inner"></div></div><div className="tooltip tooltip-max top" role="presentation" style={{}}><div className="tooltip-arrow"></div><div className="tooltip-inner"></div></div><div className="slider-handle min-slider-handle round" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" tabindex="0" style={{ left: "100%" }}></div><div className="slider-handle max-slider-handle round hide" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0" style={{ left: "0%" }}></div></div><input id="slider-input-aperterikk-re-silentscreamer-qditcv-down" className="steem-upvote-slider" data-slider-id="slider-aperterikk-re-silentscreamer-qditcv-down" type="text" data-slider-min="0" data-slider-max="-100" data-slider-step="1" data-slider-value="-100" data-value="100" value="100" style={{ display: "none" }} />
-                                <span className="steem-upvote-val ml-2 d-none">100%</span>
-                                <i data-post="" style={{ cursor: "pointer" }} className="fas fa-lg fa-chevron-circle-down d-none steem-downvote-cast"></i>
-                                <FaTimesCircle style={{ cursor: "pointer" }} className="text-danger d-none steem-upvote-cancel"></FaTimesCircle>
-                            </span>
-                            <span className="likes p-1" style={{ cursor: "pointer" }} data-dislikes="" data-toggle="popover" data-trigger="click" data-html="true" data-placement="bottom" title="" data-content="<a href='https://peakd.com/@dein-problem' target='_blank'>@dein-problem</a>: -1%<br><a id='downvotes|aperterikk|re-silentscreamer-qditcv' className='seemore'>See more...</a>" data-original-title="Downvoters">
-                                <b>0</b>
-                            </span>
-                        </span>
+                        {/*<FaDollarSign className="fa fa-dollar-sign" /> <span id="" className="post-payout">{this.state.commentInfo.payout}</span>
+                        <span id=""> • */}<Vote reflink={this.props.reflink} />{/* </span>*/}
                     </div>
                 </div>
             </div>

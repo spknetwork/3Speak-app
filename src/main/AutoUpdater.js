@@ -11,7 +11,7 @@ var version = require('../../package.json').version;
 class AutoUpdater {
     async run() {
         try {
-            var data = (await axios.get("https://api.github.com/repos/vaultec81/blasio-app/releases/latest")).data;
+            var data = (await axios.get("https://api.github.com/repos/vaultec81/3Speak-app/releases/latest")).data;
             if (data.id) {
                 var tag_name = data["tag_name"];
                 if (compareVersions.compare(tag_name, version, '>')) {
