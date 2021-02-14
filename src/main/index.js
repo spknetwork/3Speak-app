@@ -16,15 +16,6 @@ if(process.env.NODE_ENV === 'development') {
 let window = null;
 let coreInstance = new Core();
 
-<<<<<<< HEAD
-app.on('ready', () => {
-  window = new BrowserWindow({width: 800, height: 600,
-    icon: path.resolve(__dirname, "../renderer/assets/img/app.png"),
-    webPreferences: {
-      nodeIntegration: true,
-      webSecurity: false,
-      webviewTag: true
-=======
 const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
@@ -34,7 +25,6 @@ if (!gotTheLock) {
     if (window) {
       if (window.isMinimized()) window.restore()
       window.focus()
->>>>>>> 676c66eb4f8c79b3656eb743d9274cabc13f01d0
     }
   })
 
