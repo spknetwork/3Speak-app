@@ -33,7 +33,7 @@ class VideoWidget extends Component {
         })
     }
     render() {
-        return (<HashRouter><div className="col-lg-2 col-6 marg_bot1 videowidget-padding">
+        return (<HashRouter><div className="col-xl-2 col-lg-4  col-6 p-2 mb-3 marg_bot1 videowidget-padding">
             <div className="teaser_holder text-center">
                 <div className="card-label card-label-views">
                     <img className="play_i" src={PlaySVG} height="11px" />
@@ -46,7 +46,7 @@ class VideoWidget extends Component {
                     })()}
                 </div>
                 <a href={`#/watch/${this.props.reflink}`}>
-                    <img style={{width: "100% !important", padding: "5px"}} className="img-fluid bg-dark" src={this.state.thumbnailUrl} />
+                    <img style={{width: "100% !important", padding: "5px", width: "unset", height: "24em", maxHeight: "13em"}} className="img-fluid bg-dark" src={this.state.thumbnailUrl} />
                 </a>
             </div>
             <a href={`#/watch/${this.props.reflink}`}>
