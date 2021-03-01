@@ -70,6 +70,8 @@ class Core {
         this.config = new Components.Config(this._options.path)
         this.distillerDB = new Components.DistillerDB(this)
         this.blocklist = new Components.Blocklist(this);
+        this.accounts = new Components.AccountSystem(this);
+        await this.accounts.start();
         this.log = Components.Logger(this._options.path)
         await this.config.open()
         this.start_progress.message = "Starting IPFS";
