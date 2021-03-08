@@ -104,7 +104,7 @@ class Player extends React.Component {
     render() {
         return <React.Fragment>
             {this.state.videoUrl ? <ReactJWPlayer licenseKey="64HPbvSQorQcd52B8XFuhMtEoitbvY/EXJmMBfKcXZQU2Rnn" customProps={{playbackRateControls: true, autostart: false}}
-            file={this.state.videoUrl} onPlay={this.onPlay} image={this.state.thumbnail} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} ref={this.player} playerScript="https://cdn.jwplayer.com/libraries/JyghCNnw.js?v=3">
+            file={this.state.videoUrl} onPlay={this.onPlay} image={this.state.thumbnail} id="botr_UVQWMA4o_kGWxh33Q_div" playerId={this.state.playerId} ref={this.player} playerScript="https://cdn.jwplayer.com/libraries/HT7Dts3H.js">
                 
             </ReactJWPlayer> : <center> 
                 [Player] videoInfo not specified [Player]

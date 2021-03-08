@@ -8,7 +8,7 @@ import IpfsUtils from 'ipfs-core/src/utils'
 const Finder = ArraySearch.Finder;
 
 const ipfs = {
-    gateway: "https://ipfs.3speak.co/ipfs/",
+    gateway: "https://ipfs.3speak.tv/ipfs/",
     async getGateway(cid, bypass) {
         if(bypass === true) {
             return ipfs.gateway;

@@ -149,7 +149,7 @@ class watch extends React.Component {
     }
     async retrieveRecommended() {
         var ref = RefLink.parse(this.state.reflink)
-        var data = (await axios.get(`https://3speak.co/apiv2/recommended?v=${ref.root}/${ref.permlink}`)).data
+        var data = (await axios.get(`https://3speak.tv/apiv2/recommended?v=${ref.root}/${ref.permlink}`)).data
         data.forEach((value => {
             var link = value.link.split("=")[1].split("/")
             value.reflink = `hive:${link[0]}:${link[1]}`

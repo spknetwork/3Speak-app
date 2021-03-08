@@ -80,13 +80,13 @@ class Pins extends Component {
         let ids = this.state.pinls.map(x => {return x._id})
         console.log(ids)
         let params = '?limit=10&ipfsOnly=true'
-        let newUrl = `https://3speak.co/apiv2/feeds/new${params}`
-        let trendingUrl = `https://3speak.co/apiv2/feeds/trending${params}`
+        let newUrl = `https://3speak.tv/apiv2/feeds/new${params}`
+        let trendingUrl = `https://3speak.tv/apiv2/feeds/trending${params}`
         if (community) {
-            newUrl = `https://3speak.co/apiv2/feeds/community/${community}/new${params}`
-            trendingUrl = `https://3speak.co/apiv2/feeds/community/${community}/trending${params}`
+            newUrl = `https://3speak.tv/apiv2/feeds/community/${community}/new${params}`
+            trendingUrl = `https://3speak.tv/apiv2/feeds/community/${community}/trending${params}`
         } else if (creator && creator.length > 2) {
-            newUrl = `https://3speak.co/apiv2/feeds/@${creator}`
+            newUrl = `https://3speak.tv/apiv2/feeds/@${creator}`
             trendingUrl = null
         }
 
