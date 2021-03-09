@@ -5,6 +5,7 @@ import { Nav, Tabs, Tab } from 'react-bootstrap'
 import GridFeed from './GridFeed'
 import ReactMarkdown from 'react-markdown'
 import axios from 'axios'
+import Utils from '../utils'
 const { Client: HiveClient } = require('@hiveio/dhive');
 const client = new HiveClient('https://api.openhive.network');
 
@@ -19,7 +20,8 @@ class Community extends Component {
             videos: {
                 trending: [],
                 new: []
-            }
+            },
+            backgroundUrl: null
         };
         console.log(client);
     }
@@ -47,13 +49,14 @@ class Community extends Component {
                 videos: {
                     trending,
                     new: newVideos
-                }
+                },
+                backgroundUrl: await Utils.accounts.getProfileBackgroundImage(this.props.match.params.reflink)
             })
         })
     }
     render() {
         return (<div>
-            <div style={{ position: "relative", display: "inline-block", width: "100%", minHeight: "400px", backgroundAttachment: "fixed", backgroundSize: "cover", backgroundRepeat: "no-repeat", background: `url('https://img.3speakcontent.co/user/${this.state.reflink.root}/cover.png')` }}>
+            <div style={{ position: "relative", display: "inline-block", width: "100%", minHeight: "400px", backgroundAttachment: "fixed", backgroundSize: "cover", backgroundRepeat: "no-repeat", background: `url(${this.state.backgroundUrl})` }}>
                 <img className="channel-profile-img" style={{ position: "absolute", bottom: "10px", left: "10px" }} alt="" src={`https://images.hive.blog/u/${this.state.reflink.root}/avatar`} />
 
                 <h1 style={{ position: "absolute", bottom: "10px", left: "150px" }}><b style={{
@@ -76,14 +79,14 @@ class Community extends Component {
                             <h3 id="videoSectionHeading">Trending Videos</h3>
                             <hr />
                             <div>
-                                {this.state.videos.trending !== null ? <GridFeed data={this.state.videos.trending} /> : null}
+                                {this.state.videos.trending !== null ? <GridFeed key="community-trends" type={`#${this.state.reflink.root}/trending`} /> : null}
                             </div>
                         </Tab>
                         <Tab eventKey="new" title="Show New">
                             <h3 id="videoSectionHeading">New Videos</h3>
                             <hr />
                             <div>
-                                {this.state.videos.new !== null ? <GridFeed data={this.state.videos.new} /> : null}
+                                {this.state.videos.new !== null ? <GridFeed key="community-new" type={`#${this.state.reflink.root}/new`} /> : null}
 
                             </div>
                         </Tab>

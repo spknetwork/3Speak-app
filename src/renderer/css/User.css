@@ -12,8 +12,9 @@
     bottom: 0;
     left: 0;
     padding: 1rem 30px;
-    position: absolute;
+    /*position: absolute;*/
     right: 0;
+    padding-top: 4em;
 }
 .bg-steem {
     background-color: #1FBF8F !important;

@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: 14
 
+      - name: Setup environment
+        run: node ./scripts/prepare_ci
+
       - name: Build/Release Electron app
         env:
           NODE_OPTIONS: --max_old_space_size=8096

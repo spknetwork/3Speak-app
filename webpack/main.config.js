@@ -31,5 +31,10 @@ module.exports = {
     __dirname: false,
     __filename: false
   },
-  plugins: [new webpack.ExternalsPlugin("commonjs", ["leveldown","ky-universal","ipfs-http-client", "pouchdb", "pouchdb-find"])]
+  plugins: [
+    new webpack.ExternalsPlugin("commonjs", ["leveldown", "ky-universal", "ipfs-http-client", "pouchdb", "pouchdb-find"]),
+    new webpack.DefinePlugin({
+      'process.env.FLUENTFFMPEG_COV': false
+    })
+  ]
 };

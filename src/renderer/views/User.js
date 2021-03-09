@@ -21,7 +21,8 @@ class User extends Component {
             reflink: RefLink.parse(this.props.match.params.reflink),
             profileAbout: '',
             hiveBalance: 'HIVE',
-            hbdBalance: 'HBD'
+            hbdBalance: 'HBD',
+            coverURL: null
         }
     }
     async componentDidMount() {
@@ -31,21 +32,23 @@ class User extends Component {
             profileAbout: await Utils.accounts.getProfileAbout(this.state.reflink),
             hiveBalance: (await accountBalances).hive,
             hbdBalance: (await accountBalances).hbd,
-            username: this.state.reflink.root
+            username: this.state.reflink.root,
+            coverURL: await Utils.accounts.getProfileBackgroundImage(this.state.reflink),
         })
+        console.log(this.state.coverURL)
     }
-    get coverURL() {
+    /*get coverURL() {
         switch (this.state.reflink.source.value) {
             case "hive": {
-                return `https://img.3speakcontent.co/user/${this.state.reflink.root}/cover.png`
+                return `https://threespeakvideo.b-cdn.net/user/${this.state.reflink.root}/cover.png`
             }
         }
-    }
+    }*/
     render() {
         return (<div>
             <div className="single-channel-image">
-                <img className="img-fluid mh-20" style={{ objectFit: 'cover', objectPosition: 'center', maxHeight: '500px' }} alt="" src={this.coverURL} />
-                <div className="channel-profile">
+                <img className="img-fluid mh-20" style={{ objectFit: 'cover', objectPosition: 'center', maxHeight: '500px' }} alt="" src={this.state.coverURL} />
+                <div className="channel-profile" style={{position: this.state.profileURL ? "absolute" : "unset"}}>
                     <img className="channel-profile-img" alt="" src={this.state.profileURL} />
                 </div>
             </div>
