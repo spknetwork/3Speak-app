@@ -103,4 +103,4 @@ class AccountSystem {
         this.pouch = new PouchDB(Path.join(this.self._options.path, "accountdb"));
     }
 }
-module.exports = AccountSystem;
+export default AccountSystem;
