@@ -70,6 +70,7 @@ class Core {
         this.config = new Components.Config(this._options.path)
         this.distillerDB = new Components.DistillerDB(this)
         this.blocklist = new Components.Blocklist(this);
+        this.encoder = new Components.EncoderService(this);
         this.accounts = new Components.AccountSystem(this);
         await this.accounts.start();
         this.log = Components.Logger(this._options.path)

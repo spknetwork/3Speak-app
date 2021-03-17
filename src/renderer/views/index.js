@@ -9,7 +9,9 @@ import NotFound from './NotFound'
 import Pins from './Pins'
 import IpfsConsole from './IpfsConsole'
 import CreatorStudio from './CreatorStudio'
+import Uploader from './Uploader'
 export default {
+    Uploader,
     watch,
     GridFeed,
     User,

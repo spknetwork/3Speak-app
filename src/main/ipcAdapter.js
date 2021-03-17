@@ -52,6 +52,19 @@ class ipcAdapter {
         PromiseIPC.on("core.ready", async () => {
             return await this.core.ready();
         })
+        //Encoder
+        PromiseIPC.on("encoder.createJob", async (req_obj) => {
+            return await this.core.encoder.createJob(req_obj)
+        })
+        PromiseIPC.on("encoder.status", async (id) => {
+            return await this.core.encoder.status(id);
+        })
+        PromiseIPC.on("encoder.getjoboutput", async (id) => {
+            return await this.core.encoder.getJobOutput(id);
+        })
+        PromiseIPC.on("encoder.ready", async () => {
+            return await this.core.encoder.ready();
+        })
         //Pins
         PromiseIPC.on("pins.add", async (doc) => {
             return await this.core.pins.add(doc);

@@ -58,6 +58,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@hiveio/dhive": "^0.14.12",
@@ -78,6 +79,7 @@
     "electron-context-menu": "^2.4.0",
     "electron-promise-ipc": "^2.2.4",
     "execa": "^5.0.0",
+    "fluent-ffmpeg": "^2.1.2",
     "i18next": "^19.8.4",
     "ipfs-core": "^0.5.2",
     "ipfs-http-client": "^47.0.1",

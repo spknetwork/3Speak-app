@@ -82,6 +82,11 @@ class SideBar extends Component {
                         </div>
                             First Uploads
                     </Nav.Link>
+                    <Nav.Link href="#/uploader">
+                        <div className="nav_icons"><FaToolbox/>
+                        </div>
+                            Uploader
+                    </Nav.Link>
                     <Nav.Link href="#/creatorstudio">
                         <div className="nav_icons"><FaToolbox/>
                         </div>
