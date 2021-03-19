@@ -30,8 +30,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Install
       run: npm install
-    - name: Get Dir List
-      run: ls $(pwd)/node_modules/@ffmpeg-installer; ls $(pwd)/node_modules/@ffmpeg-installer/*; echo $(pwd)/node_modules/@ffmpeg-installer
     - name: Test
       run: npm test
     - name: Build
