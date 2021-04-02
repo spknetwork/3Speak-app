@@ -6,9 +6,11 @@ import ipfsHandler from '../main/core/components/ipfsHandler'
 import CID from 'cids'
 import IpfsUtils from 'ipfs-core/src/utils'
 const Finder = ArraySearch.Finder;
+const hive = require('@hiveio/hive-js');
+const jwt = require('jsonwebtoken');
 
 const ipfs = {
-    gateway: "https://ipfs.3speak.co/ipfs/",
+    gateway: "https://ipfs.3speak.tv/ipfs/",
     async getGateway(cid, bypass) {
         if(bypass === true) {
             return ipfs.gateway;
@@ -103,9 +105,9 @@ const accounts = {
                             url: `ipfs://${video_info.ipfsThumbnail}`
                         })
                     }
-                    urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/default.m3u8`)
+                    urls.push(`https://threespeakvideo.b-cdn.net/${reflink.permlink}/default.m3u8`)
                     if (video_info.file) {
-                        urls.push(`https://cdn.3speakcontent.co/${reflink.permlink}/${video_info.file}`)
+                        urls.push(`https://threespeakvideo.b-cdn.net/${reflink.permlink}/${video_info.file}`)
                     }
 
                     for (let url of urls) {
@@ -124,7 +126,7 @@ const accounts = {
 
                     sources.push({
                         type: "thumbnail",
-                        url: `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
+                        url: `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
                     })
                 } catch (ex) {
                     title = post_content.title;
@@ -140,6 +142,27 @@ const accounts = {
                     meta: {duration}, //Reserved for future use.
                     reflink: `hive:${post_content.author}:${post_content.permlink}`
                 }
+            }
+            default: {
+                throw new Error("Unknown account provider")
+            }
+        }
+    },
+    async getProfileBackgroundImage(reflink) {
+        if(!(reflink instanceof RefLink)) {
+            reflink = RefLink.parse(reflink);
+        }
+        switch ("hive") {
+            case "hive": {
+                var json_content = (await PromiseIPC.send("distiller.getAccount", reflink.toString())).json_content
+                if(!json_content) {
+                    throw new Error("Invalid account data content. Empty record");
+                }
+                json_content.posting_json_metadata = JSON.parse(json_content.posting_json_metadata)
+                return json_content.posting_json_metadata.profile.cover_image;
+            }
+            case "orbitdb": {
+                //Retrieve IPFS profile picture CID.
             }
             default: {
                 throw new Error("Unknown account provider")
@@ -297,7 +320,7 @@ const video = {
                 post_content = await accounts.permalinkToVideoInfo(permalink);
             } catch {
                 const reflink = RefLink.parse(permalink);
-                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
+                return `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
             }
         }
         const reflink = RefLink.parse(post_content.reflink);
@@ -310,18 +333,85 @@ const video = {
                 var gateway = await ipfs.getGateway(cid, true);
                 return gateway + ipfs.urlToIpfsPath(thumbnailSource.url);
             } catch (ex) {
-                return `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
+                return `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
             }
         } else {
-            return `https://img.3speakcontent.co/${reflink.permlink}/thumbnails/default.png`
+            return `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
             //throw new Error("Invalid post metadata");
         }
+    }
+}
+const acctOps = {
+    async loginHandler(login) {
+        if (login.accountType === 'hive') {
+
+            try { 
+                const userAccounts = await hive.api.getAccountsAsync([login.username]);
+                const pubWif = userAccounts[0].posting.key_auths[0][0];
+                const wif = hive.auth.toWif(login.key)
+
+                const Valid = hive.auth.wifIsValid(login.key, pubWif);
+
+                if(Valid){
+
+                    const token = jwt.sign({ id: userAccounts[0].id }, '1xe4tio059e90', {});
+
+                    const authData = {
+                        token,
+                        user: userAccounts[0]
+                    }
+
+                    return authData;
+                } else {
+                    alert("Wrong password");
+                }
+            } catch (error) {
+                alert('Error encountered')
+            }
+        }
+    },
+    async followHandler(followOp){
+        if (followOp.accountType === 'hive') {
+            
+            let jsonObj = ['follow', {follower: followOp.username, following: followOp.author, what: [followOp.what]}]
+            const wif = hive.auth.toWif(followOp.wif);
+
+            try { 
+               await hive.broadcast.customJson(
+                followOp.wif,
+                [],
+                [followOp.username],
+                'follow',
+                JSON.stringify(jsonObj),function(error, succeed) {
+
+                    if (error) {
+                        console.log(error)
+                        alert('Error encountered')
+                    }
+
+                    if (succeed) {
+                        const responseData = {response: `User ${followOp.username} successfully followed ${followOp.author}`}
+
+                        return responseData;
+                    }
+            });
+            } catch (error) {
+                console.log(error)
+                alert('Error encountered')
+            }
+
+            
+        }
+    },
+    async postComment(comment) {
+
     }
 }
 export default {
     accounts,
     video,
     ipfs,
+    acctOps,
     formToObj: (formData) => {
         let out = {};
         for(var key of formData.keys()) {
