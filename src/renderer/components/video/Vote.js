@@ -33,6 +33,32 @@ class Vote extends React.Component {
         })
     }
 
+    async handleVote() {
+        const wif = '' // posting key
+        const voter = '' // voting account
+        const author = '' // account being rewarded
+        const permlink = '' // post permlink to vote
+        const weight = 30 // vote weight in percentage(between 1 - 100)
+        const accountType = 'hive'
+
+        const voteOp = {wif, voter, author, permlink, weight, accountType}
+
+        await Utils.acctOps.voteHandler(voteOp);
+    }
+
+    async handleDownVote() {
+        const wif = '' // posting key
+        const voter = '' // voting account
+        const author = '' // account being rewarded
+        const permlink = '' // post permlink to vote
+        const weight = -30 // vote weight in percentage(between -1 and -100)
+        const accountType = 'hive'
+
+        const voteOp = {wif, voter, author, permlink, weight, accountType}
+
+        await Utils.acctOps.voteHandler(voteOp);
+    }
+
     /*handleClose() {
         this.setState({
             showModal: false

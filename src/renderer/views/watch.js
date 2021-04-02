@@ -28,8 +28,23 @@ import ace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/github';
 import ArraySearch from 'arraysearch';
+import Knex from 'knex'
+import Consts from '../../consts'
 const debug = Debug("3speak:watch")
 const Finder = ArraySearch.Finder;
+const knex = Knex({
+    client: 'mssql',
+    connection: {
+        host: 'vip.hivesql.io',
+        user: Consts.hivesql_username,
+        password: Consts.hivesql_password,
+        database: 'DBHive'
+    },
+    pool: {
+        max: 7,
+        min: 3
+    }
+});
 
 class watch extends React.Component {
     constructor(props) {
@@ -148,15 +163,50 @@ class watch extends React.Component {
         }
     }
     async retrieveRecommended() {
+        var query = knex.raw(`SELECT TOP 25 x.* FROM DBHive.dbo.Comments x WHERE CONTAINS(json_metadata , '3speak/video') AND category LIKE '${this.state.post_info.category}' ORDER BY NEWID()`)
+        var blob = [];
+        query.stream().on('data', async (val) => {
+            if (await PromiseIpc.send("blocklist.has", `hive:${val.author}:${val.permlink}`)) {
+                console.log(`${val.author} is blocked`)
+                return;
+            }
+            val.json_metadata = JSON.parse(val.json_metadata)
+            //console.log(val)
+            blob.push({
+                reflink: `hive:${val.author}:${val.permlink}`,
+                created: val.created,
+                author: val.author,
+                permlink: val.permlink,
+                tags: val.json_metadata.tags,
+                title: val.title,
+                duration: val.json_metadata.video.info.duration,
+                "isIpfs": val.json_metadata.video.info.ipfs ? true : false,
+                "ipfs": val.json_metadata.video.info.ipfs,
+                "images": {
+                    "ipfs_thumbnail": val.json_metadata.video.info.ipfsThumbnail ? `/ipfs/${val.json_metadata.video.info.ipfsThumbnail}` : null,
+                    "thumbnail": `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/default.png`,
+                    "poster": `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/poster.png`,
+                    "post": `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/post.png`
+                },
+                views: val.total_vote_weight ? Math.log(val.total_vote_weight / 1000).toFixed(2) : 0
+            })
+            this.setState({
+                recommendedVideos: blob
+            })
+        })
+        query.on('query-response', (ret, det, aet) => {
+            console.log(ret, det, aet)
+        })
+        query.on("end", (err) => {
+            console.log(err)
+        })
+        /*
         var ref = RefLink.parse(this.state.reflink)
-        var data = (await axios.get(`https://3speak.co/apiv2/recommended?v=${ref.root}/${ref.permlink}`)).data
+        var data = (await axios.get(`https://3speak.tv/apiv2/recommended?v=${ref.root}/${ref.permlink}`)).data
         data.forEach((value => {
             var link = value.link.split("=")[1].split("/")
             value.reflink = `hive:${link[0]}:${link[1]}`
-        }))
-        this.setState({
-            recommendedVideos: data
-        })
+        }))*/
     }
     async PinLocally() {
         let cids = [];

@@ -77,6 +77,21 @@ class PostComment extends Component {
             }
         }
     }
+    async postComment() {
+        const wif = ''; // posting key
+        const parentAuthor = ''; // ideally empty for blog posts
+        const parentPermlink = ''; // primary tag for the post
+        const author = ''; // creator account
+        const permlink = ''; // post permalink
+        const title = ''; // post title
+        const body = ''; // post body or description 
+        const jsonMetadata = {tags: [''],  app: '' }
+        const accountType = 'hive'
+
+        const commentOp = {wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, accountType}
+
+        await Utils.acctOps.postComment(commentOp)
+    }
     render() {
         return (<div>
             <div className="col">

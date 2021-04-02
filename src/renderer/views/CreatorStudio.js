@@ -13,7 +13,7 @@ class CreatorStudio extends Component {
         return (
         <Container fluid>
             <Row>
-                <webview id="foo" src="https://studio.3speak.co" style={{width: "100%", height: "600px"}}></webview>
+                <webview id="foo" src="https://studio.3speak.tv" style={{width: "100%", height: "600px"}}></webview>
             </Row>
         </Container>);
     }

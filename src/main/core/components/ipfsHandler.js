@@ -101,13 +101,13 @@ class ipfsHandler {
         if (!ipfsInfo.exists) {
             ipfsInfo = await ipfsHandler.getIpfs();
             await ipfsHandler.init(ipfsInfo.ipfsPath);
-            fs.writeFileSync(Path.join(appPath, "ipfs.pid"), await ipfsHandler.run());
+            fs.writeFileSync(Path.join(appPath, "ipfs.pid"), await ipfsHandler.run(ipfsInfo.ipfsPath));
             ipfsHandler.events.emit("ready")
         } else {
             if (ipfsInfo.ipfs) {
                 ipfsHandler.events.emit("ready")
             } else {
-                fs.writeFileSync(Path.join(appPath, "ipfs.pid"), await ipfsHandler.run());
+                fs.writeFileSync(Path.join(appPath, "ipfs.pid"), await ipfsHandler.run(ipfsInfo.ipfsPath));
                 ipfsHandler.events.emit("ready")
             }
             //let config = JSON.parse(fs.readFileSync(Path.join(pinzaInfo.pinzaPath, "config")).toString())

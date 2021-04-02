@@ -372,17 +372,17 @@ const acctOps = {
     },
     async followHandler(followOp){
         if (followOp.accountType === 'hive') {
+            let returnData
             
             let jsonObj = ['follow', {follower: followOp.username, following: followOp.author, what: [followOp.what]}]
             const wif = hive.auth.toWif(followOp.wif);
 
-            try { 
-               await hive.broadcast.customJson(
+               hive.broadcast.customJson(
                 followOp.wif,
                 [],
                 [followOp.username],
                 'follow',
-                JSON.stringify(jsonObj),function(error, succeed) {
+                JSON.stringify(jsonObj), async (error, succeed) => {
 
                     if (error) {
                         console.log(error)
@@ -390,21 +390,61 @@ const acctOps = {
                     }
 
                     if (succeed) {
-                        const responseData = {response: `User ${followOp.username} successfully followed ${followOp.author}`}
-
-                        return responseData;
+                        alert(`Done`)
                     }
-            });
-            } catch (error) {
-                console.log(error)
-                alert('Error encountered')
-            }
-
+                });
             
         }
     },
-    async postComment(comment) {
+    async voteHandler(voteOp) {
+        if (voteOp.accountType === 'hive') {
+            const weight = voteOp.weight * 100
+            hive.broadcast.vote(
+                voteOp.wif,
+                voteOp.voter,
+                voteOp.author,
+                voteOp.permlink,
+                weight,
+                function(error, succeed) {
+                if (error) {
+                    console.log(error)
+                    alert('Error encountered')
+                }
 
+                if (succeed) {
+                    alert(`Done`)
+                }
+            });
+        }
+    }, 
+    async postComment(commentOp) {
+        if (commentOp.accountType ==='hive') {
+            console.log('bout to start')
+            hive.broadcast.comment(
+                commentOp.wif,
+                commentOp.parentAuthor,
+                commentOp.parentPermlink,
+                commentOp.author,
+                commentOp.permlink,
+                commentOp.title,
+                commentOp.body,
+                commentOp.jsonMetadata,
+                function(error, succeed) {
+                    console.log('Bout to check')
+                    if (error) {
+                        console.log(error)
+                        alert('Error encountered')
+                    }
+
+                    if (succeed) {
+                        console.log('E be like say he work')
+                        alert(`Done`)
+                    }
+                }
+            );
+        }
+        
+          
     }
 }
 export default {

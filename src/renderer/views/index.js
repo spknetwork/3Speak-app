@@ -11,7 +11,9 @@ import IpfsConsole from './IpfsConsole'
 import CreatorStudio from './CreatorStudio'
 import Login from './Login'
 import Accounts from './Accounts';
+import Uploader from './Uploader'
 export default {
+    Uploader,
     watch,
     GridFeed,
     User,

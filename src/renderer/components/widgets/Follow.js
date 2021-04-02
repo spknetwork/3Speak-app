@@ -21,23 +21,31 @@ class Follow extends Component {
 
     async handleFollow() {
         const accountType = 'hive'
-        const username = 'gotgame' // follower
-        const author = 'speak.bounties' // person to follow
-        const what = "blog" // standard value for a follow operation
-        const wif = '5Jbtw7B3tkFDUmtCg5ifBjFgDbE7MXuXKPsZ1E14wDFLH96marF' // posting key
+        const username = '' // follower
+        const author = '' // person to follow
+        const what = 'blog' // default value for a follow operation
+        const wif = '' // posting key
 
         const followOp = {username, author, what, wif, accountType}
 
-        const followUser = await utils.acctOps.followHandler(followOp);
-
-        console.log(followUser)
+        await utils.acctOps.followHandler(followOp);
     }
 
-    async handleUnfollow() {}
+    async handleUnfollow() {
+        const accountType = 'hive'
+        const username = '' // follower
+        const author = '' // account to unfollow
+        const what = '' // empty string, default value for an unfollow operation
+        const wif = '' // posting key
+
+        const followOp = {username, author, what, wif, accountType}
+
+        await utils.acctOps.followHandler(followOp);
+    }
 
     render() {
         return(<div>
-            <Button variant="light" size="sm" onClick={() => {this.handleFollow()}}>
+            <Button variant="light" size="sm">
                 <span>Follow </span>
                 <strong>
                     <a href={`#/user/${this.state.reflink.root}/followers`} className="view-followers" title="Click to see followers">
