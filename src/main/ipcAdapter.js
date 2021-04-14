@@ -77,25 +77,25 @@ class ipcAdapter {
         })
         //Accounts
         PromiseIPC.on("accounts.createProfile", async (doc) => {
-            return await this.core.accountSystem.createProfile(doc);
+            return await this.core.accounts.createProfile(doc);
         })
         PromiseIPC.on("accounts.deleteProfile", async (profileID) => {
-            return await this.core.accountSystem.deleteProfile(profileID);
+            return await this.core.accounts.deleteProfile(profileID);
         })
         PromiseIPC.on("accounts.get", async (ref) => {
-            return await this.core.accountSystem.get(ref);
+            return await this.core.accounts.get(ref);
         })
         PromiseIPC.on("accounts.has", async (ref) => {
-            return await this.core.accountSystem.has(ref);
+            return await this.core.accounts.has(ref);
         })
         PromiseIPC.on("accounts.addProfileKey", async (ref) => {
-            return await this.core.accountSystem.addProfileKey(ref);
+            return await this.core.accounts.addProfileKey(ref);
         })
         PromiseIPC.on("accounts.getProfileKey", async (ref) => {
-            return await this.core.accountSystem.getProfileKey(ref);
+            return await this.core.accounts.getProfileKey(ref);
         })
         PromiseIPC.on("accounts.deleteProfileKey", async (ref) => {
-            return await this.core.accountSystem.deleteProfileKey(ref);
+            return await this.core.accounts.deleteProfileKey(ref);
         })
     }
 }
