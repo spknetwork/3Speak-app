@@ -88,6 +88,9 @@ class ipcAdapter {
         PromiseIPC.on("accounts.has", async (ref) => {
             return await this.core.accounts.has(ref);
         })
+        PromiseIPC.on("accounts.ls", async (obj) => {
+            return await this.core.accounts.ls(obj);
+        })
         PromiseIPC.on("accounts.addProfileKey", async (ref) => {
             return await this.core.accounts.addProfileKey(ref);
         })
