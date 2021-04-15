@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Button, Dropdown, Form} from "react-bootstrap";
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import utils from '../utils';
 
 class Login extends Component {
     faSpinner;
@@ -20,7 +21,7 @@ class Login extends Component {
         this.submitRef = React.createRef()
     }
 
-    handleSubmit(event) {
+    async handleSubmit(event) {
         event.preventDefault()
 
         let login = {
@@ -37,6 +38,10 @@ class Login extends Component {
         this.resetForm()
 
         //TODO: backend
+
+        const loginHandler = await utils.acctOps.login(login)
+
+        console.log(loginHandler);
 
         this.setState({submit: 'Submit'})
         this.submitRef.current.removeAttribute('disabled')

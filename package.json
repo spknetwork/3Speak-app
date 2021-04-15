@@ -73,6 +73,7 @@
     "compressjs": "^1.0.3",
     "convert-units": "^2.3.4",
     "country-list": "^2.2.0",
+    "crypto-js": "^4.0.0",
     "datastore-fs": "^2.0.2",
     "datastore-level": "^1.1.0",
     "date-and-time": "^0.14.2",

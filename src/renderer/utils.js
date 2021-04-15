@@ -6,6 +6,19 @@ import ipfsHandler from '../main/core/components/ipfsHandler'
 import CID from 'cids'
 import IpfsUtils from 'ipfs-core/src/utils'
 const Finder = ArraySearch.Finder;
+const hive = require('@hiveio/hive-js');
+const CryptoJS = require('crypto-js');
+const encryptWithAES = text => {
+    const passphrase = '123';
+    return CryptoJS.AES.encrypt(text, passphrase).toString();
+};
+
+const decryptWithAES = ciphertext => {
+    const passphrase = '123';
+    const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
+    const originalText = bytes.toString(CryptoJS.enc.Utf8);
+    return originalText;
+};
 
 const ipfs = {
     gateway: "https://ipfs.3speak.tv/ipfs/",
@@ -339,10 +352,59 @@ const video = {
         }
     }
 }
+const acctOps = {
+    async login(data) {
+        switch(data.accountType) {
+            case "hive" : {
+                try { 
+                    const userAccounts = await hive.api.getAccountsAsync([data.username]);
+                    console.log(userAccounts)
+                    const pubWif = userAccounts[0].posting.key_auths[0][0];
+                    const wif = hive.auth.toWif(data.key)
+    
+                    const Valid = hive.auth.wifIsValid(data.key, pubWif);
+    
+                    if(Valid){
+    
+                        const profile = {
+                            profileID: userAccounts[0].id.toString(),
+                            nickname: data.profile,
+                            keyring: [
+                                {
+                                    type: 'hive',
+                                    username: data.username,
+                                    public: {
+                                        pubWif
+                                    },
+                                    encrypted: data.encrypted,
+                                    private: {
+                                        key: encryptWithAES(wif)
+                                    }
+                                }
+                            ]
+                        }
+                        console.log(profile.profileID)
+                        (await PromiseIPC.send("accounts.createProfile", profile));
+                        const get_profile = (await PromiseIPC.send("accounts.has", profile.profileID));
+
+                        return get_profile
+                        
+                    } else {
+                        console.log("Wrong password");
+                    }
+                } catch (error) {
+                    console.log(error)
+                    console.log('Error encountered')
+                }
+            }
+        }
+    }
+}
 export default {
     accounts,
     video,
     ipfs,
+    acctOps,
     formToObj: (formData) => {
         let out = {};
         for(var key of formData.keys()) {
