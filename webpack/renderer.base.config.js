@@ -4,6 +4,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   target: 'electron-renderer',
   devtool: 'cheap-module-eval-source-map',
+  externals: {
+    mssql: 'commonjs mssql'
+  },
   module: {
     rules: [
       {

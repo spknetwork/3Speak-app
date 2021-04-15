@@ -4,6 +4,8 @@ import debug from 'debug'
 import Core from './core'
 import ipcAdapter from './ipcAdapter'
 import AutoUpdator from './AutoUpdater'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const entryUrl = process.env.NODE_ENV === 'development'
   ? 'http://localhost:6789/index.html'

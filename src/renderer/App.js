@@ -40,13 +40,13 @@ export class App extends React.PureComponent {
                 <views.GridFeed awaitingMoreData={true} type="home" />
               </Route>
               <Route path="/new" exact>
-                <views.GridFeed awaitingMoreData={false} titleText="New Videos" type="new" />
+                <views.GridFeed key="feed-new" awaitingMoreData={false} titleText="New Videos" type="new" />
               </Route>
               <Route path="/trends" exact>
-                <views.GridFeed awaitingMoreData={false} titleText="Trending Videos" type="trending" />
+                <views.GridFeed key="feed-trends" awaitingMoreData={false} titleText="Trending Videos" type="trending" />
               </Route>
               <Route path="/newcomers" exact>
-                <views.GridFeed awaitingMoreData={true} titleText="First Uploads" type="firstUploads" />
+                <views.GridFeed key="feed-newcomers" awaitingMoreData={true} titleText="First Uploads" type="firstUploads" />
               </Route>
               <Route path="/watch/:reflink" component={views.watch}/>
               <Route path="/user/:reflink" component={views.User} />
@@ -59,6 +59,7 @@ export class App extends React.PureComponent {
               <Route path="/creatorstudio/" component={views.CreatorStudio} />
               <Route path="/login" component={views.Login} />
               <Route path="/accounts" component={views.Accounts} />
+              <Route path="/uploader" component={views.Uploader} />
               <Route component={views.NotFound} />
             </Switch>
           </HashRouter>

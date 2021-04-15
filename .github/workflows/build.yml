@@ -18,11 +18,18 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
+
+      - name: Setup environment
+        run: node ./scripts/prepare_ci
+        env:
+          HIVESQL_USERNAME: ${{ secrets.HIVESQL_USERNAME }}
+          HIVESQL_PASSWORD: ${{ secrets.HIVESQL_PASSWORD }}
 
       - name: Build/Release Electron app
         env:
           NODE_OPTIONS: --max_old_space_size=8096
+
         uses: samuelmeuli/action-electron-builder@v1
         with:
           # GitHub token, automatically provided to the action
