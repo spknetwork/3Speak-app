@@ -367,7 +367,7 @@ const acctOps = {
                     if(Valid){
     
                         const profile = {
-                            profileID: userAccounts[0].id.toString(),
+                            _id: userAccounts[0].id.toString(),
                             nickname: data.profile,
                             keyring: [
                                 {
@@ -383,12 +383,19 @@ const acctOps = {
                                 }
                             ]
                         }
-                        console.log(profile.profileID)
-                        (await PromiseIPC.send("accounts.createProfile", profile));
-                        const get_profile = (await PromiseIPC.send("accounts.has", profile.profileID));
-
-                        return get_profile
-                        
+                        const profileID = profile._id;
+                        const check_profile = (await PromiseIPC.send("accounts.has", profileID));
+                        if (check_profile) {
+                            return {
+                                message: "Account exists already"
+                            }
+                        } else {
+                            (await PromiseIPC.send("accounts.createProfile", profile));
+                            const get_profile = (await PromiseIPC.send("accounts.get", profileID));
+                            localStorage.removeItem('SNProfileID');
+                            localStorage.setItem('SNProfileID', profileID);
+                            return get_profile;
+                        }
                     } else {
                         console.log("Wrong password");
                     }
@@ -398,6 +405,19 @@ const acctOps = {
                 }
             }
         }
+    },
+    async getAccounts() {
+        const getAccounts = (await PromiseIPC.send("accounts.ls", {}));
+        
+        return getAccounts;
+    },
+    async getAccount(profileID) {
+        const getAccount = (await PromiseIPC.send("accounts.get", profileID));
+        return getAccount;
+    },
+    async logout(profileID) {
+        (await PromiseIPC.send("accounts.deleteProfile", profileID));
+        return;
     }
 }
 export default {

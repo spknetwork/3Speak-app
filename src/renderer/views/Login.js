@@ -41,7 +41,11 @@ class Login extends Component {
 
         const loginHandler = await utils.acctOps.login(login)
 
-        console.log(loginHandler);
+        if(loginHandler.nickname === login.username) {
+            window.location.reload();
+        } else {
+            console.log({loginHandler, response: 'unsucessful'})
+        };
 
         this.setState({submit: 'Submit'})
         this.submitRef.current.removeAttribute('disabled')

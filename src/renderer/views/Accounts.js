@@ -2,27 +2,64 @@ import React, {Component} from 'react';
 import {Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import hive from '../assets/img/hive.svg';
+import utils from '../utils'
 
 class Accounts extends Component {
     constructor(props) {
         super(props)
         this.state = {
             accounts: [],
-            login: 'test2'
+            login: false,
+            accountAdded: true
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         //TODO: get accounts
-        let accounts = ['username1', 'test2', 'etc3', 'anoitheeeeeeeeeeeeeer'];
+        let accounts = []
+        let accountsInit = await utils.acctOps.getAccounts();
+        await accountsInit.forEach(obj => {
+            accounts.push(obj.nickname)
+        })
+        if (accounts.length === 0) {
+            this.setState({
+                accountAdded: false
+            })
+        }
+        const login = localStorage.getItem('SNProfileID')
+
+        if (login) {
+            const user = await utils.acctOps.getAccount(login);
+            this.setState({
+                login: user.nickname
+            })
+        }
 
         this.setState({
             accounts
         })
     }
 
-    handleAccountChange(acc) {
+    async handleAccountChange(acc) {
         //TODO: account switch
+        const allAcc = await utils.acctOps.getAccounts();
+
+        function search(nameKey, myArray){
+            for (var i=0; i < myArray.length; i++) {
+                if (myArray[i].nickname === nameKey) {
+                    return myArray[i];
+                }
+            }
+        }
+
+       const theAcc = search(acc, allAcc);
+       const profileID = theAcc._id;
+       localStorage.removeItem('SNProfileID');
+       localStorage.setItem('SNProfileID', profileID);
+       this.setState({
+            login: theAcc.nickname
+        })
+        window.location.reload();
     }
 
     render() {
@@ -57,7 +94,7 @@ class Accounts extends Component {
                                     <div className='py-3'>Currently active</div>
                                 )}
                                 {!(acc === this.state.login) && (
-                                    <Button onClick={this.handleAccountChange(acc)} className='bg-dark'>
+                                    <Button onClick={() => {this.handleAccountChange(acc)}} className='bg-dark'>
                                         Activate
                                     </Button>
                                 )}
@@ -66,7 +103,7 @@ class Accounts extends Component {
                     ))}
                     </tbody>
                 </table>
-
+               {!(this.state.accountAdded) && (<p>You need to add an account first</p>)}
                 <Link to='/login'>Add new account</Link>
             </div>
         )

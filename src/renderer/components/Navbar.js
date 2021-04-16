@@ -10,20 +10,42 @@ import SpeakLogo from '../assets/img/3S_logo.svg'
 import { FaDiscord, FaTwitter, FaGlobe, FaUsers, FaTelegram, FaToolbox } from 'react-icons/fa'
 import { BsFillGearFill } from 'react-icons/bs'
 import { Navbar, Nav, NavDropdown, ButtonGroup, Dropdown } from 'react-bootstrap'
-import "./Navbar.css"
+import "./Navbar.css";
+import utils from '../utils';
 
 class SideBar extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            login: 'test'
-            //login: false
+            login: false
         }
     }
 
-    logOut() {
+    async componentDidMount() {
+        const login = localStorage.getItem('SNProfileID');
+
+        if (login) {
+            const user = await utils.acctOps.getAccount(login);
+            this.setState({
+                login: user.nickname
+            })
+        }
+    }
+
+    async logOut() {
         //TODO: logout logic
+
+        const profileID = localStorage.getItem('SNProfileID');
+
+        const user = await utils.acctOps.logout(profileID);
+        let accountsInit = await utils.acctOps.getAccounts();
+        localStorage.removeItem('SNProfileID');
+        console.log(accountsInit)
+        if (accountsInit.length > 0) {
+            localStorage.setItem('SNProfileID', accountsInit[0]._id)
+        }
+        window.location.reload();
     }
 
     render() {
