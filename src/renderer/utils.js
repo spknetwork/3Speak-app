@@ -378,7 +378,7 @@ const acctOps = {
                                     },
                                     encrypted: data.encrypted,
                                     private: {
-                                        key: encryptWithAES(wif)
+                                        key: encryptWithAES(data.key)
                                     }
                                 }
                             ]
@@ -418,6 +418,86 @@ const acctOps = {
     async logout(profileID) {
         (await PromiseIPC.send("accounts.deleteProfile", profileID));
         return;
+    },
+    async voteHandler(voteOp) {
+        switch(voteOp.accountType) {
+            case "hive" : {
+                const weight = voteOp.weight * 100
+                const theWif = decryptWithAES(voteOp.wif)
+                hive.broadcast.vote(
+                    theWif,
+                    voteOp.voter,
+                    voteOp.author,
+                    voteOp.permlink,
+                    weight,
+                    function(error, succeed) {
+                    if (error) {
+                        console.log(error)
+                        console.log('Error encountered')
+                    }
+
+                    if (succeed) {
+                        console.log('success');
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+    },
+    async followHandler(followOp) {
+        switch(followOp.accountType) {
+            case "hive" : {
+                const theWif = decryptWithAES(followOp.wif)
+
+                let jsonObj = ['follow', {follower: followOp.username, following: followOp.author, what: [followOp.what]}]
+
+                hive.broadcast.customJson(
+                    theWif,
+                    [],
+                    [followOp.username],
+                    'follow',
+                    JSON.stringify(jsonObj), async (error, succeed) => {
+                        if (error) {
+                            console.log(error)
+                            console.log('Error encountered')
+                        }
+
+                        if (succeed) {
+                            console.log('success')
+                            window.location.reload();
+                        }
+                });
+            }
+        }
+    },
+    async postComment(commentOp) {
+        switch(comment.accountType) {
+            case "hive" : {
+                const theWif = decryptWithAES(commentOp.wif)
+                hive.broadcast.comment(
+                    theWif,
+                    commentOp.parentAuthor,
+                    commentOp.parentPermlink,
+                    commentOp.author,
+                    commentOp.permlink,
+                    commentOp.title,
+                    commentOp.body,
+                    commentOp.jsonMetadata,
+                    function(error, succeed) {
+                        console.log('Bout to check')
+                        if (error) {
+                            console.log(error)
+                            console.log('Error encountered')
+                        }
+    
+                        if (succeed) {
+                            console.log('succeed');
+                            window.location.reload()
+                        }
+                    }
+                );
+            }
+        }
     }
 }
 export default {

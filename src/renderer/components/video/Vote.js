@@ -17,11 +17,15 @@ class Vote extends React.Component {
             upvoters: [],
             upvotePct: 0,
             downvotePct: 0,
-            /*showModal: false*/
+            showModal: false,
+            showDModal: false
         }
     }
 
     componentDidMount() {
+       this.setVoters()
+    }
+    setVoters() {
         Utils.accounts.permalinkToPostInfo(this.props.reflink).then(post => {
             let votes = post.active_votes.sort((e,i) => {
                 return i.rshares - e.rshares
@@ -32,8 +36,7 @@ class Vote extends React.Component {
             })
         })
     }
-
-    /*handleClose() {
+    handleClose() {
         this.setState({
             showModal: false
         })
@@ -42,20 +45,79 @@ class Vote extends React.Component {
         this.setState({
             showModal: true
         })
-    }*/
+    }
+    handleDClose() {
+        this.setState({
+            showDModal: false
+        })
+    }
+    handleDShow() {
+        this.setState({
+            showDModal: true
+        })
+    }
+    async handleVote() {
+        const modalState = this.state.showModal;
+        if (modalState === false) {
+            this.handleShow()
+        } else {
+            const profileID = localStorage.getItem('SNProfileID');
+
+            if (profileID) {
+                const profile = await Utils.acctOps.getAccount(profileID);
+                const wif = profile.keyring[0].private.key; // posting key
+                const voter = profile.nickname // voting account
+                const author = this.state.author // account being rewarded
+                const permlink = this.state.permlink // post permlink to vote
+                const weight = this.state.upvotePct; // vote weight in percentage(between 1 - 100)
+                const accountType = 'hive'
+    
+                const voteOp = {wif, voter, author, permlink, weight, accountType, profileID}
+    
+                const votePost = await Utils.acctOps.voteHandler(voteOp);
+            } else {
+                console.log('log in first')
+            }
+        }
+    }
+
+    async handleDownVote() {
+        const modalState = this.state.showDModal;
+        if (modalState === false) {
+            this.handleDShow()
+        } else {
+            const profileID = localStorage.getItem('SNProfileID');
+
+            if (profileID) {
+                const profile = await Utils.acctOps.getAccount(profileID);
+                const wif = profile.keyring[0].private.key; // posting key
+                const voter = profile.nickname // voting account
+                const author = this.state.author // account being rewarded
+                const permlink = this.state.permlink // post permlink to vote
+                const weight = this.state.downvotePct * -1; // vote weight in percentage(between 1 - 100)
+                const accountType = 'hive'
+    
+                const voteOp = {wif, voter, author, permlink, weight, accountType, profileID}
+    
+                const votePost = await Utils.acctOps.voteHandler(voteOp);
+            } else {
+                console.log('log in first')
+            }
+        }
+    }
 
     render() {
         return (
             <>
                 <span className="ml-2 p-0">
                     <span style={{cursor: "pointer"}}>
-                        <FaThumbsUp className="text-secondary"/>
+                        <FaThumbsUp className="text-secondary" onClick={() => {this.handleVote()}}/>
                     </span>
-                    <span className='d-none'>
+                    {(this.state.showModal) && (<span>
                         <RangeSlider value={this.state.upvotePct} onChange={changeEvent => this.setState({upvotePct: changeEvent.target.value})} />
                         <FontAwesomeIcon size={'lg'} icon={<FaChevronCircleUp style={{cursor: "pointer"}}/>} />
                         <FontAwesomeIcon size={'lg'} icon={<FaTimesCircle  style={{cursor: "pointer"}} className="text-danger"/>} />
-                    </span>
+                    </span>)}
                 </span>
                 <OverlayTrigger rootClose trigger="click" placement="bottom" overlay={
                     <Popover>
@@ -74,13 +136,13 @@ class Vote extends React.Component {
 
                 <span className="ml-2 p-0">
                     <span style={{cursor: "pointer"}}>
-                        <FaThumbsDown className="text-secondary"/>
+                        <FaThumbsDown className="text-secondary" onClick={() => {this.handleDownVote()}}/>
                     </span>
-                    <span className='d-none'>
+                    {(this.state.showDModal) && (<span>
                         <RangeSlider value={this.state.downvotePct} onChange={changeEvent => this.setState({downvotePct: changeEvent.target.value})} />
                         <FontAwesomeIcon size={'lg'} icon={<FaChevronCircleDown style={{cursor: "pointer"}}/>} />
                         <FontAwesomeIcon size={'lg'} icon={<FaTimesCircle  style={{cursor: "pointer"}} className="text-danger"/>} />
-                    </span>
+                    </span>)}
                 </span>
                 <OverlayTrigger rootClose trigger="click" placement="bottom" overlay={
                     <Popover>

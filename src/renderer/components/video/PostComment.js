@@ -77,6 +77,30 @@ class PostComment extends Component {
             }
         }
     }
+    
+    async postComment() {
+        const profileID = localStorage.getItem('SNProfileID');
+
+        if (profileID) {
+            const profile = await utils.acctOps.getAccount(profileID);
+            const accountType = 'hive';
+            const theWif = profile.keyring[0].private.key // posting key
+            const parentAuthor = ''; // ideally empty for blog posts
+            const parentPermlink = ''; // primary tag for the post
+            const author = ''; // creator account
+            const permlink = ''; // post permalink
+            const title = ''; // post title
+            const body = ''; // post body or description 
+            const jsonMetadata = {tags: [''],  app: '' }
+            const accountType = 'hive'
+    
+            const commentOp = {wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, accountType}
+    
+            await Utils.acctOps.postComment(commentOp)
+        } else {
+            console.log('log in first')
+        }
+    }
     render() {
         return (<div>
             <div className="col">
