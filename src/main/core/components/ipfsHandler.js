@@ -58,7 +58,8 @@ var defaultIpfsConfig = {
         "/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
         "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
         "/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-        "/ip4/209.222.98.165/tcp/4001/p2p/12D3KooWAH9FypmaduofuBTtubSHVJghxW35aykce23vDHjfhiAd"
+        "/ip4/5.196.95.75/tcp/4001/p2p/12D3KooWKgdHAPAxhGRtUFhfeec3s4ujhVo31YvEYfKh4HaWXVfe",
+        "/ip4/185.130.44.194/tcp/4001/p2p/12D3KooWBGA84tBTHetG3eJ5N6iu6Wh9XeKxzcxvJkp5G46rpsyK"
     ],
     "Swarm": {
         "ConnMgr": {
