@@ -3,6 +3,8 @@ import {Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import hive from '../assets/img/hive.svg';
 import utils from '../utils'
+import ArraySearch from 'arraysearch';
+const Finder = ArraySearch.Finder;
 
 class Accounts extends Component {
     constructor(props) {
@@ -52,14 +54,14 @@ class Accounts extends Component {
             }
         }
 
-       const theAcc = search(acc, allAcc);
-       const profileID = theAcc._id;
-       localStorage.removeItem('SNProfileID');
-       localStorage.setItem('SNProfileID', profileID);
-       this.setState({
+        const theAcc = Finder.one.in(allAcc).with({
+            nickname: acc
+        });
+        const profileID = theAcc._id;
+        localStorage.setItem('SNProfileID', profileID);
+        this.setState({
             login: theAcc.nickname
         })
-        window.location.reload();
     }
 
     render() {

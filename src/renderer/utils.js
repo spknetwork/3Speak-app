@@ -386,9 +386,7 @@ const acctOps = {
                         const profileID = profile._id;
                         const check_profile = (await PromiseIPC.send("accounts.has", profileID));
                         if (check_profile) {
-                            return {
-                                message: "Account exists already"
-                            }
+                            throw new Error('Account exists already');
                         } else {
                             (await PromiseIPC.send("accounts.createProfile", profile));
                             const get_profile = (await PromiseIPC.send("accounts.get", profileID));
