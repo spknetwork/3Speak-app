@@ -18,6 +18,13 @@ class Follow extends Component {
             followers: await utils.accounts.getFollowerCount(this.props.reflink)
         })
     }
+    async searchWif(arr){
+        let wif
+        await arr.find(function(obj) {
+            wif = obj.privateKeys.posting_key
+        })
+        return wif
+    }
     
     async handleFollow() {
         const profileID = localStorage.getItem('SNProfileID');
@@ -28,7 +35,7 @@ class Follow extends Component {
             const username = profile.nickname // follower
             const author = RefLink.parse(this.props.reflink).root // person to follow
             const what = 'blog' // default value for a follow operation
-            const wif = profile.keyring[0].private.key // posting key
+            const wif = await this.searchWif(profile.keyring); // posting key
 
             const followOp = {username, author, what, wif, accountType}
 
@@ -46,13 +53,13 @@ class Follow extends Component {
             const username = profile.nickname // follower
             const author = RefLink.parse(this.props.reflink).root // person to follow
             const what = '' // default value for a follow operation
-            const wif = profile.keyring[0].private.key // posting key
+            const wif = await this.searchWif(profile.keyring); // posting key
 
             const followOp = {username, author, what, wif, accountType}
 
             await utils.acctOps.followHandler(followOp);
         } else {
-            console.log('log in first')
+            alert('log in first')
         }
     }
 

@@ -377,8 +377,8 @@ const acctOps = {
                                         pubWif
                                     },
                                     encrypted: data.encrypted,
-                                    private: {
-                                        key: encryptWithAES(data.key)
+                                    privateKeys: {
+                                        posting_key: encryptWithAES(data.key)
                                     }
                                 }
                             ]

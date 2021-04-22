@@ -12,6 +12,8 @@ import { BsFillGearFill } from 'react-icons/bs'
 import { Navbar, Nav, NavDropdown, ButtonGroup, Dropdown } from 'react-bootstrap'
 import "./Navbar.css";
 import utils from '../utils';
+import ArraySearch from 'arraysearch';
+const Finder = ArraySearch.Finder;
 
 class SideBar extends Component {
     constructor(props) {
@@ -27,12 +29,13 @@ class SideBar extends Component {
 
         if (login) {
             const user = await utils.acctOps.getAccount(login);
+            
             this.setState({
                 login: user.nickname
             })
         }
     }
-
+    
     async logOut() {
         //TODO: logout logic
 

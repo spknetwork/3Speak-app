@@ -56,6 +56,13 @@ class Vote extends React.Component {
             showDModal: true
         })
     }
+    async searchWif(arr){
+        let wif
+        await arr.find(function(obj) {
+            wif = obj.privateKeys.posting_key
+        })
+        return wif
+    }
     async handleVote() {
         const modalState = this.state.showModal;
         if (modalState === false) {
@@ -65,7 +72,7 @@ class Vote extends React.Component {
 
             if (profileID) {
                 const profile = await Utils.acctOps.getAccount(profileID);
-                const wif = profile.keyring[0].private.key; // posting key
+                const wif = await this.searchWif(profile.keyring); // posting key
                 const voter = profile.nickname // voting account
                 const author = this.state.author // account being rewarded
                 const permlink = this.state.permlink // post permlink to vote
@@ -76,7 +83,7 @@ class Vote extends React.Component {
     
                 const votePost = await Utils.acctOps.voteHandler(voteOp);
             } else {
-                console.log('log in first')
+                alert('log in first')
             }
         }
     }
@@ -90,7 +97,7 @@ class Vote extends React.Component {
 
             if (profileID) {
                 const profile = await Utils.acctOps.getAccount(profileID);
-                const wif = profile.keyring[0].private.key; // posting key
+                const wif = await this.searchWif(profile.keyring);; // posting key
                 const voter = profile.nickname // voting account
                 const author = this.state.author // account being rewarded
                 const permlink = this.state.permlink // post permlink to vote
@@ -101,7 +108,7 @@ class Vote extends React.Component {
     
                 const votePost = await Utils.acctOps.voteHandler(voteOp);
             } else {
-                console.log('log in first')
+                alert('log in first')
             }
         }
     }
