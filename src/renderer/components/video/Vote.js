@@ -5,6 +5,9 @@ import {/*Modal, Button,*/ OverlayTrigger, Popover} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Utils from "../../utils";
 import RefLink from "../../../main/RefLink";
+import ArraySearch from 'arraysearch';
+const Finder = ArraySearch.Finder;
+import {NotificationManager} from 'react-notifications'
 
 class Vote extends React.Component {
     constructor(props) {
@@ -56,13 +59,6 @@ class Vote extends React.Component {
             showDModal: true
         })
     }
-    async searchWif(arr){
-        let wif
-        await arr.find(function(obj) {
-            wif = obj.privateKeys.posting_key
-        })
-        return wif
-    }
     async handleVote() {
         const modalState = this.state.showModal;
         if (modalState === false) {
@@ -71,19 +67,30 @@ class Vote extends React.Component {
             const profileID = localStorage.getItem('SNProfileID');
 
             if (profileID) {
-                const profile = await Utils.acctOps.getAccount(profileID);
-                const wif = await this.searchWif(profile.keyring); // posting key
-                const voter = profile.nickname // voting account
-                const author = this.state.author // account being rewarded
-                const permlink = this.state.permlink // post permlink to vote
-                const weight = this.state.upvotePct; // vote weight in percentage(between 1 - 100)
-                const accountType = 'hive'
-    
-                const voteOp = {wif, voter, author, permlink, weight, accountType, profileID}
-    
-                const votePost = await Utils.acctOps.voteHandler(voteOp);
+                try {
+                    const profile = await Utils.acctOps.getAccount(profileID);
+                    const theWifObj = Finder.one.in(profile.keyring).with({
+                        privateKeys: { }
+                    })
+                    const wif = theWifObj.privateKeys.posting_key // posting key
+                    const voter = profile.nickname // voting account
+                    const author = this.state.author // account being rewarded
+                    const permlink = this.state.permlink // post permlink to vote
+                    const weight = this.state.upvotePct; // vote weight in percentage(between 1 - 100)
+                    const accountType = 'hive'
+        
+                    const voteOp = {wif, voter, author, permlink, weight, accountType, profileID}
+        
+                    const votePost = await Utils.acctOps.voteHandler(voteOp); NotificationManager.success('Vote casted, page will reload momentarily')
+                    this.setState({
+                        showModal: false
+                    })
+                } catch (error) {
+                    NotificationManager.success('There was an error completing this operation')
+                }
+
             } else {
-                alert('log in first')
+                NotificationManager.success('You need to be logged in to perform this operation')
             }
         }
     }
@@ -96,19 +103,31 @@ class Vote extends React.Component {
             const profileID = localStorage.getItem('SNProfileID');
 
             if (profileID) {
-                const profile = await Utils.acctOps.getAccount(profileID);
-                const wif = await this.searchWif(profile.keyring);; // posting key
-                const voter = profile.nickname // voting account
-                const author = this.state.author // account being rewarded
-                const permlink = this.state.permlink // post permlink to vote
-                const weight = this.state.downvotePct * -1; // vote weight in percentage(between 1 - 100)
-                const accountType = 'hive'
+                try {
+                    const profile = await Utils.acctOps.getAccount(profileID);
+                    const theWifObj = Finder.one.in(profile.keyring).with({
+                        privateKeys: { }
+                    })
+                    const wif = theWifObj.privateKeys.posting_key // posting key
+                    const voter = profile.nickname // voting account
+                    const author = this.state.author // account being rewarded
+                    const permlink = this.state.permlink // post permlink to vote
+                    const weight = this.state.downvotePct * -1; // vote weight in percentage(between 1 - 100)
+                    const accountType = 'hive'
+        
+                    const voteOp = {wif, voter, author, permlink, weight, accountType, profileID}
+        
+                    const votePost = await Utils.acctOps.voteHandler(voteOp);NotificationManager.success('Vote casted, page will reload momentarily')
+                    this.setState({
+                        showDModal: false
+                    })
+                } catch (error) {
+                    NotificationManager.success('There was an error completing this operation')
+                }
     
-                const voteOp = {wif, voter, author, permlink, weight, accountType, profileID}
-    
-                const votePost = await Utils.acctOps.voteHandler(voteOp);
+                
             } else {
-                alert('log in first')
+                NotificationManager.success('You need to be logged in to perform this operation')
             }
         }
     }

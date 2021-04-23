@@ -11,6 +11,7 @@ const electronIpc = require('electron-promise-ipc');
 const { clipboard } = require('electron');
 import ArraySearch from 'arraysearch';
 const Finder = ArraySearch.Finder;
+import {NotificationManager} from 'react-notifications'
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
@@ -41,7 +42,6 @@ class PostComment extends Component {
         this.handleAction = this.handleAction.bind(this)
     }
     async componentDidMount() {
-        this.postComment();
         let commentInfo;
         let profilePicture
         if (this.props.commentInfo) {
@@ -84,18 +84,13 @@ class PostComment extends Component {
     async postComment() {
         const profileID = localStorage.getItem('SNProfileID');
 
-        async function searchWif(arr){
-            let wif
-            await arr.find(function(obj) {
-                wif = obj.privateKeys.posting_key
-            })
-            return wif
-        }
-
         if (profileID) {
             const profile = await utils.acctOps.getAccount(profileID);
             const accountType = 'hive';
-            const theWif = await searchWif(profile.keyring)
+            const theWifObj = Finder.one.in(user.keyring).with({
+                privateKeys: { }
+            })
+            const theWif = theWifObj.privateKeys.posting_key
             const parentAuthor = ''; // ideally empty for blog posts
             const parentPermlink = ''; // primary tag for the post
             const author = ''; // creator account
@@ -108,7 +103,7 @@ class PostComment extends Component {
             console.log(theWif);
             //await Utils.acctOps.postComment(commentOp)
         } else {
-            alert('log in first')
+            NotificationManager.success('You need to be logged in to perform this operation')
         }
     }
     render() {

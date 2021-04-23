@@ -395,7 +395,8 @@ const acctOps = {
                             return get_profile;
                         }
                     } else {
-                        console.log("Wrong password");
+                        throw new Error('Invalid posting key');
+                        alert("Invalid posting key");
                     }
                 } catch (error) {
                     console.log(error)
