@@ -11,6 +11,9 @@ module.exports = merge(baseConfig, {
     path: path.join(__dirname, '../dist'),
     filename: 'renderer.dev.js'
   },
+  optimization: {
+    minimize: false
+  },
   devServer: {
     hot: true,
     compress: true,

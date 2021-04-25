@@ -6,6 +6,19 @@ import ipfsHandler from '../main/core/components/ipfsHandler'
 import CID from 'cids'
 import IpfsUtils from 'ipfs-core/src/utils'
 const Finder = ArraySearch.Finder;
+const hive = require('@hiveio/hive-js');
+const CryptoJS = require('crypto-js');
+const encryptWithAES = text => {
+    const passphrase = '123';
+    return CryptoJS.AES.encrypt(text, passphrase).toString();
+};
+
+const decryptWithAES = ciphertext => {
+    const passphrase = '123';
+    const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
+    const originalText = bytes.toString(CryptoJS.enc.Utf8);
+    return originalText;
+};
 
 const ipfs = {
     gateway: "https://ipfs.3speak.tv/ipfs/",
@@ -339,10 +352,158 @@ const video = {
         }
     }
 }
+const acctOps = {
+    async login(data) {
+        switch(data.accountType) {
+            case "hive" : {
+                try { 
+                    const userAccounts = await hive.api.getAccountsAsync([data.username]);
+                    console.log(userAccounts)
+                    const pubWif = userAccounts[0].posting.key_auths[0][0];
+                    const wif = hive.auth.toWif(data.key)
+    
+                    const Valid = hive.auth.wifIsValid(data.key, pubWif);
+    
+                    if(Valid){
+    
+                        const profile = {
+                            _id: userAccounts[0].id.toString(),
+                            nickname: data.profile,
+                            keyring: [
+                                {
+                                    type: 'hive',
+                                    username: data.username,
+                                    public: {
+                                        pubWif
+                                    },
+                                    encrypted: data.encrypted,
+                                    privateKeys: {
+                                        posting_key: encryptWithAES(data.key)
+                                    }
+                                }
+                            ]
+                        }
+                        const profileID = profile._id;
+                        const check_profile = (await PromiseIPC.send("accounts.has", profileID));
+                        if (check_profile) {
+                            throw new Error('Account exists already');
+                        } else {
+                            (await PromiseIPC.send("accounts.createProfile", profile));
+                            const get_profile = (await PromiseIPC.send("accounts.get", profileID));
+                            localStorage.removeItem('SNProfileID');
+                            localStorage.setItem('SNProfileID', profileID);
+                            return get_profile;
+                        }
+                    } else {
+                        throw new Error('Invalid posting key');
+                        alert("Invalid posting key");
+                    }
+                } catch (error) {
+                    console.log(error)
+                    console.log('Error encountered')
+                }
+            }
+        }
+    },
+    async getAccounts() {
+        const getAccounts = (await PromiseIPC.send("accounts.ls", {}));
+        
+        return getAccounts;
+    },
+    async getAccount(profileID) {
+        const getAccount = (await PromiseIPC.send("accounts.get", profileID));
+        return getAccount;
+    },
+    async logout(profileID) {
+        (await PromiseIPC.send("accounts.deleteProfile", profileID));
+        return;
+    },
+    async voteHandler(voteOp) {
+        switch(voteOp.accountType) {
+            case "hive" : {
+                const weight = voteOp.weight * 100
+                const theWif = decryptWithAES(voteOp.wif)
+                hive.broadcast.vote(
+                    theWif,
+                    voteOp.voter,
+                    voteOp.author,
+                    voteOp.permlink,
+                    weight,
+                    function(error, succeed) {
+                    if (error) {
+                        console.log(error)
+                        console.log('Error encountered')
+                    }
+
+                    if (succeed) {
+                        console.log('success');
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+    },
+    async followHandler(followOp) {
+        switch(followOp.accountType) {
+            case "hive" : {
+                const theWif = decryptWithAES(followOp.wif)
+
+                let jsonObj = ['follow', {follower: followOp.username, following: followOp.author, what: [followOp.what]}]
+
+                hive.broadcast.customJson(
+                    theWif,
+                    [],
+                    [followOp.username],
+                    'follow',
+                    JSON.stringify(jsonObj), async (error, succeed) => {
+                        if (error) {
+                            console.log(error)
+                            console.log('Error encountered')
+                        }
+
+                        if (succeed) {
+                            console.log('success')
+                            window.location.reload();
+                        }
+                });
+            }
+        }
+    },
+    async postComment(commentOp) {
+        switch(comment.accountType) {
+            case "hive" : {
+                const theWif = decryptWithAES(commentOp.wif)
+                hive.broadcast.comment(
+                    theWif,
+                    commentOp.parentAuthor,
+                    commentOp.parentPermlink,
+                    commentOp.author,
+                    commentOp.permlink,
+                    commentOp.title,
+                    commentOp.body,
+                    commentOp.jsonMetadata,
+                    function(error, succeed) {
+                        console.log('Bout to check')
+                        if (error) {
+                            console.log(error)
+                            console.log('Error encountered')
+                        }
+    
+                        if (succeed) {
+                            console.log('succeed');
+                            window.location.reload()
+                        }
+                    }
+                );
+            }
+        }
+    }
+}
 export default {
     accounts,
     video,
     ipfs,
+    acctOps,
     formToObj: (formData) => {
         let out = {};
         for(var key of formData.keys()) {

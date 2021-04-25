@@ -9,6 +9,9 @@ import Vote from "./Vote";
 import DOMPurify from 'dompurify';
 const electronIpc = require('electron-promise-ipc');
 const { clipboard } = require('electron');
+import ArraySearch from 'arraysearch';
+const Finder = ArraySearch.Finder;
+import {NotificationManager} from 'react-notifications'
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
@@ -75,6 +78,32 @@ class PostComment extends Component {
             default: {
 
             }
+        }
+    }
+    
+    async postComment() {
+        const profileID = localStorage.getItem('SNProfileID');
+
+        if (profileID) {
+            const profile = await utils.acctOps.getAccount(profileID);
+            const accountType = 'hive';
+            const theWifObj = Finder.one.in(user.keyring).with({
+                privateKeys: { }
+            })
+            const theWif = theWifObj.privateKeys.posting_key
+            const parentAuthor = ''; // ideally empty for blog posts
+            const parentPermlink = ''; // primary tag for the post
+            const author = ''; // creator account
+            const permlink = ''; // post permalink
+            const title = ''; // post title
+            const body = ''; // post body or description 
+            const jsonMetadata = {tags: [''],  app: '' }
+    
+            const commentOp = {wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, accountType}
+            console.log(theWif);
+            //await Utils.acctOps.postComment(commentOp)
+        } else {
+            NotificationManager.success('You need to be logged in to perform this operation')
         }
     }
     render() {

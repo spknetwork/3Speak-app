@@ -15,17 +15,23 @@ class VideoWidget extends Component {
         super(props);
         this.state = {
             video_info: props,
-            permlink: props.permlink,
+            permlink: this.props.permlink,
             reflink:Reflink.parse(this.props.reflink)
         }
     }
     async componentDidMount() {
         let thumbnailUrl;
+
         if(this.props.isNsfw === true) {
             thumbnailUrl = nsfwWarning;
+        } else if (this.state.video_info.isIpfs) {
+            var cid = Utils.ipfs.urlToCID(this.state.video_info.images.ipfs_thumbnail);
+            var gateway = await Utils.ipfs.getGateway(cid, true);
+            thumbnailUrl = gateway + Utils.ipfs.urlToIpfsPath(this.state.video_info.images.ipfs_thumbnail);
         } else {
-            thumbnailUrl = await Utils.video.getThumbnailURL(this.props.reflink)
+            thumbnailUrl = this.state.video_info.images.thumbnail
         }
+
         this.setState({
             //video_info: await utils.accounts.permalinkToVideoInfo(this.props.reflink),
             reflink: Reflink.parse(this.props.reflink),
