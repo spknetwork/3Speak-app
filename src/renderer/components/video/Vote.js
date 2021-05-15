@@ -8,6 +8,7 @@ import RefLink from "../../../main/RefLink";
 import ArraySearch from 'arraysearch';
 const Finder = ArraySearch.Finder;
 import {NotificationManager} from 'react-notifications'
+import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 
 class Vote extends React.Component {
     constructor(props) {
@@ -81,9 +82,13 @@ class Vote extends React.Component {
         
                     const voteOp = {wif, voter, author, permlink, weight, accountType, profileID}
         
-                    const votePost = await Utils.acctOps.voteHandler(voteOp); NotificationManager.success('Vote casted, page will reload momentarily')
+                    await Utils.acctOps.voteHandler(voteOp); 
+                    NotificationManager.success('Vote cast')
+                    const upvoters = this.state.upvoters
+                    upvoters.push(`@${voter}`)
                     this.setState({
-                        showModal: false
+                        showModal: false,
+                        upvoters
                     })
                 } catch (error) {
                     NotificationManager.success('There was an error completing this operation')

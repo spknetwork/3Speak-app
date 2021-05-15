@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {Button} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import React, { Component } from 'react';
+import { Button, Tooltip, OverlayTrigger } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import hive from '../assets/img/hive.svg';
 import utils from '../utils'
 import ArraySearch from 'arraysearch';
@@ -21,7 +21,7 @@ class Accounts extends Component {
         let accounts = []
         let accountsInit = await utils.acctOps.getAccounts();
         await accountsInit.forEach(obj => {
-            accounts.push(obj.nickname)
+            accounts.push(obj)
         })
         if (accounts.length === 0) {
             this.setState({
@@ -42,70 +42,87 @@ class Accounts extends Component {
         })
     }
 
-    async handleAccountChange(acc) {
-        //TODO: account switch
-        const allAcc = await utils.acctOps.getAccounts();
+    async handleAccountChange(profileID) {
+        const theAcc = await utils.acctOps.getAccount(profileID);
 
-        function search(nameKey, myArray){
-            for (var i=0; i < myArray.length; i++) {
-                if (myArray[i].nickname === nameKey) {
-                    return myArray[i];
-                }
-            }
-        }
-
-        const theAcc = Finder.one.in(allAcc).with({
-            nickname: acc
-        });
-        const profileID = theAcc._id;
         localStorage.setItem('SNProfileID', profileID);
         this.setState({
             login: theAcc.nickname
         })
     }
-
+    async logOut(profileID) {
+        await utils.acctOps.logout(profileID);
+        let accountsInit = await utils.acctOps.getAccounts();
+        console.log(accountsInit)
+        if (accountsInit.length > 0) {
+            localStorage.setItem('SNProfileID', accountsInit[0]._id)
+        }
+        window.location.reload();
+    }
     render() {
-        return(
+        return (
             <div className='pl-4'>
                 <h1>Your accounts</h1>
                 <table className='mb-3'>
                     <thead>
-                    <tr>
-                        <th>
-                            Account
+                        <tr>
+                            <th>
+                                Account
                         </th>
-                        <th className={'pr-2'}>
-                            Encrypted
+                            <th className={'pr-2'}>
+                                Encrypted
                         </th>
-                        <th>
-                            Active
+                            <th>
+                                Active
                         </th>
-                    </tr>
+                            <th>
+                                Remove
+                        </th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {this.state.accounts.map(acc => (
-                        <tr>
-                            <td>
-                                <b className='pr-2'>@{acc}</b> <img className='float-right mr-2' src={hive} width={15} height={15}/>
-                            </td>
-                            <td>
-                                <input type="checkbox" disabled checked/>
-                            </td>
-                            <td>
-                                {acc === this.state.login && (
-                                    <div className='py-3'>Currently active</div>
-                                )}
-                                {!(acc === this.state.login) && (
-                                    <Button onClick={() => {this.handleAccountChange(acc)}} className='bg-dark'>
-                                        Activate
-                                    </Button>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
+                        {this.state.accounts.map(({ keyring, nickname, _id }) => (
+                            <tr>
+                                <td>
+                                    <b className='pr-2'>@{nickname}</b>
+                                    {(() => {
+                                        console.log(keyring)
+                                    })()}
+                                    {
+                                        keyring.map(baseInfo =>
+                                            <OverlayTrigger key={baseInfo.username}
+                                            placement={"top"}
+                                            overlay={
+                                                <Tooltip id={`tooltip-${baseInfo.username}`} >{baseInfo.username}</Tooltip >
+                                              }>
+                                                <img className='float-right mr-2' src={hive} width={15} height={15} />
+                                            </OverlayTrigger >)
+                                    }
+
+                                </td>
+                                <td>
+                                    <input type="checkbox" disabled />
+                                </td>
+                                <td>
+                                    {nickname === this.state.login && (
+                                        <div className='py-3'>Currently active</div>
+                                    )}
+                                    {!(nickname === this.state.login) && (
+                                        <Button onClick={() => { this.handleAccountChange(_id) }} className='bg-dark'>
+                                            Activate
+                                        </Button>
+                                    )}
+                                </td>
+                                <td>
+                                    <Button onClick={() => { this.logOut(_id) }} className='bg-dark'>
+                                        Remove
+                                </Button>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
-               {!(this.state.accountAdded) && (<p>You need to add an account first</p>)}
+                {!(this.state.accountAdded) && (<p>You need to add an account first</p>)}
                 <Link to='/login'>Add new account</Link>
             </div>
         )

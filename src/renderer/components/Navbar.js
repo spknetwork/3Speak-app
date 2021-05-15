@@ -7,14 +7,15 @@ import iconNewcomer from '../assets/img/icon_newcomer.svg'
 import iconBlog from '../assets/img/blog.png'
 import shakeHands from '../assets/img/shake-hands.svg'
 import SpeakLogo from '../assets/img/3S_logo.svg'
-import { FaDiscord, FaTwitter, FaGlobe, FaUsers, FaTelegram, FaToolbox } from 'react-icons/fa'
+import { FaDiscord, FaTwitter, FaGlobe, FaUsers, FaTelegram, FaToolbox } from 'react-icons/fa' 
+import { VscKey } from 'react-icons/vsc' 
 import { BsFillGearFill } from 'react-icons/bs'
 import { Navbar, Nav, NavDropdown, ButtonGroup, Dropdown } from 'react-bootstrap'
 import "./Navbar.css";
 import utils from '../utils';
 import ArraySearch from 'arraysearch';
 const Finder = ArraySearch.Finder;
-
+console.log(VscKey)
 class SideBar extends Component {
     constructor(props) {
         super(props);
@@ -61,9 +62,12 @@ class SideBar extends Component {
             <Navbar.Collapse >
                 <Nav className="mr-auto nav_dist">
                     {this.state.login && (
-                        <NavDropdown title={<React.Fragment><div className="nav_icons"><h6>@{this.state.login}</h6></div></React.Fragment>}>
+                        <NavDropdown title={<React.Fragment><div className="nav_icons"><VscKey size="21px"/></div><span>@{this.state.login}</span></React.Fragment>}>
                             <NavDropdown.Item href='#/accounts'>Switch account</NavDropdown.Item>
-                            <NavDropdown.Item onClick={() => {this.logOut()}}>Log out</NavDropdown.Item>
+                            <NavDropdown.Item href="#/login">
+                                Add account
+                            </NavDropdown.Item>
+                            {this.state.login && (<NavDropdown.Item onClick={() => {this.logOut()}}>Log out</NavDropdown.Item>)}
                         </NavDropdown>
                     )}
                     {!this.state.login && (
@@ -73,6 +77,7 @@ class SideBar extends Component {
                             </button>
                         </Nav.Link>
                     )}
+                    <hr/>
                     <Nav.Link href="#/">
                             <div className="nav_icons"><img src={iconHome} height="14px" /></div>
                             Home
