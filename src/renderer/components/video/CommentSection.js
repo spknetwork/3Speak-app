@@ -1,4 +1,4 @@
-import React, { Component, useCallback, useRef } from 'react';
+import React, { Component, useCallback, useRef, useState } from 'react';
 import PostComment from './PostComment';
 import PromiseIpc from 'electron-promise-ipc';
 import utils from '../../utils';
@@ -6,6 +6,9 @@ import { Form } from 'react-bootstrap';
 import './CommentSection.css'
 import RefLink from '../../../main/RefLink'
 import randomstring from 'randomstring'
+import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
 
 function ConnectAccountNotice() {
     return (
@@ -25,16 +28,18 @@ function NoComments() {
 }
 
 function CommentForm(props) {
+    const [postingStatus, setPostingStatus] = useState(false)
     const commentBodyRef = useRef()
     const { parent_reflink } = props
 
     const postComment = useCallback(async() => {
+        setPostingStatus(true)
         console.log("posting")
         console.log(commentBodyRef.current.value)
         console.log(parent_reflink)
         const [networkId, parent_author, parent_permlink] = RefLink.parse(parent_reflink).link
         console.log(parent_author, parent_permlink)
-        await utils.acctOps.postComment({
+        let [reflink, finishOpt] = await utils.acctOps.postComment({
             accountType: "hive",
             body: commentBodyRef.current.value,
             parent_author,
@@ -43,16 +48,22 @@ function CommentForm(props) {
             permlink: `re-${parent_permlink}-${randomstring.generate({
                 length: 8,
                 charset: 'alphabetic'
-            }).toLowerCase()}}`,
+            }).toLowerCase()}`,
             title: ''
         })
+        if(typeof props.onCommentPost === "function") {
+            console.log(finishOpt.operations[0][1])
+            props.onCommentPost();
+        }
+        commentBodyRef.current.value = "";
+        setPostingStatus(false)
     }, [parent_reflink])
     return (<React.Fragment>
         <textarea id="new-comment-body" className="form-control w-100" ref={commentBodyRef} placeholder="Comment here..." maxLength="25000">
 
         </textarea>
-        <button id="new-comment-btn" className="btn mt-1 btn-primary float-right" onClick={postComment}>
-            Comment
+        <button id="new-comment-btn" className="btn mt-1 btn-primary float-right" disabled={postingStatus} onClick={postComment}>
+            {postingStatus ? <FontAwesomeIcon icon={faSpinner} spin /> : <span>Comment</span> }
         </button>
     </React.Fragment>)
 }
@@ -112,7 +123,11 @@ class CommentSection extends Component {
                 var childVideoInfo = await utils.accounts.permalinkToVideoInfo(child._id)
                 console.log(childVideoInfo)
                 const proc = <div key={child._id} className="box mb-3">
-                    <PostComment reflink={child._id} commentInfo={childVideoInfo}></PostComment>
+                    <PostComment reflink={child._id} commentInfo={childVideoInfo} onCommentPost={async (commentData) => {
+                        console.log(commentData)
+                        var childVideoInfo = await utils.accounts.permalinkToVideoInfo(commentData)
+
+                    }}></PostComment>
                     {childComments}
                 </div>;
                 yield proc;
@@ -132,7 +147,9 @@ class CommentSection extends Component {
             <div className="box mb-3 clearfix">
                 <h6 class="text-muted">Reply:</h6>
                 {
-                    isLogged ? <CommentForm parent_reflink={this.props.reflink}/> : <ConnectAccountNotice />
+                    isLogged ? <CommentForm parent_reflink={this.props.reflink} onCommentPost={(commentData) => {
+                        console.log(commentData)
+                    }}/> : <ConnectAccountNotice />
                 }
 
             </div>

@@ -32,7 +32,7 @@ function CommentForm(props) {
         console.log(parent_reflink)
         const [networkId, parent_author, parent_permlink] = RefLink.parse(parent_reflink).link
         console.log(parent_author, parent_permlink)
-        await Utils.acctOps.postComment({
+        let [reflink, finishOpt] = await Utils.acctOps.postComment({
             accountType: "hive",
             body: commentBodyRef.current.value,
             parent_author,
@@ -44,6 +44,10 @@ function CommentForm(props) {
             }).toLowerCase()}`,
             title: ''
         })
+        if(typeof props.onCommentPost === "function") {
+            console.log(finishOpt.operations[1])
+            props.onCommentPost();
+        }
     }, [parent_reflink])
     return (<React.Fragment>
         <textarea id="new-comment-body" className="form-control w-100" ref={commentBodyRef} placeholder="Comment here..." maxLength="25000">
@@ -157,6 +161,7 @@ class PostComment extends Component {
         return DateAndTime.format(new Date(this.state.commentInfo.creation), 'YYYY/MM/DD HH:mm:ss')
     }
     render() {
+        console.log(this.props.onCommentPost)
         return (<div>
             <div className="col">
                 <div className="thumbnail mr-2 float-left">
@@ -215,7 +220,8 @@ class PostComment extends Component {
                 </div>
             </div>
             {
-                this.state.replying ? <div className="box mb-3 clearfix"><CommentForm parent_reflink={this.props.reflink} /></div> : null
+                this.state.replying ? <div className="box mb-3 clearfix"><CommentForm parent_reflink={this.props.reflink} 
+                onCommentPost={this.props.onCommentPost}/></div> : null
             }
         </div>);
     }
