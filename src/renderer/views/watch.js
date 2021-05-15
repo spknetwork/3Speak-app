@@ -189,7 +189,7 @@ class watch extends React.Component {
                 permlink: val.permlink,
                 tags: val.json_metadata.tags,
                 title: val.title,
-                duration: val.json_metadata.video.info.duration || val.json_metadata.duration,
+                duration: val.json_metadata.video.info.duration || val.json_metadata.video.duration,
                 "isIpfs": val.json_metadata.video.info.ipfs || thumbnail ? true : false,
                 "ipfs": val.json_metadata.video.info.ipfs,
                 "images": {
