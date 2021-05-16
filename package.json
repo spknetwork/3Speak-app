@@ -60,6 +60,7 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@hiveio/dhive": "^0.14.12",
     "@hiveio/hive-js": "^0.8.12",
@@ -72,6 +73,7 @@
     "compressjs": "^1.0.3",
     "convert-units": "^2.3.4",
     "country-list": "^2.2.0",
+    "crypto-js": "^4.0.0",
     "datastore-fs": "^2.0.2",
     "datastore-level": "^1.1.0",
     "date-and-time": "^0.14.2",
@@ -100,6 +102,7 @@
     "pouchdb-find": "^7.2.1",
     "pouchdb-upsert": "^2.2.0",
     "query-string": "^6.13.7",
+    "randomstring": "^1.2.1",
     "react": "^16.14.0",
     "react-bootstrap": "^1.4.0",
     "react-bootstrap-range-slider": "^1.2.2",

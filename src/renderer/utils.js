@@ -5,7 +5,16 @@ import RefLink from '../main/RefLink';
 import ipfsHandler from '../main/core/components/ipfsHandler'
 import CID from 'cids'
 import IpfsUtils from 'ipfs-core/src/utils'
+import DHive, { Client, PrivateKey } from "@hiveio/dhive";
+import { promisify } from 'util';
 const Finder = ArraySearch.Finder;
+const hive = require('@hiveio/hive-js');
+
+const hiveClient = new Client(["https://api.hive.blog", "https://api.hivekings.com", "https://anyx.io", "https://api.openhive.network"]);
+
+
+hive.broadcast.comment = promisify(hive.broadcast.comment)
+
 
 const ipfs = {
     gateway: "https://ipfs.3speak.tv/ipfs/",
@@ -50,6 +59,35 @@ const ipfs = {
     }
 }
 const accounts = {
+    async convertLight(val) {
+        if(typeof val.json_metadata === "object") {
+            val.json_metadata = JSON.parse(val.json_metadata)
+        }
+        //console.log(val)
+        if(!val.json_metadata.video) {
+            val.json_metadata.video = {
+                info: {}
+            }
+        }
+        blob.push({
+            reflink: `hive:${val.author}:${val.permlink}`,
+            created: val.created,
+            author: val.author,
+            permlink: val.permlink,
+            tags: val.json_metadata.tags,
+            title: val.title,
+            duration: val.json_metadata.video.info.duration || val.json_metadata.video.duration,
+            "isIpfs": val.json_metadata.video.info.ipfs || thumbnail ? true : false,
+            "ipfs": val.json_metadata.video.info.ipfs,
+            "images": {
+                "ipfs_thumbnail":  thumbnail ?  `/ipfs/${thumbnail.slice(7)}` : `/ipfs/${val.json_metadata.video.info.ipfsThumbnail}` ,
+                "thumbnail": `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/default.png`,
+                "poster": `https://threespeakvideo.b-cdn.net/${val.permlink}/poster.png`,
+                "post": `https://threespeakvideo.b-cdn.net/${val.permlink}/post.png`
+            },
+            views: val.total_vote_weight ? Math.log(val.total_vote_weight / 1000).toFixed(2) : 0
+        })
+    },
     /**
      * Retrieves post information from reflink.
      * @param {String|RefLink} reflink
@@ -78,14 +116,35 @@ const accounts = {
         }
         switch (reflink.source.value) {
             case "hive": {
+                console.log(post_content.json_metadata)
                 const json_metadata = post_content.json_metadata;
-                if(!(json_metadata.app && json_metadata.type.includes("3speak/video")) && options.type === "video") {
-                    throw new Error("Invalid post content. Not a video");
+                if(!(json_metadata.app && options.type === "video")) {
+                    if(json_metadata.type) {
+                        if(!json_metadata.type.includes("3speak/video")) {
+                            throw new Error("Invalid post content. Not a video");
+                        }
+                    }
+                    //throw new Error("Invalid post content. Not a video");
                 }
                 let sources = [];
                 let title;
                 let description;
                 let duration;
+                if(json_metadata.sourceMap) {
+                    sources.push(...json_metadata.sourceMap)
+                    return {
+                        sources,
+                        creation: new Date(post_content.created + "Z").toISOString(),
+                        title: post_content.title,
+                        description: post_content.body,
+                        tags: json_metadata.tags,
+                        refs: [`hive:${post_content.author}:${post_content.permlink}`], //Reserved for future use when multi account system support is added.
+                        meta: {
+                            duration:json_metadata.duration
+                        }, //Reserved for future use.
+                        reflink: `hive:${post_content.author}:${post_content.permlink}`
+                    }
+                }
                 try {
                     const video_info = json_metadata.video.info;
                     const video_content = json_metadata.video.content;
@@ -339,10 +398,227 @@ const video = {
         }
     }
 }
+const acctOps = {
+    async login(data) {
+        switch(data.accountType) {
+            case "hive" : {
+                try { 
+                    const userAccounts = await hive.api.getAccountsAsync([data.username]);
+                    console.log(userAccounts)
+                    const pubWif = userAccounts[0].posting.key_auths[0][0];
+    
+                    const Valid = hive.auth.wifIsValid(data.key, pubWif);
+    
+                    if(Valid){
+    
+                        const profile = {
+                            _id: userAccounts[0].id.toString(),
+                            nickname: data.profile,
+                            keyring: [
+                                {
+                                    type: 'hive',
+                                    username: data.username,
+                                    public: {
+                                        pubWif
+                                    },
+                                    encrypted: data.encrypted,
+                                    privateKeys: {
+                                        posting_key: data.key
+                                    }
+                                }
+                            ]
+                        }
+                        const profileID = profile._id;
+                        const check_profile = (await PromiseIPC.send("accounts.has", profileID));
+                        if (check_profile) {
+                            throw new Error('Account exists already');
+                        } else {
+                            (await PromiseIPC.send("accounts.createProfile", profile));
+                            const get_profile = (await PromiseIPC.send("accounts.get", profileID));
+                            localStorage.setItem('SNProfileID', profileID);
+                            return get_profile;
+                        }
+                    } else {
+                        throw new Error('Invalid posting key');
+                    }
+                } catch (error) {
+                    throw error
+                }
+            }
+        }
+    },
+    async getAccounts() {
+        const getAccounts = (await PromiseIPC.send("accounts.ls", {}));
+        
+        return getAccounts;
+    },
+    async getAccount(profileID) {
+        const getAccount = (await PromiseIPC.send("accounts.get", profileID));
+        return getAccount;
+    },
+    async logout(profileID) {
+        (await PromiseIPC.send("accounts.deleteProfile", profileID));
+        return;
+    },
+    async voteHandler(voteOp) {
+        switch(voteOp.accountType) {
+            case "hive" : {
+                const weight = voteOp.weight * 100
+                const theWif = voteOp.wif
+                hive.broadcast.vote(
+                    theWif,
+                    voteOp.voter,
+                    voteOp.author,
+                    voteOp.permlink,
+                    weight,
+                    function(error, succeed) {
+                    if (error) {
+                        console.log(error)
+                        console.log('Error encountered')
+                    }
+
+                    if (succeed) {
+                        console.log('success');
+                    }
+                });
+            }
+        }
+    },
+    async followHandler(profileID, followOp) {
+        switch(followOp.accountType) {
+            case "hive" : {
+                //const profile = await acctOps.getAccount(profileID);
+                const profile = await acctOps.getAccount(profileID);
+               
+                const username = Finder.one.in(profile.keyring).with({type:"hive"}).username
+                const theWifObj = Finder.one.in(profile.keyring).with({
+                    type: "hive"
+                })
+                const wif = theWifObj.privateKeys.posting_key // posting key
+                let jsonObj = ['follow', {follower: username, following: followOp.author, what: followOp.what ? [followOp.what] : []}]
+
+                console.log(hive.broadcast.customJson(
+                    wif,
+                    [],
+                    [username],
+                    'follow',
+                    JSON.stringify(jsonObj), async (error, succeed) => {
+                        if (error) {
+                            console.log(error)
+                            console.log('Error encountered')
+                        }
+
+                        if (succeed) {
+                            console.log(succeed)
+                            console.log('success')
+                        }
+                }))
+            }
+        }
+    },
+    async postComment(commentOp) {
+        console.log(commentOp)
+        switch (commentOp.accountType) {
+            case "hive": {
+                /*await hiveClient.broadcast
+                    .comment(
+                        {
+                            author: commentOp.username,
+                            title: commentOp.title,
+                            body: commentOp.body,
+                            json_metadata: typeof commentOp.json_metadata === "object" ? JSON.stringify(commentOp.json_metadata) : commentOp.json_metadata,
+                            parent_author: '',
+                            tags: commentOp.tags,
+                            parent_permlink: commentOp.tags[0],
+                            permlink: commentOp.permlink,
+                        },
+                        PrivateKey.fromLogin(commentOp.username, commentOp.wif, "posting")
+                    )*/
+                const profileID = window.localStorage.getItem("SNProfileID")
+                const getAccount = (await PromiseIPC.send("accounts.get", profileID));
+                const hiveInfo = Finder.one.in(getAccount.keyring).with({type:"hive"})
+
+                if(!commentOp.json_metadata) {
+                    commentOp.json_metadata = "{}"
+                }
+
+                console.log(hiveInfo)
+                console.log(getAccount)
+                var out = await hive.broadcast.comment(
+                    hiveInfo.privateKeys.posting_key,
+                    commentOp.parent_author || "",
+                    commentOp.parent_permlink || commentOp.tags[0] || "threespeak", //parentPermlink
+                    hiveInfo.username,
+                    commentOp.permlink,
+                    commentOp.title,
+                    commentOp.body,
+                    typeof commentOp.json_metadata === "object" ? JSON.stringify(commentOp.json_metadata) : commentOp.json_metadata
+                );
+                console.log(out)
+                return [`hive:${hiveInfo.username}:${commentOp.permlink}`, out];
+            }
+        }
+    },
+    async createPost(postOp) {
+        switch(postOp.accountType) {
+            case "hive" : {
+                const theWif = commentOp.wif
+                
+                hive.broadcast.comment(
+                    theWif,
+                    '',
+                    commentOp.parentPermlink,
+                    commentOp.author,
+                    commentOp.permlink,
+                    commentOp.title,
+                    commentOp.body,
+                    commentOp.jsonMetadata,
+                    function(error, succeed) {
+                        console.log('Bout to check')
+                        if (error) {
+                            console.log(error)
+                            console.log('Error encountered')
+                        }
+    
+                        if (succeed) {
+                            console.log('succeed');
+                        }
+                    }
+                );
+            }
+        }
+    },
+    async getFollowing() {
+        const profileID = window.localStorage.getItem("SNProfileID")
+        const getAccount = (await PromiseIPC.send("accounts.get", profileID))
+        const hiveInfo = Finder.one.in(getAccount.keyring).with({type:"hive"})
+
+        let out = [];
+        let done = false;
+        let nextFollow = "";
+        const limit = 100;
+        while(done === false) {
+            const followingChunk = await hiveClient.call('follow_api', 'get_following', [
+                hiveInfo.username,
+                nextFollow,
+                "blog",
+                limit,
+            ])
+            console.log(followingChunk)
+            out.push(...followingChunk)
+            if(followingChunk.length !== limit) {
+                break;
+            }
+            nextFollow = followingChunk[followingChunk.length - 1].following
+        }
+        return out;
+    }
+}
 export default {
     accounts,
     video,
     ipfs,
+    acctOps,
     formToObj: (formData) => {
         let out = {};
         for(var key of formData.keys()) {

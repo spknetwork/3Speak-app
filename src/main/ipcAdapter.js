@@ -100,6 +100,9 @@ class ipcAdapter {
         PromiseIPC.on("accounts.deleteProfileKey", async (ref) => {
             return await this.core.accounts.deleteProfileKey(ref);
         })
+        PromiseIPC.on("accounts.deleteProfile", async (ref) => {
+            return await this.core.accounts.deleteProfile(ref);
+        })
     }
 }
 export default ipcAdapter;

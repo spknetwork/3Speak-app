@@ -141,7 +141,7 @@ class EncoderService {
         }))
         command.videoCodec(codec);
         command.audioCodec("aac")
-        command.audioBitrate('128k')
+        command.audioBitrate('256k')
 
         command.addOption('-hls_time', 5)
         // include all the segments in the list
@@ -152,8 +152,9 @@ class EncoderService {
 
 
         
-        var sizes = []
+        let sizes = []
         let codecData;
+        let duration;
         for (var profile of jobInfo.profiles) {
             var ret = command.clone();
             sizes.push(profile.size);
@@ -175,6 +176,7 @@ class EncoderService {
                     reject(err)
                 }).on('codecData', (data) => {
                     codecData = data;
+                    duration = codecData.duration;
                 })
             })
             ret.videoBitrate(MAX_BIT_RATE[String(profile.size.split('x')[1])])
@@ -197,7 +199,9 @@ class EncoderService {
             ipfsHash: ipfsHash.cid.toString(),
             size: ipfsHash.size,
             playUrl: path.join(ipfsHash.cid.toString(), "manifest.m3u8"),
-            folderPath: workfolder
+            folderPath: workfolder,
+            duration,
+            path: "manifest.m3u8"
         }
         this.events.emit(`complete.${jobInfo.id}`, null, output)
         return output

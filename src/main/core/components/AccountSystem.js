@@ -31,7 +31,7 @@ class AccountSystem {
         for(var key of profileInfo.keyring) {
             if(key.encrypted === true) {
                 //Do decryption here...
-                throw new Error("Decryption is currently unavailable.")
+                //throw new Error("Decryption is currently unavailable.")
             }
         }
         return profileInfo;
@@ -88,6 +88,12 @@ class AccountSystem {
         })
     }
     async deleteProfile(profileID) {
+        await this.pouch.upsert(profileID, (doc) => {
+            doc._deleted = true;
+            return doc;
+        })
+    }
+    async setProfileInfo(profileID, opt) {
         await this.pouch.upsert(profileID, (doc) => {
             doc._deleted = true;
             return doc;

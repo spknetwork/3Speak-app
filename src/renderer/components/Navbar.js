@@ -7,29 +7,77 @@ import iconNewcomer from '../assets/img/icon_newcomer.svg'
 import iconBlog from '../assets/img/blog.png'
 import shakeHands from '../assets/img/shake-hands.svg'
 import SpeakLogo from '../assets/img/3S_logo.svg'
-import { FaDiscord, FaTwitter, FaGlobe, FaUsers, FaTelegram, FaToolbox } from 'react-icons/fa'
+import { FaDiscord, FaTwitter, FaGlobe, FaUsers, FaTelegram, FaToolbox } from 'react-icons/fa' 
+import { VscKey } from 'react-icons/vsc' 
 import { BsFillGearFill } from 'react-icons/bs'
 import { Navbar, Nav, NavDropdown, ButtonGroup, Dropdown } from 'react-bootstrap'
-import "./Navbar.css"
-
+import "./Navbar.css";
+import utils from '../utils';
+import ArraySearch from 'arraysearch';
+const Finder = ArraySearch.Finder;
+console.log(VscKey)
 class SideBar extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+
+        this.state = {
+            login: false
+        }
     }
+
+    async componentDidMount() {
+        const login = localStorage.getItem('SNProfileID');
+
+        if (login) {
+            const user = await utils.acctOps.getAccount(login);
+            
+            this.setState({
+                login: user.nickname
+            })
+        }
+    }
+    
+    async logOut() {
+        //TODO: logout logic
+
+        const profileID = localStorage.getItem('SNProfileID');
+
+        const user = await utils.acctOps.logout(profileID);
+        let accountsInit = await utils.acctOps.getAccounts();
+        localStorage.removeItem('SNProfileID');
+        console.log(accountsInit)
+        if (accountsInit.length > 0) {
+            localStorage.setItem('SNProfileID', accountsInit[0]._id)
+        }
+        window.location.reload();
+    }
+
     render() {
+
         return (<Navbar bg="white" expand="lg" id="layoutNav" className="bg_white fixed-left">
             <Navbar.Brand><img src={SpeakLogo} /></Navbar.Brand>
-            <a href="#/auth/login" className="display-mobile">
-                <button className="btn btn-dark text-white btn-sm">
-                    Log In / Sign Up
-                </button>
-            </a>
             <Navbar.Toggle aria-controls="basic-navbar-nav">
                 <span className="navbar-toggler-icon"></span>
             </Navbar.Toggle>
             <Navbar.Collapse >
                 <Nav className="mr-auto nav_dist">
+                    {this.state.login && (
+                        <NavDropdown title={<React.Fragment><div className="nav_icons"><VscKey size="21px"/></div><span>@{this.state.login}</span></React.Fragment>}>
+                            <NavDropdown.Item href='#/accounts'>Switch account</NavDropdown.Item>
+                            <NavDropdown.Item href="#/login">
+                                Add account
+                            </NavDropdown.Item>
+                            {this.state.login && (<NavDropdown.Item onClick={() => {this.logOut()}}>Log out</NavDropdown.Item>)}
+                        </NavDropdown>
+                    )}
+                    {!this.state.login && (
+                        <Nav.Link href="#/login" className="display-mobile">
+                            <button className="btn btn-dark text-white btn-sm">
+                                Add account
+                            </button>
+                        </Nav.Link>
+                    )}
+                    <hr/>
                     <Nav.Link href="#/">
                             <div className="nav_icons"><img src={iconHome} height="14px" /></div>
                             Home

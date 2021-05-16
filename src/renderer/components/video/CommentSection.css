@@ -1,0 +1,68 @@
+.alert-info {
+    background: #9C27B0 -webkit-gradient(linear, left top, left bottom, from(#ab47bc), to(#9C27B0)) repeat-x;
+    background: #9C27B0 linear-gradient(
+180deg
+, #ab47bc, #9C27B0) repeat-x;
+}
+.alert, .alert h1, .alert h2, .alert h3, .alert h4, .alert h5, .alert h6 {
+    color: #fff;
+}
+.alert a:not(.btn), .alert .alert-link {
+    color: #fff;
+    font-weight: bold;
+}
+.text-muted {
+    color: #666 !important;
+}
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(2.81875rem + 0rem);
+    /*padding: 1rem 0;*/
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #666;
+    background-color: transparent;
+    background-clip: padding-box;
+    border: 0rem solid transparent;
+    border-radius: 0;
+    -webkit-transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+.w-100 {
+    width: 100% !important;
+}
+textarea, textarea.form-control, input.form-control, input[type=text], input[type=password], input[type=email], input[type=number], [type=text].form-control, [type=password].form-control, [type=email].form-control, [type=tel].form-control, [contenteditable].form-control {
+    -webkit-box-shadow: inset 0 -1px 0 #ddd;
+    box-shadow: inset 0 -1px 0 #ddd;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+.form-control {
+    background: #eceff0 none repeat scroll 0 0;
+    border-color: #dcdfdf;
+    border-radius: 2px;
+    font-size: 13px;
+}
+textarea {
+    overflow: auto;
+    resize: vertical;
+}
+textarea.form-control {
+    height: auto;
+}
+
+
+.list-inline-item {
+    display: inline-block;
+}
+.list-inline {
+    padding-left: 0;
+    list-style: none;
+}
+.list-inline-item:not(:last-child) {
+    margin-right: 0.5rem;
+}

@@ -172,6 +172,16 @@ class watch extends React.Component {
             }
             val.json_metadata = JSON.parse(val.json_metadata)
             //console.log(val)
+            if(!val.json_metadata.video) {
+                val.json_metadata.video = {
+                    info: {}
+                }
+            }
+            let thumbnail;
+            if(val.json_metadata.sourceMap) {
+                thumbnail = Finder.one.in(val.json_metadata.sourceMap).with({type:"thumbnail"}).url
+                console.log(thumbnail)
+            }
             blob.push({
                 reflink: `hive:${val.author}:${val.permlink}`,
                 created: val.created,
@@ -179,14 +189,14 @@ class watch extends React.Component {
                 permlink: val.permlink,
                 tags: val.json_metadata.tags,
                 title: val.title,
-                duration: val.json_metadata.video.info.duration,
-                "isIpfs": val.json_metadata.video.info.ipfs ? true : false,
+                duration: val.json_metadata.video.info.duration || val.json_metadata.video.duration,
+                "isIpfs": val.json_metadata.video.info.ipfs || thumbnail ? true : false,
                 "ipfs": val.json_metadata.video.info.ipfs,
                 "images": {
-                    "ipfs_thumbnail": val.json_metadata.video.info.ipfsThumbnail ? `/ipfs/${val.json_metadata.video.info.ipfsThumbnail}` : null,
+                    "ipfs_thumbnail":  thumbnail ?  `/ipfs/${thumbnail.slice(7)}` : `/ipfs/${val.json_metadata.video.info.ipfsThumbnail}` ,
                     "thumbnail": `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/default.png`,
-                    "poster": `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/poster.png`,
-                    "post": `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/post.png`
+                    "poster": `https://threespeakvideo.b-cdn.net/${val.permlink}/poster.png`,
+                    "post": `https://threespeakvideo.b-cdn.net/${val.permlink}/post.png`
                 },
                 views: val.total_vote_weight ? Math.log(val.total_vote_weight / 1000).toFixed(2) : 0
             })
@@ -313,7 +323,9 @@ class watch extends React.Component {
                                         var videoSource = Finder.one.in(this.state.video_info.sources).with({
                                             format: "mp4"
                                         })
-                                        return videoSource.url
+                                        if(videoSource) {
+                                            return videoSource.url
+                                        }
                                     })()}>
                                         <FaDownload /> Download
                                     </a>

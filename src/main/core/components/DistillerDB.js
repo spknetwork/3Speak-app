@@ -25,6 +25,9 @@ hiveClient.options.failoverThreshold = 5;
  * @todo Implement limits above 100 imposed by dsteem, and API.
  * @todo Implement looping cycle deletion worker for data still cached after 30 days.
  * @todo Implement integration with blocklist system.
+ * 
+ * @todo Implement functionality for announcing IDX to service nodes
+ * @todo Implement pulling down latest changes from IDX and service nodes
  */
 class DistillerDB {
     constructor(self) {
