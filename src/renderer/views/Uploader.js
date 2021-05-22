@@ -224,7 +224,7 @@ class Uploader extends Component {
                 }
             ],
             options: {
-                //hwaccel: "qsv"
+                hwaccel: this.hwaccelOption.current.value !== ""  && this.hwaccelOption.current.value !== "none" ? this.hwaccelOption.current.value : undefined
             }
         })
         NotificationManager.success("Encoding Started.")
