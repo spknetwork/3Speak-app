@@ -21,7 +21,8 @@ class SideBar extends Component {
         super(props);
 
         this.state = {
-            login: false
+            login: false,
+            myChannelLink: null
         }
     }
 
@@ -31,8 +32,10 @@ class SideBar extends Component {
         if (login) {
             const user = await utils.acctOps.getAccount(login);
             
+            const ringItem = user.keyring[0];
             this.setState({
-                login: user.nickname
+                login: user.nickname,
+                myChannelLink: `${ringItem.type}:${ringItem.username}`
             })
         }
     }
@@ -64,6 +67,7 @@ class SideBar extends Component {
                     {this.state.login && (
                         <NavDropdown title={<React.Fragment><div className="nav_icons"><VscKey size="21px"/></div><span>@{this.state.login}</span></React.Fragment>}>
                             <NavDropdown.Item href='#/accounts'>Switch account</NavDropdown.Item>
+                            <NavDropdown.Item href={`#/user/${this.state.myChannelLink}`}>Go to my channel</NavDropdown.Item>
                             <NavDropdown.Item href="#/login">
                                 Add account
                             </NavDropdown.Item>
