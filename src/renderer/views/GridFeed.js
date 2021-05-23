@@ -7,6 +7,7 @@ import Pushable from 'it-pushable'
 import Knex from 'knex'
 import Consts from '../../consts'
 import { Finder } from 'arraysearch'
+import DefaultThumbnail from '../assets/img/default-thumbnail.jpg';
 const knex = Knex({
     client: 'mssql',
     connection: {
@@ -132,12 +133,17 @@ class GridFeed extends React.Component {
                 val.json_metadata.video = {
                     info: {}
                 }
-            } else if(!val.json_metadata.video.info) {
+            } else if (!val.json_metadata.video.info) {
                 val.json_metadata.video.info = {}
             }
             let thumbnail;
             if (val.json_metadata.sourceMap) {
-                thumbnail = Finder.one.in(val.json_metadata.sourceMap).with({ type: "thumbnail" }).url
+                let thumbnailOut = Finder.one.in(val.json_metadata.sourceMap).with({ type: "thumbnail" })
+                if (thumbnailOut) {
+                    thumbnail = thumbnailOut.url;
+                } else {
+                    thumbnail = DefaultThumbnail
+                }
                 console.log(thumbnail)
             }
             console.log(val.json_metadata.sourceMap)
@@ -160,6 +166,7 @@ class GridFeed extends React.Component {
                     },
                     views: val.total_vote_weight ? Math.log(val.total_vote_weight / 1000).toFixed(2) : 0
                 })
+                console.log(blob[blob.length - 1])
 
             } catch (ex) {
                 console.log(`hive:${val.author}:${val.permlink} is bugged the fuck out`)
@@ -306,12 +313,17 @@ class GridFeed extends React.Component {
                                     val.json_metadata.video = {
                                         info: {}
                                     }
-                                } else if(!val.json_metadata.video.info) {
+                                } else if (!val.json_metadata.video.info) {
                                     val.json_metadata.video.info = {}
                                 }
                                 let thumbnail;
                                 if (val.json_metadata.sourceMap) {
-                                    thumbnail = Finder.one.in(val.json_metadata.sourceMap).with({ type: "thumbnail" }).url
+                                    let thumbnailOut = Finder.one.in(val.json_metadata.sourceMap).with({ type: "thumbnail" })
+                                    if (thumbnailOut) {
+                                        thumbnail = thumbnailOut.url;
+                                    } else {
+                                        thumbnail = DefaultThumbnail
+                                    }
                                     console.log(thumbnail)
                                 }
                                 console.log(val.json_metadata.sourceMap)
