@@ -115,10 +115,10 @@ class Uploader extends Component {
                 format: "m3u8"
             })
         }
-        const permlink = randomstring.generate({
+        const permlink = `speak-${randomstring.generate({
             length: 8,
             charset: 'alphabetic'
-        }).toLowerCase();
+        }).toLowerCase()}`;
         console.log(permlink)
         console.log(sourceMap)
         console.log(this.state.videoInfo)

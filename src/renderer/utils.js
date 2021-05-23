@@ -541,11 +541,35 @@ const acctOps = {
                 const hiveInfo = Finder.one.in(getAccount.keyring).with({type:"hive"})
 
                 if(!commentOp.json_metadata) {
-                    commentOp.json_metadata = "{}"
+                    commentOp.json_metadata = {}
                 }
 
                 console.log(hiveInfo)
                 console.log(getAccount)
+                let json_metadata;
+                if(typeof commentOp.json_metadata === "object") {
+                    json_metadata = JSON.stringify(commentOp.json_metadata) 
+                }  else {
+                    throw new Error("commentOp.json_metadata must be an object")
+                }
+                let body;
+                if(!commentOp.parent_author) {
+                    let header;
+                    if(commentOp.json_metadata.sourceMap) {
+                        let thumbnailSource = Finder.one.in(commentOp.json_metadata.sourceMap).with({
+                            type: "thumbnail"
+                        })
+                        try {
+                            var cid = ipfs.urlToCID(thumbnailSource.url);
+                            var gateway = await ipfs.getGateway(cid, true);
+                            const imgSrc = gateway + ipfs.urlToIpfsPath(thumbnailSource.url)
+                            header = `<a href="https://3speak.tv/openDapp?uri=hive:${hiveInfo.username}:${commentOp.permlink}"> <img src="${imgSrc}"/></a> <br/>`;
+                        } catch (ex) { }
+                    }
+                    body = `${header} ${commentOp.body} <br/> [▶️Watch on 3Speak Dapp](https://3speak.tv/openDapp?uri=hive:${hiveInfo.username}:${commentOp.permlink})`
+                } else {
+                    body = commentOp.body;
+                }
                 var out = await hive.broadcast.comment(
                     hiveInfo.privateKeys.posting_key,
                     commentOp.parent_author || "",
@@ -553,8 +577,8 @@ const acctOps = {
                     hiveInfo.username,
                     commentOp.permlink,
                     commentOp.title,
-                    commentOp.body,
-                    typeof commentOp.json_metadata === "object" ? JSON.stringify(commentOp.json_metadata) : commentOp.json_metadata
+                    body,
+                    json_metadata
                 );
                 console.log(out)
                 return [`hive:${hiveInfo.username}:${commentOp.permlink}`, out];
