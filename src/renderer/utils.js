@@ -7,6 +7,7 @@ import CID from 'cids'
 import IpfsUtils from 'ipfs-core/src/utils'
 import DHive, { Client, PrivateKey } from "@hiveio/dhive";
 import { promisify } from 'util';
+import DefaultThumbnail from './assets/img/default-thumbnail.jpg';
 const Finder = ArraySearch.Finder;
 const hive = require('@hiveio/hive-js');
 
@@ -390,10 +391,11 @@ const video = {
                 var gateway = await ipfs.getGateway(cid, true);
                 return gateway + ipfs.urlToIpfsPath(thumbnailSource.url);
             } catch (ex) {
-                return `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
+                return thumbnailSource.url;
+                //return `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
             }
         } else {
-            return `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
+            return DefaultThumbnail;
             //throw new Error("Invalid post metadata");
         }
     }
