@@ -60,7 +60,8 @@ class Uploader extends Component {
         this.compileVideoCid = this.compileVideoCid.bind(this);
         this.publish = this.publish.bind(this);
 
-        this.ipfs = new IPFSHTTPClient();
+        //TODO: dynamically provide url
+        this.ipfs = new IPFSHTTPClient('/ip4/127.0.0.1/tcp/5001');
     }
     caluclatePercentage() {
         return this.state.progress.percent / this.state.statusInfo.nstages + this.state.statusInfo.stage * (100 / this.state.statusInfo.nstages);
