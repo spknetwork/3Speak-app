@@ -566,7 +566,11 @@ const acctOps = {
                             header = `<a href="https://3speak.tv/openDapp?uri=hive:${hiveInfo.username}:${commentOp.permlink}"> <img src="${imgSrc}"/></a> <br/>`;
                         } catch (ex) { }
                     }
-                    body = `${header} ${commentOp.body} <br/> [▶️Watch on 3Speak Dapp](https://3speak.tv/openDapp?uri=hive:${hiveInfo.username}:${commentOp.permlink})`
+                    if(header) {
+                        body = `${header} ${commentOp.body} <br/> [▶️Watch on 3Speak Dapp](https://3speak.tv/openDapp?uri=hive:${hiveInfo.username}:${commentOp.permlink})`
+                    } else {
+                        body = `${commentOp.body} <br/> [▶️Watch on 3Speak Dapp](https://3speak.tv/openDapp?uri=hive:${hiveInfo.username}:${commentOp.permlink})`
+                    }
                 } else {
                     body = commentOp.body;
                 }
