@@ -273,7 +273,7 @@ class Uploader extends Component {
     }
     render() {
         if(this.state.blockedGlobalMessage) {
-            return <LoadingMessage loadingMessage={this.state.blockedGlobalMessage}/>;
+            return <LoadingMessage loadingMessage={this.state.blockedGlobalMessage} subtitle="Note: you will need to keep the app open for your video to play for other users. A process called 'shunting' will be released in the future to relieve this issue."/>;
         }
         return (<div>
             <Row mt={3} mb={5}>
