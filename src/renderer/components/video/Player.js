@@ -90,7 +90,7 @@ class Player extends React.Component {
                 _id: this.props.reflink,
                 source: "Watch Page",
                 cids,
-                expire: (new Date() / 1) + convert("1").from("d").to("ms"),
+                expire: (new Date() / 1) + convert("10").from("d").to("ms"),
                 meta: {
                     title: this.state.videoInfo.title
                 }
