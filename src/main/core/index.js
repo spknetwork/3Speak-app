@@ -92,6 +92,15 @@ class Core {
         this.events.emit("ready")
         this.start_progress.ready = true;
         this.start_progress.message = null;
+        setInterval(async() => {
+            for(const peerId of await this.ipfs.config.get("Bootstrap")) {
+                try {
+                    await this.ipfs.swarm.connect(peerId)
+                } catch {
+
+                }
+            }
+        }, 60000)
     }
     async stop(options = {}) {
         if(options.background !== true) {
