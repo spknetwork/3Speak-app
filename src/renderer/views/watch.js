@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Player from '../components/video/Player';
 import { Col, Row, Container, Dropdown, Tabs, Tab } from 'react-bootstrap';
 import utils from '../utils';
-import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload } from 'react-icons/fa';
+import { FaThumbsUp, FaThumbsDown, FaCogs, FaDownload, FaSitemap } from 'react-icons/fa';
 import { BsInfoSquare } from 'react-icons/bs';
 import DateTime from 'date-and-time';
 import ReactMarkdown from 'react-markdown';
@@ -29,6 +29,7 @@ import 'brace/mode/json';
 import 'brace/theme/github';
 import ArraySearch from 'arraysearch';
 import Knex from 'knex'
+import IPFSHTTPClient from 'ipfs-http-client'
 import Consts from '../../consts'
 const debug = Debug("3speak:watch")
 const Finder = ArraySearch.Finder;
@@ -46,6 +47,33 @@ const knex = Knex({
     }
 });
 
+const ipfsClient = new IPFSHTTPClient('/ip4/127.0.0.1/tcp/5001')
+function DHTProviders(props) {
+    const [peers, setPeers] = useState(0)
+    useEffect(() => {
+        (async () => {
+            if(!props.rootCid) {
+                return;
+            }
+            console.log(ipfsClient)
+            console.log(props.rootCid)
+            let out = 0;
+            for await(const pov of ipfsClient.dht.findProvs(props.rootCid)) {
+                console.log(pov)
+                out = out + 1;
+                setPeers(out)
+            }
+            setPeers(out)
+        })();
+        return () => {
+
+        }
+    }, [])
+    return <div>
+        <FaSitemap/> DHT Providers <strong>{peers}</strong>
+    </div>
+}
+
 class watch extends React.Component {
     constructor(props) {
         super(props);
@@ -59,7 +87,8 @@ class watch extends React.Component {
             videoLink: "",
             recommendedVideos: [],
             loaded: false,
-            loadingMessage: "loading"
+            loadingMessage: "loading",
+            rootCid: null
         };
         this.player = React.createRef()
         this.gearSelect = this.gearSelect.bind(this);
@@ -107,6 +136,19 @@ class watch extends React.Component {
             throw ex;
         }
         document.title = `3Speak - ${this.state.video_info.title}`
+        let cids = [];
+        for(const source of this.state.video_info.sources) {
+            const url = new (require('url').URL)(source.url)
+            try {
+                new CID(url.host)
+                cids.push(url.host)
+            } catch {
+
+            }
+        }
+        this.setState({
+            rootCid: cids[0]
+        })
     }
     async mountPlayer() {
         try {
@@ -297,6 +339,7 @@ class watch extends React.Component {
                                 <h2 style={{ fontSize: "18px" }}>
                                     <a>{this.state.video_info.title}</a>
                                 </h2>
+                                <DHTProviders rootCid={this.state.rootCid}/>
                             </div>
                             <div className="float-right" style={{ textAlign: "right !important", float: "right !important", display: "inline-block !important" }}>
                                 <span>
