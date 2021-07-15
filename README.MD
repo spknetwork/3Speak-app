@@ -3,14 +3,14 @@
 
 The 3Speak decentralized desktop app.
 
-![3Speak Preview](https://raw.githubusercontent.com/vaultec81/3Speak-app/master/media/media1.PNG)
+![3Speak Preview](https://raw.githubusercontent.com/3speaknetwork/3Speak-app/master/media/media1.PNG)
 
 ## Usage Guide
 
 First, you should clone this repo to your computer via git like this: 
 
 ```bash
-git clone https://github.com/vaultec81/3Speak-app
+git clone https://github.com/3speaknetwork/3Speak-app
 ```
 
 Then, install npm dependancies:
