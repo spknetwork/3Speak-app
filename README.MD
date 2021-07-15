@@ -1,5 +1,5 @@
 # 3Speak-App
-![Node.js CI](https://github.com/vaultec81/3Speak-app/workflows/Node.js%20CI/badge.svg)
+[![Node.js CI](https://github.com/3speaknetwork/3Speak-app/actions/workflows/nodejs_ci.yml/badge.svg)](https://github.com/3speaknetwork/3Speak-app/actions/workflows/nodejs_ci.yml)
 
 The 3Speak decentralized desktop app.
 
