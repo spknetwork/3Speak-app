@@ -1,6 +1,6 @@
 {
   "name": "3speak-app",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "3Speak decentralized desktop app",
   "main": "./dist/main.prod.js",
   "scripts": {
