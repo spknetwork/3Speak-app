@@ -6,7 +6,10 @@ const baseConfig = require('./renderer.base.config');
 module.exports = merge(baseConfig, {
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
-  entry: path.join(__dirname, '../src/renderer/index.js'),
+  entry: path.join(__dirname, '../src/renderer/index.tsx'),
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.json'],
+  },
   output: {
     path: path.join(__dirname, '../dist'),
     filename: 'renderer.dev.js'
