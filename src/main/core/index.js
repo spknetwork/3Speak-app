@@ -19,7 +19,7 @@ class Core {
     }
     async install() {
         this.start_progress.message = "Installing IPFS";
-        await waIpfs.install({version:"v0.8.0", dev: process.env.NODE_ENV === 'development', recursive: true});
+        await waIpfs.install({version:"v0.10.0", dev: process.env.NODE_ENV === 'development', recursive: true});
         await new Promise(resolve => {
             setTimeout(async () => {
                 this.start_progress.message = "Initializing IPFS";
