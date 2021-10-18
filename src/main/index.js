@@ -65,7 +65,8 @@ if (!gotTheLock) {
       webPreferences: {
         nodeIntegration: true,
         webSecurity: false,
-        webviewTag: true
+        webviewTag: true,
+        contextIsolation: false,
       }
     });
     const theUrl = process.argv[process.argv.length - 1];
