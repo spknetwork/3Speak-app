@@ -6,7 +6,8 @@ import { Form } from 'react-bootstrap';
 import './CommentSection.css'
 import RefLink from '../../../main/RefLink'
 import randomstring from 'randomstring'
-import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+//import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+import { faSpinner } from 'react-icons/fa'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
