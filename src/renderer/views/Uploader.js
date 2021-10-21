@@ -275,9 +275,9 @@ class Uploader extends Component {
         if(this.state.blockedGlobalMessage) {
             return <LoadingMessage loadingMessage={this.state.blockedGlobalMessage} subtitle="Note: you will need to keep the app open for your video to play for other users. A process called 'shunting' will be released in the future to relieve this issue."/>;
         }
-        return (<div>
-            <Row mt={3} mb={5}>
-                <Container xl={6} sm={12}>
+        return (<div style={{width: '95%', marginRight: 'auto', marginLeft: 'auto'}}>
+            <Row mt={3} mb={5} style={{marginTop: '1.45rem'}}>
+                <div>
                     <div className="d-table-cell align-middle card dz-clickable" onClick={() => this.videoUpload.current.click()} style={{ width: "4000px", textAlign: "center", height: "150px", "fontSsize": "16px", fontWeight: "bold", cursor: "pointer" }}>
                         Drop a file or click to start the upload <br />
                         <p>
@@ -285,11 +285,11 @@ class Uploader extends Component {
                         </p>
                         <input accept="video/*" type="file" id="video" className="d-none" ref={this.videoUpload} onChange={this.handleVideoSelect} />
                     </div>
-                </Container>
+                </div>
             </Row>
-            <Row mt={3} mb={5}>
-                <Col xl={6} sm={12}>
-                    <div className="card">
+            <Row mt={3} mb={5} style={{marginTop: '15px'}}>
+                <Col xl={6} sm={12} style={{paddingLeft: '0px'}}>
+                    <div className="card" style={{padding: '10px'}}>
                         <Form ref={this.publishForm} >
                             <Form.Group>
                                 <Form.Label>
@@ -355,7 +355,7 @@ class Uploader extends Component {
                                 </Form.Label>
                                 <div>
                                 </div>
-                                <img src={DefaultThumbnail} style={{ width: "720px", height: "405px", cursor: "pointer" }} alt="" ref={this.thumbnailPreview} onClick={() => this.thumbnailUpload.current.click()} />
+                                <img src={DefaultThumbnail} style={{ width: "720px", aspectRatio: '16/9', cursor: "pointer" }} alt="" ref={this.thumbnailPreview} onClick={() => this.thumbnailUpload.current.click()} />
                                 <input accept="image/*" type="file" id="thumbnail_input" className="d-none" ref={this.thumbnailUpload} onChange={this.handleThumbnailSelect} />
                                 <p>Click the thumbnail to change it</p>
                                 <p>Recommended 5MB. Ideally 1280px×720px.</p>
@@ -363,20 +363,20 @@ class Uploader extends Component {
                             <Button onClick={this.handleStartEncode}>
                                 Start Encode
                             </Button>
-                            <Button onClick={this.publish} disabled={this.state.encodingInProgress || !this.state.publishReady}>
+                            <Button style={{marginLeft: '5px'}} onClick={this.publish} disabled={this.state.encodingInProgress || !this.state.publishReady}>
                                 Publish
                             </Button>
                         </Form>
                     </div>
                 </Col>
-                <Col>
+                <Col style={{paddingRight: '0px', paddingLeft: '0px'}}>
                     <Card>
                         <Card.Header>Encoder status</Card.Header>
                         <Card.Body>
                             <Card.Text>
                                 This area will show live encoding statistics
                             </Card.Text>
-                            <Button dvariant="primary">FPS: {this.state.progress.currentFps}</Button> <br />
+                            <Button style={{marginBottom: '5px'}} dvariant="primary">FPS: {this.state.progress.currentFps}</Button> <br />
                             <Button dvariant="primary">Video Size: {this.normalizeSize()}</Button>
                             <ProgressBar style={{ display: this.state.encodingInProgress ? "" : "none" }} striped variant="success" now={this.caluclatePercentage()} label={this.state.progress.percent ? `${Math.round(this.caluclatePercentage())}%` : null} />
                             <div style={{ display: this.state.encodingInProgress ? "" : "none" }} >
@@ -387,9 +387,14 @@ class Uploader extends Component {
                             </div>
                         </Card.Body>
                     </Card>
-                    <div className="card">
+                    <div className="card" style={{marginTop: '15px'}}>
+                        <div className="card-header">
+                            <h5>
+                                Control Panel
+                            </h5>
+                        </div>
                         <Tabs style={{ background: "white" }} defaultActiveKey="encode">
-                            <Tab style={{ background: "white" }} eventKey="encode" title="Encode Settings">
+                            <Tab style={{ background: "white", padding: '10px' }} eventKey="encode" title="Encode Settings">
                                 <Form.Group>
                                     <Form.Label>
                                         <strong>Format</strong>
@@ -412,7 +417,7 @@ class Uploader extends Component {
                                     </select>
                                 </Form.Group>
                             </Tab>
-                            <Tab eventKey="info" title="Info">
+                            <Tab eventKey="info" title="Info" style={{padding: '10px'}}>
                                 <Form.Group>
                                     <Form.Label>
                                         Video IpfsPath
@@ -454,7 +459,7 @@ class Uploader extends Component {
                             </Tab>*/
                             }
 
-                            <Tab eventKey="log" title="Log">
+                            <Tab eventKey="log" title="Log" style={{padding: '10px'}}>
                                 <textarea disabled className="form-control" type="text" value={(() => this.state.logData.join("\n"))()}>
                                 </textarea>
                             </Tab>
