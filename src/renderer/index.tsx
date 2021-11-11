@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import contextMenu from 'electron-context-menu';
 
 import { App } from './App';
 import './i18n';
@@ -8,16 +7,6 @@ import './i18n';
 
 // This code adds 2 new items to the context menu to zoom in the window (in and out)
 // Read other steps for more information
-contextMenu({
-  prepend: (params, browserWindow) => [
-    {
-      role: "zoomIn"
-    },
-    {
-      role: "zoomOut"
-    }
-  ]
-});
 
 (window as any).$ = (window as any).jQuery = require('jquery');
 var shell = require('electron').shell;

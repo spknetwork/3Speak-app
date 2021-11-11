@@ -17,15 +17,7 @@ function NormaliseTime(val, unit) {
     return Math.round(Convert(val).from(unit).toBest().val) + Convert(val).from(unit).toBest().unit
 }
 
-class Uploader extends Component<any,any> {
-    videoUpload: any
-thumbnailUpload
-thumbnailPreview
-publishForm
-hwaccelOption
-	ipfs: any;
-
-
+class Uploader extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -235,12 +227,12 @@ hwaccelOption
             options: {
                 hwaccel: this.hwaccelOption.current.value !== ""  && this.hwaccelOption.current.value !== "none" ? this.hwaccelOption.current.value : undefined
             }
-        } as any) as any
+        })
         NotificationManager.success("Encoding Started.")
 
         var savePct = 0;
         var progressTrack = async () => {
-            var status = await PromiseIpc.send("encoder.status", jobInfo.id) as any;
+            var status = await PromiseIpc.send("encoder.status", jobInfo.id);
 
             this.setState({
                 progress: status.progress || {},
@@ -259,7 +251,7 @@ hwaccelOption
         var pid = setInterval(progressTrack, 3000)
         progressTrack();
 
-        var encodeOutput = await PromiseIpc.send("encoder.getjoboutput", jobInfo.id) as any;
+        var encodeOutput = await PromiseIpc.send("encoder.getjoboutput", jobInfo.id);
         console.log(encodeOutput)
         this.setState({
             videoInfo: {
@@ -283,24 +275,21 @@ hwaccelOption
         if(this.state.blockedGlobalMessage) {
             return <LoadingMessage loadingMessage={this.state.blockedGlobalMessage} subtitle="Note: you will need to keep the app open for your video to play for other users. A process called 'shunting' will be released in the future to relieve this issue."/>;
         }
-        return (<div>
-            {/* <Row mt={3} mb={5}> */}
-            <Row>
-                {/* <Container xl={6} sm={12}> */}
-                <Container>
-                    <div className="d-table-cell align-middle card dz-clickable" onClick={() => this.videoUpload.current.click()} style={{ width: "4000px", textAlign: "center", height: "150px", fontSize: "16px", fontWeight: "bold", cursor: "pointer" }}>
+        return (<div style={{width: '95%', marginRight: 'auto', marginLeft: 'auto'}}>
+            <Row mt={3} mb={5} style={{marginTop: '1.45rem'}}>
+                <div>
+                    <div className="d-table-cell align-middle card dz-clickable" onClick={() => this.videoUpload.current.click()} style={{ width: "4000px", textAlign: "center", height: "150px", "fontSsize": "16px", fontWeight: "bold", cursor: "pointer" }}>
                         Drop a file or click to start the upload <br />
                         <p>
                             Selected: <kbd>{this.state.videoSourceFile}</kbd>
                         </p>
                         <input accept="video/*" type="file" id="video" className="d-none" ref={this.videoUpload} onChange={this.handleVideoSelect} />
                     </div>
-                </Container>
+                </div>
             </Row>
-            {/* <Row mt={3} mb={5}> */}
-            <Row>
-                <Col xl={6} sm={12}>
-                    <div className="card">
+            <Row mt={3} mb={5} style={{marginTop: '15px'}}>
+                <Col xl={6} sm={12} style={{paddingLeft: '0px'}}>
+                    <div className="card" style={{padding: '10px'}}>
                         <Form ref={this.publishForm} >
                             <Form.Group>
                                 <Form.Label>
@@ -314,8 +303,8 @@ hwaccelOption
                                 <Form.Label>
                                     Description
                                 </Form.Label>
-                                {/* <textarea className="form-control" type="text" name="description"> */}
-                                <textarea className="form-control" name="description">
+                                <textarea className="form-control" type="text" name="description">
+
                                 </textarea>
                             </Form.Group>
                             <Form.Group>
@@ -331,8 +320,8 @@ hwaccelOption
                                 <Form.Label>
                                     Language
                                 </Form.Label>
-                                <select disabled={false} name="language" className="form-control mb-4">
-                                    <option selected={false} value="en">English</option>
+                                <select disabled="" name="language" className="form-control mb-4">
+                                    <option selected="" value="en">English</option>
                                     <option value="de">Deutsch</option>
                                     <option value="fr">Français</option>
                                     <option value="es">Español</option>
@@ -350,7 +339,7 @@ hwaccelOption
                             </Form.Group>
                             <span className="form-check mb-3">
                                 <input type="checkbox" className="form-check-input" id="nsfwContent" name="nsfwContent" />
-                                <label className="form-check-label" htmlFor="nsfwContent">
+                                <label className="form-check-label" for="nsfwContent">
                                     Content is graphic and/or NSFW
                                 <span className="text-danger">
                                         &nbsp;Warning: you should check this option if your content is&nbsp;
@@ -366,7 +355,7 @@ hwaccelOption
                                 </Form.Label>
                                 <div>
                                 </div>
-                                <img src={DefaultThumbnail} style={{ width: "720px", height: "405px", cursor: "pointer" }} alt="" ref={this.thumbnailPreview} onClick={() => this.thumbnailUpload.current.click()} />
+                                <img src={DefaultThumbnail} style={{ width: "720px", aspectRatio: '16/9', cursor: "pointer" }} alt="" ref={this.thumbnailPreview} onClick={() => this.thumbnailUpload.current.click()} />
                                 <input accept="image/*" type="file" id="thumbnail_input" className="d-none" ref={this.thumbnailUpload} onChange={this.handleThumbnailSelect} />
                                 <p>Click the thumbnail to change it</p>
                                 <p>Recommended 5MB. Ideally 1280px×720px.</p>
@@ -374,21 +363,21 @@ hwaccelOption
                             <Button onClick={this.handleStartEncode}>
                                 Start Encode
                             </Button>
-                            <Button onClick={this.publish} disabled={this.state.encodingInProgress || !this.state.publishReady}>
+                            <Button style={{marginLeft: '5px'}} onClick={this.publish} disabled={this.state.encodingInProgress || !this.state.publishReady}>
                                 Publish
                             </Button>
                         </Form>
                     </div>
                 </Col>
-                <Col>
+                <Col style={{paddingRight: '0px', paddingLeft: '0px'}}>
                     <Card>
                         <Card.Header>Encoder status</Card.Header>
                         <Card.Body>
                             <Card.Text>
                                 This area will show live encoding statistics
                             </Card.Text>
-                            <Button variant="primary">FPS: {this.state.progress.currentFps}</Button> <br />
-                            <Button variant="primary">Video Size: {this.normalizeSize()}</Button>
+                            <Button style={{marginBottom: '5px'}} dvariant="primary">FPS: {this.state.progress.currentFps}</Button> <br />
+                            <Button dvariant="primary">Video Size: {this.normalizeSize()}</Button>
                             <ProgressBar style={{ display: this.state.encodingInProgress ? "" : "none" }} striped variant="success" now={this.caluclatePercentage()} label={this.state.progress.percent ? `${Math.round(this.caluclatePercentage())}%` : null} />
                             <div style={{ display: this.state.encodingInProgress ? "" : "none" }} >
                                 Time Remaining: {this.state.estimatedTimeRemaining !== "NaNns" ? this.state.estimatedTimeRemaining : "Calculating"}
@@ -398,15 +387,20 @@ hwaccelOption
                             </div>
                         </Card.Body>
                     </Card>
-                    <div className="card">
+                    <div className="card" style={{marginTop: '15px'}}>
+                        <div className="card-header">
+                            <h5>
+                                Control Panel
+                            </h5>
+                        </div>
                         <Tabs style={{ background: "white" }} defaultActiveKey="encode">
-                            <Tab style={{ background: "white" }} eventKey="encode" title="Encode Settings">
+                            <Tab style={{ background: "white", padding: '10px' }} eventKey="encode" title="Encode Settings">
                                 <Form.Group>
                                     <Form.Label>
                                         <strong>Format</strong>
                                     </Form.Label>
                                     <select style={{ width: "6em" }} disabled={this.state.encodingInProgress} id="language" className="form-control mb-4">
-                                        <option selected={false} value="hls">HLS</option>
+                                        <option selected="" value="hls">HLS</option>
                                     </select>
                                 </Form.Group>
                                 <Form.Group>
@@ -417,13 +411,13 @@ hwaccelOption
                                         Use hardware acceleration to speed up video encode. Not available on all systems, results may vary.
                                     </Form.Text>
                                     <select style={{ width: "6em" }} ref={this.hwaccelOption} disabled={this.state.encodingInProgress} id="language" className="form-control mb-4">
-                                        <option selected={false} value="none">none</option>
+                                        <option selected="" value="none">none</option>
                                         <option value="qsv">QSV</option>
                                         <option value="nvenc">nvenc</option>
                                     </select>
                                 </Form.Group>
                             </Tab>
-                            <Tab eventKey="info" title="Info">
+                            <Tab eventKey="info" title="Info" style={{padding: '10px'}}>
                                 <Form.Group>
                                     <Form.Label>
                                         Video IpfsPath
@@ -465,8 +459,8 @@ hwaccelOption
                             </Tab>*/
                             }
 
-                            <Tab eventKey="log" title="Log">
-                                <textarea disabled className="form-control" value={(() => this.state.logData.join("\n"))()}>
+                            <Tab eventKey="log" title="Log" style={{padding: '10px'}}>
+                                <textarea disabled className="form-control" type="text" value={(() => this.state.logData.join("\n"))()}>
                                 </textarea>
                             </Tab>
                         </Tabs>

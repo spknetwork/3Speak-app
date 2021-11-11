@@ -1,23 +1,27 @@
 # 3Speak-App
-![Node.js CI](https://github.com/vaultec81/3Speak-app/workflows/Node.js%20CI/badge.svg)
+[![Node.js CI](https://github.com/3speaknetwork/3Speak-app/actions/workflows/nodejs_ci.yml/badge.svg)](https://github.com/3speaknetwork/3Speak-app/actions/workflows/nodejs_ci.yml)
 
 The 3Speak decentralized desktop app.
 
-![3Speak Preview](https://raw.githubusercontent.com/vaultec81/3Speak-app/master/media/media1.PNG)
+![3Speak Preview](https://raw.githubusercontent.com/3speaknetwork/3Speak-app/master/media/media1.PNG)
 
-## Usage Guide
+## Usage guide
+
+For normal users you will want to go to [Releases](https://github.com/3speaknetwork/3Speak-app/releases) where you can find the latest release for your operating system.
+
+## Developer Setup
 
 First, you should clone this repo to your computer via git like this: 
 
 ```bash
-git clone https://github.com/vaultec81/3Speak-app
+git clone https://github.com/3speaknetwork/3Speak-app
 ```
 
 Then, install npm dependancies:
 
 ```bash
 cd 3Speak-app
-npm install
+npm install --legacy-peer-deps --python=python2.7
 ```
 
 After installing dependancies, you can run the following command to start app in `dev` mode:

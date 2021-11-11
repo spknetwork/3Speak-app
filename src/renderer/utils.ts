@@ -557,6 +557,13 @@ const acctOps = {
                 console.log(getAccount)
                 let json_metadata;
                 if(typeof commentOp.json_metadata === "object") {
+                    //Note: this is for peakd/hive.blog to display a video preview
+                    if(!commentOp.parent_author) {
+                        commentOp.json_metadata.video.info = {
+                            author: hiveInfo.username,
+                            permlink: commentOp.permlink
+                        }
+                    }
                     json_metadata = JSON.stringify(commentOp.json_metadata) 
                 }  else {
                     throw new Error("commentOp.json_metadata must be an object")
@@ -572,7 +579,7 @@ const acctOps = {
                             var cid = ipfs.urlToCID(thumbnailSource.url);
                             var gateway = await ipfs.getGateway(cid, true);
                             const imgSrc = gateway + ipfs.urlToIpfsPath(thumbnailSource.url)
-                            header = `<a href="https://3speak.tv/openDapp?uri=hive:${hiveInfo.username}:${commentOp.permlink}"> <img src="${imgSrc}"/></a> <br/>`;
+                            header = `[![](${imgSrc})](https://3speak.tv/watch?v=${hiveInfo.username}/${commentOp.permlink})<br/>`;
                         } catch (ex) { }
                     }
                     if(header) {
@@ -580,6 +587,7 @@ const acctOps = {
                     } else {
                         body = `${commentOp.body} <br/> [▶️Watch on 3Speak Dapp](https://3speak.tv/openDapp?uri=hive:${hiveInfo.username}:${commentOp.permlink})`
                     }
+                    
                 } else {
                     body = commentOp.body;
                 }

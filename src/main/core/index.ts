@@ -7,17 +7,17 @@ const waIpfs = require('wa-go-ipfs')
 const mergeOptions = require('merge-options')
 
 class Core {
-    pins: any;
-    config: any
-    distillerDB: any
-    blocklist: any
-    encoder: any
-    accounts: any
-    log: any;
-    private _options: any;
-    ipfs: any;
-    events: any;
-    start_progress: any;
+	_options: any
+	events: any
+	start_progress: any
+	config: any
+	distillerDB: any
+	blocklist: any
+	encoder: any
+	accounts: any
+	ipfs: any
+	pins: any
+	log: any
 
     constructor(options) {
         const defaults = {
@@ -31,12 +31,11 @@ class Core {
     }
     async install() {
         this.start_progress.message = "Installing IPFS";
-        await waIpfs.install({version:"v0.8.0", dev: process.env.NODE_ENV === 'development', recursive: true});
+        await waIpfs.install({version:"v0.10.0", dev: process.env.NODE_ENV === 'development', recursive: true});
         await new Promise<void>(resolve => {
             setTimeout(async () => {
                 this.start_progress.message = "Initializing IPFS";
-		// argument for repo path not provided
-                await Components.ipfsHandler.init('');
+                await Components.ipfsHandler.init(undefined);
                 this.start_progress.message = null;
                 resolve();
             }, 5000);
@@ -115,7 +114,7 @@ class Core {
             }
         }, 60000)
     }
-    async stop(options = {} as any) {
+    async stop(options: any = {}) {
         if(options.background !== true) {
             await Components.ipfsHandler.stop(this._options.path);
         }
