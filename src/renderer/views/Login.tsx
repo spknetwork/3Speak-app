@@ -1,13 +1,11 @@
 import React, { Component, Ref } from 'react';
 import { Button, Dropdown, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
-//import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { faSpinner } from 'react-icons/fa'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import utils from '../utils';
 import { NotificationManager } from 'react-notifications'
 
 class Login extends Component<any,any> {
-    faSpinner;
     submitRef: any;
     constructor(props) {
         super(props);

@@ -10,7 +10,7 @@ import IpfsLogo from '../../assets/img/ipfs-logo-vector-ice.svg';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Utils from '../../utils';
 
-class VideoWidget extends Component {
+class VideoWidget extends Component<any,any> {
     constructor(props) {
         super(props);
         this.state = {
@@ -46,7 +46,7 @@ class VideoWidget extends Component {
                     })()}
                 </div>
                 <a href={`#/watch/${this.props.reflink}`}>
-                    <img style={{width: "100% !important", padding: "5px", width: "unset", /*height: "24em",*/ maxHeight: "13em"}} className="img-fluid bg-dark" src={this.state.thumbnailUrl} />
+                    <img style={{width: "100% !important", padding: "5px", maxHeight: "13em"}} className="img-fluid bg-dark" src={this.state.thumbnailUrl} />
                 </a>
             </div>
             <a href={`#/watch/${this.props.reflink}`}>
@@ -58,7 +58,7 @@ class VideoWidget extends Component {
                 </span>
                 <br/>
                 <span>{(() => {
-                        const dateBest = convert((new Date() / 1) - (new Date(this.state.video_info.created) / 1)).from("ms").toBest()
+      			const dateBest = convert((new Date().getTime()) - ((new Date(this.state.video_info.created) as any) / 1)).from("ms").toBest()
                         if(Math.round(dateBest.val) >= 2) {
                             return `${Math.round(dateBest.val)} ${dateBest.plural} ago`
                         } else {
@@ -68,7 +68,7 @@ class VideoWidget extends Component {
                     {this.props.isIpfs ? <div className="card-label" style={{right: "10px", bottom: "25px"}}>
                     <OverlayTrigger
                         overlay={
-                            <Tooltip>
+                            <Tooltip id="video-available">
                                 Video available on IPFS
                             </Tooltip>
                         }>

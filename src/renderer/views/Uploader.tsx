@@ -17,7 +17,13 @@ function NormaliseTime(val, unit) {
     return Math.round(Convert(val).from(unit).toBest().val) + Convert(val).from(unit).toBest().unit
 }
 
-class Uploader extends Component {
+class Uploader extends Component<any, any> {
+    videoUpload: any
+    thumbnailUpload: any
+    thumbnailPreview: any
+    publishForm: any
+    hwaccelOption: any
+    ipfs: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -227,12 +233,12 @@ class Uploader extends Component {
             options: {
                 hwaccel: this.hwaccelOption.current.value !== ""  && this.hwaccelOption.current.value !== "none" ? this.hwaccelOption.current.value : undefined
             }
-        })
+        } as any) as any
         NotificationManager.success("Encoding Started.")
 
         var savePct = 0;
         var progressTrack = async () => {
-            var status = await PromiseIpc.send("encoder.status", jobInfo.id);
+            var status = await PromiseIpc.send("encoder.status", jobInfo.id) as any;
 
             this.setState({
                 progress: status.progress || {},
@@ -251,7 +257,7 @@ class Uploader extends Component {
         var pid = setInterval(progressTrack, 3000)
         progressTrack();
 
-        var encodeOutput = await PromiseIpc.send("encoder.getjoboutput", jobInfo.id);
+        var encodeOutput = await PromiseIpc.send("encoder.getjoboutput", jobInfo.id) as any;
         console.log(encodeOutput)
         this.setState({
             videoInfo: {
@@ -276,9 +282,9 @@ class Uploader extends Component {
             return <LoadingMessage loadingMessage={this.state.blockedGlobalMessage} subtitle="Note: you will need to keep the app open for your video to play for other users. A process called 'shunting' will be released in the future to relieve this issue."/>;
         }
         return (<div style={{width: '95%', marginRight: 'auto', marginLeft: 'auto'}}>
-            <Row mt={3} mb={5} style={{marginTop: '1.45rem'}}>
+            <Row style={{marginTop: '1.45rem'}}>
                 <div>
-                    <div className="d-table-cell align-middle card dz-clickable" onClick={() => this.videoUpload.current.click()} style={{ width: "4000px", textAlign: "center", height: "150px", "fontSsize": "16px", fontWeight: "bold", cursor: "pointer" }}>
+                    <div className="d-table-cell align-middle card dz-clickable" onClick={() => this.videoUpload.current.click()} style={{ width: "4000px", textAlign: "center", height: "150px", "fontSize": "16px", fontWeight: "bold", cursor: "pointer" }}>
                         Drop a file or click to start the upload <br />
                         <p>
                             Selected: <kbd>{this.state.videoSourceFile}</kbd>
@@ -287,7 +293,7 @@ class Uploader extends Component {
                     </div>
                 </div>
             </Row>
-            <Row mt={3} mb={5} style={{marginTop: '15px'}}>
+            <Row style={{marginTop: '15px'}}>
                 <Col xl={6} sm={12} style={{paddingLeft: '0px'}}>
                     <div className="card" style={{padding: '10px'}}>
                         <Form ref={this.publishForm} >
@@ -303,7 +309,7 @@ class Uploader extends Component {
                                 <Form.Label>
                                     Description
                                 </Form.Label>
-                                <textarea className="form-control" type="text" name="description">
+                                <textarea className="form-control" name="description">
 
                                 </textarea>
                             </Form.Group>
@@ -320,8 +326,8 @@ class Uploader extends Component {
                                 <Form.Label>
                                     Language
                                 </Form.Label>
-                                <select disabled="" name="language" className="form-control mb-4">
-                                    <option selected="" value="en">English</option>
+                                <select disabled={false} name="language" className="form-control mb-4">
+                                    <option selected={false} value="en">English</option>
                                     <option value="de">Deutsch</option>
                                     <option value="fr">Français</option>
                                     <option value="es">Español</option>
@@ -339,7 +345,7 @@ class Uploader extends Component {
                             </Form.Group>
                             <span className="form-check mb-3">
                                 <input type="checkbox" className="form-check-input" id="nsfwContent" name="nsfwContent" />
-                                <label className="form-check-label" for="nsfwContent">
+                                <label className="form-check-label" htmlFor="nsfwContent">
                                     Content is graphic and/or NSFW
                                 <span className="text-danger">
                                         &nbsp;Warning: you should check this option if your content is&nbsp;
@@ -376,8 +382,8 @@ class Uploader extends Component {
                             <Card.Text>
                                 This area will show live encoding statistics
                             </Card.Text>
-                            <Button style={{marginBottom: '5px'}} dvariant="primary">FPS: {this.state.progress.currentFps}</Button> <br />
-                            <Button dvariant="primary">Video Size: {this.normalizeSize()}</Button>
+                            <Button style={{marginBottom: '5px'}} variant="primary">FPS: {this.state.progress.currentFps}</Button> <br />
+                            <Button variant="primary">Video Size: {this.normalizeSize()}</Button>
                             <ProgressBar style={{ display: this.state.encodingInProgress ? "" : "none" }} striped variant="success" now={this.caluclatePercentage()} label={this.state.progress.percent ? `${Math.round(this.caluclatePercentage())}%` : null} />
                             <div style={{ display: this.state.encodingInProgress ? "" : "none" }} >
                                 Time Remaining: {this.state.estimatedTimeRemaining !== "NaNns" ? this.state.estimatedTimeRemaining : "Calculating"}
@@ -400,7 +406,7 @@ class Uploader extends Component {
                                         <strong>Format</strong>
                                     </Form.Label>
                                     <select style={{ width: "6em" }} disabled={this.state.encodingInProgress} id="language" className="form-control mb-4">
-                                        <option selected="" value="hls">HLS</option>
+                                        <option selected={false} value="hls">HLS</option>
                                     </select>
                                 </Form.Group>
                                 <Form.Group>
@@ -411,7 +417,7 @@ class Uploader extends Component {
                                         Use hardware acceleration to speed up video encode. Not available on all systems, results may vary.
                                     </Form.Text>
                                     <select style={{ width: "6em" }} ref={this.hwaccelOption} disabled={this.state.encodingInProgress} id="language" className="form-control mb-4">
-                                        <option selected="" value="none">none</option>
+                                        <option selected={false} value="none">none</option>
                                         <option value="qsv">QSV</option>
                                         <option value="nvenc">nvenc</option>
                                     </select>
@@ -460,7 +466,7 @@ class Uploader extends Component {
                             }
 
                             <Tab eventKey="log" title="Log" style={{padding: '10px'}}>
-                                <textarea disabled className="form-control" type="text" value={(() => this.state.logData.join("\n"))()}>
+                                <textarea disabled className="form-control" value={(() => this.state.logData.join("\n"))()}>
                                 </textarea>
                             </Tab>
                         </Tabs>
