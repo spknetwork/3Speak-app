@@ -4,7 +4,7 @@ import DateTime from 'date-and-time';
 import PlaySVG from '../../assets/img/play.svg';
 import { FaUser } from 'react-icons/fa';
 import convert from "convert-units";
-import {Link, HashRouter} from 'react-router-dom';
+import { HashRouter} from 'react-router-dom';
 import nsfwWarning from '../../assets/img/nsfw.png';
 import IpfsLogo from '../../assets/img/ipfs-logo-vector-ice.svg';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';

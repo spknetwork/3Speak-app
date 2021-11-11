@@ -1,6 +1,6 @@
 // Do NOT execute this file in dev mode
 const fs = require('fs')
-const workPath = "src/consts.js"
+const workPath = "src/consts.ts"
 
 var file = fs.readFileSync(workPath).toString()
 file = file.replace("HIVESQL_USERNAME_FILLIN", `${process.env.hivesql_username}`)
