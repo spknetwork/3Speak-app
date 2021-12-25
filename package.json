@@ -9,7 +9,7 @@
     "prod": "run-electron .",
     "package": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder build --win --x64 --x86 --dir=build",
     "package:32": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096 --python=python2.7' npm run build && electron-builder build --win --ia32 --dir=build",
-    "package:mac": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder --mac --x64 --dir=build",
+    "package:mac": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder --mac --dir=build",
     "package:linux": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096 --python=python2.7' npm run build && electron-builder --linux --x64 --dir=build",
     "build": "npm run clear && npm-run-all --parallel build-main build-renderer",
     "build-main": "webpack --config webpack/main.config.js",
@@ -46,9 +46,9 @@
     "less": "^3.13.1",
     "less-loader": "^4.1.0",
     "mocha": "^8.2.1",
-    "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",
     "run-electron": "^0.1.0",
+    "sass": "^1.45.1",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "tmp": "^0.2.1",
@@ -139,7 +139,8 @@
         {
           "target": "dmg",
           "arch": [
-            "x64"
+            "x64",
+            "arm64"
           ]
         }
       ]
