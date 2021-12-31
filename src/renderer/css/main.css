@@ -1,12 +1,18 @@
 .teaser_holder {
+    aspect-ratio: 1920 /1080;
 	transition: all 0.6s ease-in-out;
 	-moz-transition: all 0.6 ease-in-out;
 	-webkit-transition: all 0.6s ease-in-out;
 	-o-transition: all 0.6s ease-in-out;
 	opacity: 1;
     position: relative;
-    height: 13em;
+    /*height: 13em;*/
     /*background-color: #343a40!important;*/
+    -webkit-transition: all 0.7s ease-out;
+       -moz-transition: all 0.7s ease-out;
+        -ms-transition: all 0.7s ease-out;
+         -o-transition: all 0.7s ease-out;
+            transition: all 0.7s ease-out;
 }
 
 .max-lines {

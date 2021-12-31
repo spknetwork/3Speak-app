@@ -1,18 +1,21 @@
-const path = require('path');
-const merge = require('webpack-merge');
-const {spawn} = require('child_process');
-const baseConfig = require('./renderer.base.config');
+const path = require('path')
+const merge = require('webpack-merge')
+const { spawn } = require('child_process')
+const baseConfig = require('./renderer.base.config')
 
 module.exports = merge(baseConfig, {
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
-  entry: path.join(__dirname, '../src/renderer/index.js'),
+  entry: path.join(__dirname, '../src/renderer/index.tsx'),
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.json'],
+  },
   output: {
     path: path.join(__dirname, '../dist'),
-    filename: 'renderer.dev.js'
+    filename: 'renderer.dev.js',
   },
   optimization: {
-    minimize: false
+    minimize: false,
   },
   devServer: {
     hot: true,
@@ -23,10 +26,10 @@ module.exports = merge(baseConfig, {
       spawn('npm', ['run', 'start-main'], {
         shell: true,
         env: process.env,
-        stdio: 'inherit'
+        stdio: 'inherit',
       })
-        .on('close', code => process.exit(code))
-        .on('error', spawnError => console.error(spawnError));
-    }
-  }
-});
+        .on('close', (code) => process.exit(code))
+        .on('error', (spawnError) => console.error(spawnError))
+    },
+  },
+})
