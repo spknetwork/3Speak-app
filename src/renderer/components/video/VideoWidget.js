@@ -26,6 +26,7 @@ class VideoWidget extends Component {
         } else {
             thumbnailUrl = await Utils.video.getThumbnailURL(this.props.reflink)
         }
+
         this.setState({
             //video_info: await utils.accounts.permalinkToVideoInfo(this.props.reflink),
             reflink: Reflink.parse(this.props.reflink),

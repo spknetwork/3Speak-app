@@ -8,6 +8,7 @@ import IpfsUtils from 'ipfs-core/src/utils'
 import DHive, { Client, PrivateKey } from "@hiveio/dhive";
 import { promisify } from 'util';
 import DefaultThumbnail from './assets/img/default-thumbnail.jpg';
+import { Console } from 'console';
 const Finder = ArraySearch.Finder;
 const hive = require('@hiveio/hive-js');
 
@@ -117,7 +118,6 @@ const accounts = {
         }
         switch (reflink.source.value) {
             case "hive": {
-                console.log(post_content.json_metadata)
                 const json_metadata = post_content.json_metadata;
                 if(!(json_metadata.app && options.type === "video")) {
                     if(json_metadata.type) {
@@ -378,6 +378,7 @@ const video = {
                 post_content = await accounts.permalinkToVideoInfo(permalink);
             } catch {
                 const reflink = RefLink.parse(permalink);
+                console.log({reflink})
                 return `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
             }
         }
@@ -387,8 +388,34 @@ const video = {
         })
         if(thumbnailSource) {
             try {
+                // check thumbnail file byte size on ipfs, if it returns zero use centralized server thumbnail
+
+                function imageExists(image_url){
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('HEAD', image_url, true);
+                    xhr.onreadystatechange = function(){
+                    if ( xhr.readyState == 4 ) {
+                        if ( xhr.status == 200 ) {
+                            if (xhr.getResponseHeader('Content-Length') == 0) {
+                                post_content.sources.forEach(s => {
+                                    if (s.type === 'thumbnail' && !s.url.startsWith('ipfs://')) {
+                                        console.log(s)
+                                    }
+                                })
+                            };
+                        } else {
+                            return 'ERROR';
+                        }
+                    }
+                    };
+                    xhr.send(null);
+                
+                }
                 var cid = ipfs.urlToCID(thumbnailSource.url);
                 var gateway = await ipfs.getGateway(cid, true);
+                imageExists( gateway + ipfs.urlToIpfsPath(thumbnailSource.url))
+                //console.log({post_content: post_content.sources,  G: gateway + ipfs.urlToIpfsPath(thumbnailSource.url)})
                 return gateway + ipfs.urlToIpfsPath(thumbnailSource.url);
             } catch (ex) {
                 return thumbnailSource.url;
