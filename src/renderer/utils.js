@@ -400,7 +400,7 @@ const video = {
                             if (xhr.getResponseHeader('Content-Length') == 0) {
                                 post_content.sources.forEach(s => {
                                     if (s.type === 'thumbnail' && !s.url.startsWith('ipfs://')) {
-                                        console.log(s)
+                                        //console.log(s)
                                     }
                                 })
                             };
@@ -421,6 +421,19 @@ const video = {
                 return thumbnailSource.url;
                 //return `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
             }
+        } else {
+            return DefaultThumbnail;
+            //throw new Error("Invalid post metadata");
+        }
+    },
+
+    async getNewThumbnailURL(author, permlink) {
+        const content = await hive.api.getContentAsync(author, permlink)
+
+        let parsedMeta = JSON.parse(content.json_metadata)
+
+        if (parsedMeta && typeof parsedMeta === 'object') {
+            return parsedMeta.image[0]
         } else {
             return DefaultThumbnail;
             //throw new Error("Invalid post metadata");

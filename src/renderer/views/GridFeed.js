@@ -74,6 +74,7 @@ class GridFeed extends React.Component {
     }
     componentDidMount() {
         document.title = "3Speak - Tokenised video communities"
+            console.log({porpsData: this.props})
         if (this.props.data) {
             this.setState({
                 data: this.props.data
