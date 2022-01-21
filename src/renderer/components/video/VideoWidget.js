@@ -21,12 +21,15 @@ class VideoWidget extends Component {
     }
     async componentDidMount() {
         let thumbnailUrl;
+        let thumbnailCid;
         if(this.props.isNsfw === true) {
             thumbnailUrl = nsfwWarning;
         } else {
             //thumbnailUrl = await Utils.video.getThumbnailURL(this.props.reflink)
-
             thumbnailUrl = await Utils.video.getNewThumbnailURL(this.props.author, this.props.permlink)
+            //thumbnailCid = await Utils.ipfs.urlToCID(thumbnailUrl);
+
+            //console.log({thumbnailCid: thumbnailCid})
         }
 
         this.setState({

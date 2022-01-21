@@ -8,9 +8,9 @@ import IpfsUtils from 'ipfs-core/src/utils'
 import DHive, { Client, PrivateKey } from "@hiveio/dhive";
 import { promisify } from 'util';
 import DefaultThumbnail from './assets/img/default-thumbnail.jpg';
-import { Console } from 'console';
 const Finder = ArraySearch.Finder;
 const hive = require('@hiveio/hive-js');
+const { binary_to_base58 } = require('base58-js')
 
 const hiveClient = new Client(["https://api.hive.blog", "https://api.hivekings.com", "https://anyx.io", "https://api.openhive.network"]);
 
@@ -118,6 +118,7 @@ const accounts = {
         }
         switch (reflink.source.value) {
             case "hive": {
+                console.log({post_content})
                 const json_metadata = post_content.json_metadata;
                 if(!(json_metadata.app && options.type === "video")) {
                     if(json_metadata.type) {
@@ -378,44 +379,18 @@ const video = {
                 post_content = await accounts.permalinkToVideoInfo(permalink);
             } catch {
                 const reflink = RefLink.parse(permalink);
-                console.log({reflink})
                 return `https://threespeakvideo.b-cdn.net/${reflink.permlink}/thumbnails/default.png`
             }
         }
         const reflink = RefLink.parse(post_content.reflink);
+        console.log({sources: post_content.sources})
         var thumbnailSource = Finder.one.in(post_content.sources).with({
             type: "thumbnail"
         })
         if(thumbnailSource) {
             try {
-                // check thumbnail file byte size on ipfs, if it returns zero use centralized server thumbnail
-
-                function imageExists(image_url){
-
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('HEAD', image_url, true);
-                    xhr.onreadystatechange = function(){
-                    if ( xhr.readyState == 4 ) {
-                        if ( xhr.status == 200 ) {
-                            if (xhr.getResponseHeader('Content-Length') == 0) {
-                                post_content.sources.forEach(s => {
-                                    if (s.type === 'thumbnail' && !s.url.startsWith('ipfs://')) {
-                                        //console.log(s)
-                                    }
-                                })
-                            };
-                        } else {
-                            return 'ERROR';
-                        }
-                    }
-                    };
-                    xhr.send(null);
-                
-                }
                 var cid = ipfs.urlToCID(thumbnailSource.url);
                 var gateway = await ipfs.getGateway(cid, true);
-                imageExists( gateway + ipfs.urlToIpfsPath(thumbnailSource.url))
-                //console.log({post_content: post_content.sources,  G: gateway + ipfs.urlToIpfsPath(thumbnailSource.url)})
                 return gateway + ipfs.urlToIpfsPath(thumbnailSource.url);
             } catch (ex) {
                 return thumbnailSource.url;
@@ -432,8 +407,17 @@ const video = {
 
         let parsedMeta = JSON.parse(content.json_metadata)
 
-        if (parsedMeta && typeof parsedMeta === 'object') {
-            return parsedMeta.image[0]
+        if (parsedMeta && typeof parsedMeta === 'object' && typeof parsedMeta.image[0] === 'string') {
+            //const baseUrl = await binary_to_base58(Buffer.from(parsedMeta.image[0]));
+            let url = parsedMeta.image[0];
+
+            /*if (parsedMeta.image[0].includes('https://ipfs')) {
+                url = `https://img.3speakcontent.co/${baseUrl}`;
+            } else {
+                url = `https://ipfs.3speak.tv/${baseUrl}`;
+            }*/
+
+            return url
         } else {
             return DefaultThumbnail;
             //throw new Error("Invalid post metadata");
