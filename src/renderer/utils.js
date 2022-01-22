@@ -10,7 +10,6 @@ import { promisify } from 'util';
 import DefaultThumbnail from './assets/img/default-thumbnail.jpg';
 const Finder = ArraySearch.Finder;
 const hive = require('@hiveio/hive-js');
-const { binary_to_base58 } = require('base58-js')
 
 const hiveClient = new Client(["https://api.hive.blog", "https://api.hivekings.com", "https://anyx.io", "https://api.openhive.network"]);
 
@@ -408,14 +407,20 @@ const video = {
         let parsedMeta = JSON.parse(content.json_metadata)
 
         if (parsedMeta && typeof parsedMeta === 'object' && typeof parsedMeta.image[0] === 'string') {
-            //const baseUrl = await binary_to_base58(Buffer.from(parsedMeta.image[0]));
             let url = parsedMeta.image[0];
 
-            /*if (parsedMeta.image[0].includes('https://ipfs')) {
-                url = `https://img.3speakcontent.co/${baseUrl}`;
+            if (parsedMeta.image[0].includes('https://ipfs')) {
+                var pathArray = url.split( '/' );
+                var protocol = pathArray[3];
+                var host = pathArray[4];
+                url = 'https://ipfs.3speak.tv/' + protocol + '/' + host;
             } else {
-                url = `https://ipfs.3speak.tv/${baseUrl}`;
-            }*/
+                /*var pathArray = url.split( '/' );
+                var protocol = pathArray[3];
+                var host = pathArray[4];
+                //url = 'https://ipfs.3speak.tv/' + protocol + '/' + host;
+                console.log({pathArray, url})*/
+            }
 
             return url
         } else {
