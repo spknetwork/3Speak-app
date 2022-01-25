@@ -415,11 +415,8 @@ const video = {
                 var host = pathArray[4];
                 url = 'https://ipfs.3speak.tv/' + protocol + '/' + host;
             } else {
-                /*var pathArray = url.split( '/' );
-                var protocol = pathArray[3];
-                var host = pathArray[4];
-                //url = 'https://ipfs.3speak.tv/' + protocol + '/' + host;
-                console.log({pathArray, url})*/
+                url = `https://img.3speakcontent.co/${permlink}/thumbnails/default.png`
+                console.log(url, permlink)
             }
 
             return url
