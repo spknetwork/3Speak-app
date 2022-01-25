@@ -409,7 +409,7 @@ const video = {
         if (parsedMeta && typeof parsedMeta === 'object' && typeof parsedMeta.image[0] === 'string') {
             let url = parsedMeta.image[0];
 
-            if (parsedMeta.image[0].includes('https://ipfs')) {
+            if (parsedMeta.image[0].includes('ipfs-3speak.b-cdn.net')) {
                 var pathArray = url.split( '/' );
                 var protocol = pathArray[3];
                 var host = pathArray[4];
