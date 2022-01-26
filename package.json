@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "package:32": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096 --python=python2.7' npm run build && electron-builder build --win --ia32 --dir=build",
     "package:linux": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096 --python=python2.7' npm run build && electron-builder --linux --x64 --dir=build",
-    "package:mac": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder --mac --x64 --dir=build",
+    "package:mac": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder --mac --dir=build",
     "package": "cross-env USE_HARD_LINKS=false NODE_OPTIONS='--max_old_space_size=8096' npm run build && electron-builder build --win --x64 --x86 --dir=build",
     "prod": "run-electron .",
     "start-main": "cross-env NODE_ENV=development run-electron -r ts-node/register src/main/index.ts",
