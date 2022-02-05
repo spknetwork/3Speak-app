@@ -4,27 +4,17 @@ const webpack = require('webpack')
 module.exports = {
   mode: 'production',
   target: 'electron-main',
-  entry: path.join(__dirname, '../src/main/index.js'),
+  entry: path.join(__dirname, '../src/main/index.ts'),
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.json'],
+  },
   output: {
     path: path.join(__dirname, '../dist'),
     filename: 'main.prod.js'
   },
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            '@babel/preset-env',
-            {
-              plugins: [
-                '@babel/plugin-proposal-class-properties'
-              ]
-            }
-          ]
-        }
-      }
+      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
     ]
   },
   node: {

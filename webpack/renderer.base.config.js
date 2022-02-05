@@ -9,13 +9,7 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        loader: 'babel-loader',
-        options: {
-          cacheDirectory: true
-        }
-      },
+      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
