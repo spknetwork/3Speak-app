@@ -4,6 +4,8 @@ import { AccountService } from './account.service'
 
 import DefaultThumbnail from '../assets/img/default-thumbnail.jpg'
 import { IpfsService } from './ipfs.service'
+import hive from '@hiveio/hive-js'
+import { binary_to_base58 } from 'base58-js'
 
 const Finder = ArraySearch.Finder
 
@@ -80,6 +82,37 @@ export class VideoService {
         return thumbnailSource.url
       }
     } else {
+      return DefaultThumbnail
+    }
+  }
+  static async getNewThumbnailURL(author, permlink) {
+    try {
+      const content = await hive.api.getContentAsync(author, permlink)
+
+      console.log(content)
+      const parsedMeta = JSON.parse(content.json_metadata)
+
+      if (parsedMeta && typeof parsedMeta === 'object' && typeof parsedMeta.image[0] === 'string') {
+        let url = parsedMeta.image[0]
+
+        if (parsedMeta.image[0].includes('ipfs-3speak.b-cdn.net')) {
+          const pathArray = url.split('/')
+          const protocol = pathArray[3]
+          const host = pathArray[4]
+          url = `https://images.hive.blog/p/${binary_to_base58(
+            Buffer.from('https://ipfs.io/' + protocol + '/' + host),
+          )}?format=jpeg&mode=cover&width=340&height=191`
+        } else {
+          url = `https://img.3speakcontent.co/${permlink}/thumbnails/default.png`
+          console.log(url, permlink)
+        }
+
+        return url
+      } else {
+        return DefaultThumbnail
+        //throw new Error("Invalid post metadata");
+      }
+    } catch {
       return DefaultThumbnail
     }
   }

@@ -27,7 +27,8 @@ export function VideoWidget(props: any) {
       if (props.isNsfw === true) {
         thumbnail = nsfwWarning
       } else {
-        thumbnail = await VideoService.getThumbnailURL(props.reflink)
+        const [, author, permlink] = props.reflink.split(':')
+        thumbnail = await VideoService.getNewThumbnailURL(author, permlink)
       }
 
       setThumbnailUrl(thumbnail)
