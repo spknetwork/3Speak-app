@@ -8,6 +8,7 @@ import IpfsUtils from 'ipfs-core/src/utils'
 import DHive, { Client, PrivateKey } from "@hiveio/dhive";
 import { promisify } from 'util';
 import DefaultThumbnail from './assets/img/default-thumbnail.jpg';
+import { binary_to_base58 } from 'base58-js'
 const Finder = ArraySearch.Finder;
 const hive = require('@hiveio/hive-js');
 
@@ -18,7 +19,7 @@ hive.broadcast.comment = promisify(hive.broadcast.comment)
 
 
 const ipfs = {
-    gateway: "https://ipfs.3speak.tv/ipfs/",
+    gateway: "https://ipfs.io/ipfs/",
     async getGateway(cid, bypass) {
         if(bypass === true) {
             return ipfs.gateway;
@@ -413,7 +414,7 @@ const video = {
                 var pathArray = url.split( '/' );
                 var protocol = pathArray[3];
                 var host = pathArray[4];
-                url = 'https://ipfs.3speak.tv/' + protocol + '/' + host;
+                url = `https://images.hive.blog/p/${binary_to_base58(Buffer.from('https://ipfs.io/' + protocol + '/' + host))}?format=jpeg&mode=cover&width=340&height=191`;
             } else {
                 url = `https://img.3speakcontent.co/${permlink}/thumbnails/default.png`
                 console.log(url, permlink)
