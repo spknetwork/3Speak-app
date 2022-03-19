@@ -15,9 +15,9 @@ export function GetFfmpegPath() {
   const platform = os.platform() + '-' + os.arch()
 
   const packageName = '@ffmpeg-installer/' + platform
-  if (!require('@ffmpeg-installer/ffmpeg/package.json').optionalDependencies[packageName]) {
+  /*if (!require('@ffmpeg-installer/ffmpeg/package.json').optionalDependencies[packageName]) {
     throw 'Unsupported platform/architecture: ' + platform
-  }
+  }*/
 
   const appRootPath = appRoot.path //.split(require('path').sep).join(path.posix.sep);
 

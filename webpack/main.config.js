@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
@@ -10,21 +10,25 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, '../dist'),
-    filename: 'main.prod.js'
+    filename: 'main.prod.js',
   },
   module: {
-    rules: [
-      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
-    ]
+    rules: [{ test: /\.ts?$/, use: 'ts-loader', exclude: /node_modules/ }],
   },
   node: {
     __dirname: false,
-    __filename: false
+    __filename: false,
   },
   plugins: [
-    new webpack.ExternalsPlugin("commonjs", ["leveldown", "ky-universal", "ipfs-http-client", "pouchdb", "pouchdb-find"]),
+    new webpack.ExternalsPlugin('commonjs', [
+      'leveldown',
+      'ky-universal',
+      'ipfs-http-client',
+      'pouchdb',
+      'pouchdb-find',
+    ]),
     new webpack.DefinePlugin({
-      'process.env.FLUENTFFMPEG_COV': false
-    })
-  ]
-};
+      'process.env.FLUENTFFMPEG_COV': false,
+    }),
+  ],
+}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import RefLink from '../../main/RefLink'
 import PromiseIpc from 'electron-promise-ipc'
