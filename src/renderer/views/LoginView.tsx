@@ -224,7 +224,7 @@ export function LoginView() {
           <br />
           <span className="tag-wrap">
             <Button type="submit" ref={submitRef} variant="secondary">
-              {submitting ? <FontAwesomeIcon icon={faSpinner} spin /> : 'Submit'}
+              {submitting ? <FontAwesomeIcon icon={faSpinner as any} spin /> : 'Submit'}
             </Button>
           </span>
         </div>
