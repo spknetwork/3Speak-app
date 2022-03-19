@@ -49,7 +49,7 @@ export function CommentForm(props) {
         disabled={postingStatus}
         onClick={postComment}
       >
-        {postingStatus ? <FontAwesomeIcon icon={faSpinner} spin /> : <span>Comment</span>}
+        {postingStatus ? <FontAwesomeIcon icon={faSpinner as any} spin /> : <span>Comment</span>}
       </button>
     </>
   )
