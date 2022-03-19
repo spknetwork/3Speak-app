@@ -95,13 +95,26 @@ export class VideoService {
       if (parsedMeta && typeof parsedMeta === 'object' && typeof parsedMeta.image[0] === 'string') {
         let url = parsedMeta.image[0]
 
-        if (parsedMeta.image[0].includes('ipfs-3speak.b-cdn.net')) {
-          const pathArray = url.split('/')
-          const protocol = pathArray[3]
-          const host = pathArray[4]
-          url = `https://images.hive.blog/p/${binary_to_base58(
-            Buffer.from('https://ipfs.io/' + protocol + '/' + host),
-          )}?format=jpeg&mode=cover&width=340&height=191`
+        if (parsedMeta.image[0]) {
+          if (parsedMeta.image[0].includes('ipfs-3speak.b-cdn.net')) {
+            const pathArray = url.split('/')
+            const protocol = pathArray[3]
+            const host = pathArray[4]
+            url = `https://images.hive.blog/p/${binary_to_base58(
+              Buffer.from('https://ipfs.io/' + protocol + '/' + host),
+            )}?format=jpeg&mode=cover&width=340&height=191`
+          } else {
+            //Fix for bad frontends overriding our data
+            let realImage
+            if (!parsedMeta.image[1].includes('3speakcontent.co')) {
+              realImage = parsedMeta.image[1]
+            } else {
+              parsedMeta.image[0]
+            }
+            url = `https://images.hive.blog/p/${binary_to_base58(
+              Buffer.from(realImage),
+            )}?format=jpeg&mode=cover&width=340&height=191`
+          }
         } else {
           url = `https://img.3speakcontent.co/${permlink}/thumbnails/default.png`
           console.log(url, permlink)
