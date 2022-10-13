@@ -35,7 +35,6 @@ export function CommunityView(props: any) {
     const newVideosRes = (
       await axios.get(`https://3speak.tv/apiv2/feeds/community/${reflink.root}/new`)
     ).data
-
     setTrendingVideos(trendingVideosRes)
     setNewVideos(newVideosRes)
 
@@ -94,7 +93,11 @@ export function CommunityView(props: any) {
               <hr />
               <div>
                 {trendingVideos !== null ? (
-                  <GridFeedView key="community-trends" type={`#${reflink.root}/trending`} />
+                  <GridFeedView
+                    key="community-trends"
+                    type={`#${reflink.root}/trending`}
+                    data={trendingVideos}
+                  />
                 ) : null}
               </div>
             </Tab>
@@ -103,7 +106,11 @@ export function CommunityView(props: any) {
               <hr />
               <div>
                 {newVideos !== null ? (
-                  <GridFeedView key="community-new" type={`#${reflink.root}/new`} />
+                  <GridFeedView
+                    key="community-new"
+                    type={`#${reflink.root}/new`}
+                    data={newVideos}
+                  />
                 ) : null}
               </div>
             </Tab>
