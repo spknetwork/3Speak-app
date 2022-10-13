@@ -16,6 +16,7 @@ export function LeaderboardView() {
     async function load() {
       const data = (await axios.get('https://3speak.tv/apiv2/leaderboard')).data
       let step = 1
+      let bronzeToSet = [];
       for (const ex of data) {
         if (step >= 30) {
           break
@@ -27,10 +28,11 @@ export function LeaderboardView() {
         } else if (step === 3) {
           setThird(ex)
         } else {
-          setBronze([...bronze, ex])
+          bronzeToSet.push(ex);
         }
         step++
       }
+      setBronze(bronzeToSet);
     }
   }, [])
 
