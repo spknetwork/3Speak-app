@@ -34,7 +34,7 @@ export function SideNavbar(props: any) {
     }
 
     void load()
-  }, [])
+  }, [login])
 
   const logOut = async () => {
     //TODO: logout logic
@@ -88,8 +88,8 @@ export function SideNavbar(props: any) {
             </NavDropdown>
           )}
           {!login && (
-            <Nav.Link href="#/login" className="display-mobile">
-              <button className="btn btn-dark text-white btn-sm">Add account</button>
+            <Nav.Link href="#/login">
+              <button className="btn btn-outline-light  btn-block text-dark">Add account</button>
             </Nav.Link>
           )}
           <hr />
