@@ -1,8 +1,9 @@
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState, useEffect } from 'react'
 import { Button, Dropdown, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { NotificationManager } from 'react-notifications'
+import { useHistory } from 'react-router-dom'
 
 import { AccountService } from '../services/account.service'
 
@@ -15,12 +16,24 @@ export function LoginView() {
   const [symKey, setSymKey] = useState('')
   const [accountType, setAccountType] = useState('hive')
   const [submitting, setSubmitting] = useState(false)
+  const history = useHistory()
 
   const resetForm = () => {
     console.log(`resetting form`)
     setUsername('')
     setKey('')
   }
+  useEffect(() => {
+    const load = async () => {
+      const login = localStorage.getItem('SNProfileID')
+
+      if (login) {
+        history.push('/')
+      }
+    }
+
+    void load()
+  }, [])
 
   const onUsernameChange = useCallback(async (event) => {
     console.log(`username change ${event.target.value}`)
