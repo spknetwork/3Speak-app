@@ -190,7 +190,12 @@ export function GridFeedView(props: GridFeedProps) {
 
   const retrieveData = useCallback(async () => {
     //For now use the 3speak.tv API until a proper solution is devised
-    if (props.type === 'home') {
+    if (
+      props.type === 'home' ||
+      props.type === 'trending' ||
+      props.type === 'new' ||
+      props.type === 'firstUploads'
+    ) {
       void fetch(`https://3speak.tv/apiv2/feeds/${props.type}`)
         .then((res) => res.json())
         .then(async (json) => {
