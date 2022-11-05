@@ -7,17 +7,13 @@ import fs from 'fs'
 import { uuidv4 } from 'uuid'
 import { globSource } from 'ipfs-http-client'
 import { EventEmitter } from 'events'
-import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg'
+// import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg'
 import { GetFfmpegPath } from '../ffmpeg_helper'
 
-if (process.env.NODE_ENV === 'development') {
-  ffmpeg.setFfmpegPath(ffmpegPath)
-} else {
-  try {
-    ffmpeg.setFfmpegPath(GetFfmpegPath())
-  } catch (ex) {
-    console.error(`Error getting ffmpeg path for production`)
-  }
+try {
+  ffmpeg.setFfmpegPath(GetFfmpegPath())
+} catch (ex) {
+  console.error(`Error getting ffmpeg path for production`)
 }
 
 const MAX_BIT_RATE = {
