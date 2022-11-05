@@ -7,11 +7,11 @@ import fs from 'fs'
 import { uuidv4 } from 'uuid'
 import { globSource } from 'ipfs-http-client'
 import { EventEmitter } from 'events'
-//import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg'
+import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg'
 import { GetFfmpegPath } from '../ffmpeg_helper'
 
 if (process.env.NODE_ENV === 'development') {
-  //ffmpeg.setFfmpegPath(ffmpegPath)
+  ffmpeg.setFfmpegPath(ffmpegPath)
 } else {
   try {
     ffmpeg.setFfmpegPath(GetFfmpegPath())
