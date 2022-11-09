@@ -25,10 +25,12 @@ export function UploaderView() {
   const thumbnailUpload = useRef<any>()
   const thumbnailPreview = useRef('')
   const publishForm = useRef()
-  const hwaccelOption = useRef()
+  // const hwaccelOption = useRef()
   const ipfs = useRef<any>()
 
   const [logData, setLogData] = useState([])
+  const [hwaccelOption, setHwaccelOption] = useState('')
+
   const [videoSourceFile, setVideoSourceFile] = useState()
   const [encodingInProgress, setEncodingInProgress] = useState(false)
   const [progress, setProgress] = useState<any>({})
@@ -229,8 +231,12 @@ export function UploaderView() {
       ],
       options: {
         hwaccel:
-          hwaccelOption.current !== '' && hwaccelOption.current !== 'none'
-            ? hwaccelOption.current
+          hwaccelOption &&
+          hwaccelOption.length > 0 &&
+          hwaccelOption !== '' &&
+          hwaccelOption &&
+          hwaccelOption !== 'none'
+            ? hwaccelOption
             : undefined,
       },
     } as any)) as any
@@ -477,7 +483,8 @@ export function UploaderView() {
                   </Form.Text>
                   <select
                     style={{ width: '6em' }}
-                    ref={hwaccelOption}
+                    value={hwaccelOption}
+                    onChange={(e) => setHwaccelOption(e.target.value)}
                     disabled={encodingInProgress}
                     id="language"
                     className="form-control mb-4"
