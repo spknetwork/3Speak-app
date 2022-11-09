@@ -35,7 +35,7 @@ export function Player(props: PlayerProps) {
       }
 
       const defaultOptions = {
-        ipfsGateway: 'https://ipfs.io',
+        ipfsGateway: 'https://ipfs.3speak.tv',
       }
 
       let options

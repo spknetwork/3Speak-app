@@ -24,6 +24,13 @@ import { TopNavbar } from './components/TopNavbar'
 import { SideNavbar } from './components/SideNavbar'
 import { StartUp } from './StartUp'
 import { CreatorStudioView } from './views/CreatorStudioView'
+import {useQuery, gql, ApolloClient, InMemoryCache} from '@apollo/client';
+
+
+export const IndexerClient = new ApolloClient({
+  uri: 'http://localhost:4568/v1/graphql',
+  cache: new InMemoryCache(),
+});
 
 export function App() {
   return (

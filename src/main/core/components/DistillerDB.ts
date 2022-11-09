@@ -10,7 +10,7 @@ PouchDB.plugin(require('pouchdb-find'))
 PouchDB.plugin(require('pouchdb-upsert'))
 
 const hiveClient = new HiveClient([
-  'https://api.hive.blog',
+  'https://deathwing.me',
   'https://api.openhive.network',
   'https://hived.privex.io',
   'https://anyx.io',

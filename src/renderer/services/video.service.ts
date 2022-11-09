@@ -101,7 +101,7 @@ export class VideoService {
             const protocol = pathArray[3]
             const host = pathArray[4]
             url = `https://images.hive.blog/p/${binary_to_base58(
-              Buffer.from('https://ipfs.io/' + protocol + '/' + host),
+              Buffer.from('https://ipfs.3speak.tv/' + protocol + '/' + host),
             )}?format=jpeg&mode=cover&width=340&height=191`
           } else {
             //Fix for bad frontends overriding our data
