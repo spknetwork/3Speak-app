@@ -24,7 +24,9 @@ export function UploaderView() {
   const videoUpload = useRef<any>()
   const thumbnailUpload = useRef<any>()
   const thumbnailPreview = useRef('')
-  const publishForm = useRef()
+  // const publishForm = useRef()
+  const [publishForm, setPublishForm] = useState({ title: '', description: '', tags: '' })
+
   // const hwaccelOption = useRef()
   const ipfs = useRef<any>()
 
@@ -88,7 +90,9 @@ export function UploaderView() {
    */
   const publish = async () => {
     const videoCid = await compileVideoCid()
-    const formData = FormUtils.formToObj(new FormData(publishForm.current))
+    // const formData = FormUtils.formToObj(new FormData(publishForm))
+    const formData = publishForm
+
     let tags: string[] = []
     if (formData.tags) {
       tags = formData.tags.replace(/\s/g, '').split(',')
@@ -132,7 +136,7 @@ export function UploaderView() {
     formData.title = formData.title || 'no form data'
     formData.description = formData.description || 'no form data'
 
-    console.log(`publish form is `, publishForm.current)
+    console.log(`publish form is `, publishForm)
 
     try {
       const [reflink] = await AccountService.postComment({
@@ -328,18 +332,33 @@ export function UploaderView() {
       <Row style={{ marginTop: '15px' }}>
         <Col xl={6} sm={12} style={{ paddingLeft: '0px' }}>
           <div className="card" style={{ padding: '10px' }}>
-            <Form ref={publishForm.current}>
+            <Form>
               <Form.Group>
                 <Form.Label>Title</Form.Label>
-                <Form.Control type="text" name="title"></Form.Control>
+                <Form.Control
+                  onChange={(e) => setPublishForm({ ...publishForm, title: e.target.value })}
+                  value={publishForm.title}
+                  type="text"
+                  name="title"
+                ></Form.Control>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Description</Form.Label>
-                <textarea className="form-control" name="description"></textarea>
+                <textarea
+                  onChange={(e) => setPublishForm({ ...publishForm, description: e.target.value })}
+                  value={publishForm.description}
+                  className="form-control"
+                  name="description"
+                ></textarea>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Tags</Form.Label>
-                <Form.Control type="text" name="tags"></Form.Control>
+                <Form.Control
+                  onChange={(e) => setPublishForm({ ...publishForm, tags: e.target.value })}
+                  value={publishForm.tags}
+                  type="text"
+                  name="tags"
+                ></Form.Control>
                 <small className="text-muted">
                   Separate multiple tags with a <kbd>,</kbd>{' '}
                 </small>
