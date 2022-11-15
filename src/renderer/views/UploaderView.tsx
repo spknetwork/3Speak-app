@@ -25,7 +25,9 @@ export function UploaderView() {
   const thumbnailUpload = useRef<any>()
   const thumbnailPreview = useRef('')
   // const publishForm = useRef()
-  const [publishForm, setPublishForm] = useState({ title: '', description: '', tags: '' })
+  const [publishFormTitle, setPublishFormTitle] = useState('')
+  const [publishFormDescription, setPublishFormDescription] = useState('')
+  const [publishFormTags, setPublishFormTags] = useState('')
 
   // const hwaccelOption = useRef()
   const ipfs = useRef<any>()
@@ -91,11 +93,10 @@ export function UploaderView() {
   const publish = async () => {
     const videoCid = await compileVideoCid()
     // const formData = FormUtils.formToObj(new FormData(publishForm))
-    const formData = publishForm
 
     let tags: string[] = []
-    if (formData.tags) {
-      tags = formData.tags.replace(/\s/g, '').split(',')
+    if (publishFormTags) {
+      tags = publishFormTags.replace(/\s/g, '').split(',')
     }
 
     console.log(`thumbnail info`, thumbnailInfo)
@@ -124,30 +125,21 @@ export function UploaderView() {
     //     console.log(permlink)
     console.log(`source map`)
     console.log(sourceMap)
-    //     console.log(videoInfo)
-    //     console.log(typeof formData.description)
-    //     console.log(videoCid)
+
     setBlockedGlobalMessage('Publishing')
 
     const filesize = videoInfo.size + thumbnailInfo.size
 
-    console.log(`formdata is `, formData)
-
-    formData.title = formData.title || 'no form data'
-    formData.description = formData.description || 'no form data'
-
-    console.log(`publish form is `, publishForm)
-
     try {
       const [reflink] = await AccountService.postComment({
         accountType: 'hive',
-        title: formData.title,
-        body: formData.description,
+        title: publishFormTitle || 'no form data',
+        body: publishFormDescription || 'no form data',
         permlink,
         tags,
         json_metadata: {
-          title: formData.title,
-          description: formData.description,
+          title: publishFormTitle || 'no form data',
+          description: publishFormDescription || 'no form data',
           tags,
           sourceMap,
           filesize,
