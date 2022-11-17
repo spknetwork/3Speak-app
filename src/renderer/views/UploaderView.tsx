@@ -133,13 +133,13 @@ export function UploaderView() {
     try {
       const [reflink] = await AccountService.postComment({
         accountType: 'hive',
-        title: publishFormTitle || 'no form data',
-        body: publishFormDescription || 'no form data',
+        title: publishFormTitle || 'Untitled video',
+        body: publishFormDescription || '',
         permlink,
         tags,
         json_metadata: {
-          title: publishFormTitle || 'no form data',
-          description: publishFormDescription || 'no form data',
+          title: publishFormTitle || 'Untitled video',
+          description: publishFormDescription || '',
           tags,
           sourceMap,
           filesize,
@@ -328,8 +328,8 @@ export function UploaderView() {
               <Form.Group>
                 <Form.Label>Title</Form.Label>
                 <Form.Control
-                  onChange={(e) => setPublishForm({ ...publishForm, title: e.target.value })}
-                  value={publishForm.title}
+                  onChange={(e) => setPublishFormTitle(e.target.value)}
+                  value={publishFormTitle}
                   type="text"
                   name="title"
                 ></Form.Control>
@@ -337,8 +337,8 @@ export function UploaderView() {
               <Form.Group>
                 <Form.Label>Description</Form.Label>
                 <textarea
-                  onChange={(e) => setPublishForm({ ...publishForm, description: e.target.value })}
-                  value={publishForm.description}
+                  onChange={(e) => setPublishFormDescription(e.target.value)}
+                  value={publishFormDescription}
                   className="form-control"
                   name="description"
                 ></textarea>
@@ -346,8 +346,8 @@ export function UploaderView() {
               <Form.Group>
                 <Form.Label>Tags</Form.Label>
                 <Form.Control
-                  onChange={(e) => setPublishForm({ ...publishForm, tags: e.target.value })}
-                  value={publishForm.tags}
+                  onChange={(e) => setPublishFormTags(e.target.value)}
+                  value={publishFormTags}
                   type="text"
                   name="tags"
                 ></Form.Control>
