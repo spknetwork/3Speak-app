@@ -24,7 +24,11 @@ export function UploaderView() {
   const videoUpload = useRef<any>()
   const thumbnailUpload = useRef<any>()
   const thumbnailPreview = useRef('')
-  const publishForm = useRef()
+  // const publishForm = useRef()
+  const [publishFormTitle, setPublishFormTitle] = useState('')
+  const [publishFormDescription, setPublishFormDescription] = useState('')
+  const [publishFormTags, setPublishFormTags] = useState('')
+
   // const hwaccelOption = useRef()
   const ipfs = useRef<any>()
 
@@ -88,10 +92,11 @@ export function UploaderView() {
    */
   const publish = async () => {
     const videoCid = await compileVideoCid()
-    const formData = FormUtils.formToObj(new FormData(publishForm.current))
+    // const formData = FormUtils.formToObj(new FormData(publishForm))
+
     let tags: string[] = []
-    if (formData.tags) {
-      tags = formData.tags.replace(/\s/g, '').split(',')
+    if (publishFormTags) {
+      tags = publishFormTags.replace(/\s/g, '').split(',')
     }
 
     console.log(`thumbnail info`, thumbnailInfo)
@@ -120,30 +125,21 @@ export function UploaderView() {
     //     console.log(permlink)
     console.log(`source map`)
     console.log(sourceMap)
-    //     console.log(videoInfo)
-    //     console.log(typeof formData.description)
-    //     console.log(videoCid)
+
     setBlockedGlobalMessage('Publishing')
 
     const filesize = videoInfo.size + thumbnailInfo.size
 
-    console.log(`formdata is `, formData)
-
-    formData.title = formData.title || 'no form data'
-    formData.description = formData.description || 'no form data'
-
-    console.log(`publish form is `, publishForm.current)
-
     try {
       const [reflink] = await AccountService.postComment({
         accountType: 'hive',
-        title: formData.title,
-        body: formData.description,
+        title: publishFormTitle || 'Untitled video',
+        body: publishFormDescription || '',
         permlink,
         tags,
         json_metadata: {
-          title: formData.title,
-          description: formData.description,
+          title: publishFormTitle || 'Untitled video',
+          description: publishFormDescription || '',
           tags,
           sourceMap,
           filesize,
@@ -328,18 +324,33 @@ export function UploaderView() {
       <Row style={{ marginTop: '15px' }}>
         <Col xl={6} sm={12} style={{ paddingLeft: '0px' }}>
           <div className="card" style={{ padding: '10px' }}>
-            <Form ref={publishForm.current}>
+            <Form>
               <Form.Group>
                 <Form.Label>Title</Form.Label>
-                <Form.Control type="text" name="title"></Form.Control>
+                <Form.Control
+                  onChange={(e) => setPublishFormTitle(e.target.value)}
+                  value={publishFormTitle}
+                  type="text"
+                  name="title"
+                ></Form.Control>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Description</Form.Label>
-                <textarea className="form-control" name="description"></textarea>
+                <textarea
+                  onChange={(e) => setPublishFormDescription(e.target.value)}
+                  value={publishFormDescription}
+                  className="form-control"
+                  name="description"
+                ></textarea>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Tags</Form.Label>
-                <Form.Control type="text" name="tags"></Form.Control>
+                <Form.Control
+                  onChange={(e) => setPublishFormTags(e.target.value)}
+                  value={publishFormTags}
+                  type="text"
+                  name="tags"
+                ></Form.Control>
                 <small className="text-muted">
                   Separate multiple tags with a <kbd>,</kbd>{' '}
                 </small>
