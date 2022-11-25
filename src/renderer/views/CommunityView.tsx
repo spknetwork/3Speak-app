@@ -19,7 +19,7 @@ export function CommunityView(props: any) {
   const reflink = useMemo(() => {
     return RefLink.parse(props.match.params.reflink)
   }, [props.match])
-  
+
   const newVideos = useLatestCommunityFeed(reflink.root)
   const trendingVideos = useTrendingCommunityFeed(reflink.root)
   const [backgroundUrl, setBackgroundUrl] = useState(null)
@@ -48,6 +48,7 @@ export function CommunityView(props: any) {
   useEffect(() => {
     void generate()
   }, [reflink])
+
   return (
     <div>
       <div
@@ -81,7 +82,7 @@ export function CommunityView(props: any) {
         </h1>
       </div>
       <h4 className="mt-3">
-        <ReactMarkdown> 
+        <ReactMarkdown>
           {communityInfo.about}
         </ReactMarkdown>
       </h4>
