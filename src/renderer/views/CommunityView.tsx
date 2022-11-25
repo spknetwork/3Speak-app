@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown'
 import RefLink from '../../main/RefLink'
 import { AccountService } from '../services/account.service'
 import { GridFeedView } from './GridFeedView'
+import { useCommunityFeed } from '../components/hooks/Feeds'
 
 const { Client: HiveClient } = require('@hiveio/dhive')
 const client = new HiveClient('https://api.openhive.network')
@@ -21,7 +22,12 @@ export function CommunityView(props: any) {
   const reflink = useMemo(() => {
     return RefLink.parse(props.match.params.reflink)
   }, [props.match])
-
+  const data = useCommunityFeed(reflink.root)
+  // for development purpouses:
+  useEffect(() => {
+    console.log('data')
+    console.log(data)
+  }, [data])
   const generate = async () => {
     const commInfo = await client.call('bridge', 'get_community', {
       name: reflink.root,
@@ -35,6 +41,10 @@ export function CommunityView(props: any) {
     const newVideosRes = (
       await axios.get(`https://3speak.tv/apiv2/feeds/community/${reflink.root}/new`)
     ).data
+    console.log('trendingVideosRes')
+    console.log(trendingVideosRes)
+    console.log('newVideosRes')
+    console.log(newVideosRes)
     setTrendingVideos(trendingVideosRes)
     setNewVideos(newVideosRes)
 

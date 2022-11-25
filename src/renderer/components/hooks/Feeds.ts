@@ -107,6 +107,44 @@ const LASTEST_FEED = gql`
   }
 `
 
+const COMMUNITY_FEED = gql`
+  query Query($parent_permlink: String) {
+    latestFeed(parent_permlink: $parent_permlink, limit: 15) {
+      items {
+        ... on CeramicPost {
+          stream_id
+          version_id
+          parent_id
+          title
+          body
+          json_metadata
+          app_metadata
+        }
+        ... on HivePost {
+          created_at
+          updated_at
+          parent_author
+          parent_permlink
+          permlink
+          author
+          title
+          body
+          lang
+          post_type
+          app
+          tags
+          json_metadata
+          app_metadata
+          community_ref
+
+          three_video
+        }
+        __typename
+      }
+    }
+  }
+`
+
 function transformGraphqlToNormal(data) {
   let blob = []
   for (let video of data) {
@@ -149,5 +187,18 @@ export function useNewFeed() {
   const videos = data?.latestFeed?.items || []
 
   return useMemo(() => {
-    return transformGraphqlToNormal(videos)}, [videos])
+    return transformGraphqlToNormal(videos)
+  }, [videos])
+}
+
+export function useCommunityFeed(parent_permlink) {
+  const { data, loading } = useQuery(COMMUNITY_FEED, {
+    client: IndexerClient,
+    variables: { parent_permlink },
+  })
+  const videos = data?.latestFeed?.items || []
+
+  return useMemo(() => {
+    return transformGraphqlToNormal(videos)
+  }, [videos])
 }
