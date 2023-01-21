@@ -107,6 +107,78 @@ const LASTEST_FEED = gql`
   }
 `
 
+const LATEST_COMMUNITY_FEED = gql`
+  query Query($parent_permlink: String) {
+    latestFeed(parent_permlink: $parent_permlink, limit: 15) {
+      items {
+        ... on CeramicPost {
+          stream_id
+          version_id
+          parent_id
+          title
+          json_metadata
+          app_metadata
+        }
+        ... on HivePost {
+          created_at
+          updated_at
+          parent_author
+          parent_permlink
+          permlink
+          author
+          title
+          lang
+          post_type
+          app
+          tags
+          json_metadata
+          app_metadata
+          community_ref
+
+          three_video
+        }
+        __typename
+      }
+    }
+  }
+`
+
+const TRENDING_COMMUNITY_FEED = gql`
+  query Query($parent_permlink: String) {
+    trendingFeed(parent_permlink: $parent_permlink, limit: 15) {
+      items {
+        ... on CeramicPost {
+          stream_id
+          version_id
+          parent_id
+          title
+          json_metadata
+          app_metadata
+        }
+        ... on HivePost {
+          created_at
+          updated_at
+          parent_author
+          parent_permlink
+          permlink
+          author
+          title
+          lang
+          post_type
+          app
+          tags
+          json_metadata
+          app_metadata
+          community_ref
+
+          three_video
+        }
+        __typename
+      }
+    }
+  }
+`
+
 function transformGraphqlToNormal(data) {
   let blob = []
   for (let video of data) {
@@ -149,5 +221,29 @@ export function useNewFeed() {
   const videos = data?.latestFeed?.items || []
 
   return useMemo(() => {
-    return transformGraphqlToNormal(videos)}, [videos])
+    return transformGraphqlToNormal(videos)
+  }, [videos])
+}
+
+export function useLatestCommunityFeed(parent_permlink) {
+  const { data, loading, error } = useQuery(LATEST_COMMUNITY_FEED, {
+    client: IndexerClient,
+    variables: { parent_permlink },
+  })
+  const videos = data?.latestFeed?.items || []
+
+  return useMemo(() => {
+    return transformGraphqlToNormal(videos)
+  }, [videos])
+}
+export function useTrendingCommunityFeed(parent_permlink) {
+  const { data, loading, error } = useQuery(TRENDING_COMMUNITY_FEED, {
+    client: IndexerClient,
+    variables: { parent_permlink },
+  })
+  const videos = data?.latestFeed?.items || []
+
+  return useMemo(() => {
+    return transformGraphqlToNormal(videos)
+  }, [videos])
 }

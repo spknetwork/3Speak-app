@@ -7,20 +7,24 @@ import ReactMarkdown from 'react-markdown'
 import RefLink from '../../main/RefLink'
 import { AccountService } from '../services/account.service'
 import { GridFeedView } from './GridFeedView'
+import { useLatestCommunityFeed, useTrendingCommunityFeed } from '../components/hooks/Feeds'
 
 const { Client: HiveClient } = require('@hiveio/dhive')
 const client = new HiveClient('https://api.openhive.network')
 
 export function CommunityView(props: any) {
   const [communityInfo, setCommunityInfo] = useState({} as any)
-  const [newVideos, setNewVideos] = useState([])
-  const [trendingVideos, setTrendingVideos] = useState([])
-
+  // const [newVideos, setNewVideos] = useState([])
+  // const [trendingVideos, setTrendingVideos] = useState([])
+  const newVideos = useLatestCommunityFeed(reflink.root)
+  const trendingVideos = useTrendingCommunityFeed(reflink.root)
   const [backgroundUrl, setBackgroundUrl] = useState(null)
 
   const reflink = useMemo(() => {
     return RefLink.parse(props.match.params.reflink)
   }, [props.match])
+
+  // for development purpouses:
 
   const generate = async () => {
     const commInfo = await client.call('bridge', 'get_community', {
@@ -28,16 +32,14 @@ export function CommunityView(props: any) {
       observer: 'alice',
     })
     setCommunityInfo(commInfo)
-
-    const trendingVideosRes = (
-      await axios.get(`https://3speak.tv/apiv2/feeds/community/${reflink.root}/trending`)
-    ).data
-    const newVideosRes = (
-      await axios.get(`https://3speak.tv/apiv2/feeds/community/${reflink.root}/new`)
-    ).data
-    setTrendingVideos(trendingVideosRes)
-    setNewVideos(newVideosRes)
-
+    // const trendingVideosRes = (
+    //   await axios.get(`https://3speak.tv/apiv2/feeds/community/${reflink.root}/trending`)
+    // ).data
+    // const newVideosRes = (
+    //   await axios.get(`https://3speak.tv/apiv2/feeds/community/${reflink.root}/new`)
+    // ).data
+    // setTrendingVideos(trendingVideosRes)
+    // setNewVideos(newVideosRes)
     const bgUrlRes = await AccountService.getProfileBackgroundImageUrl(props.match.params.reflink)
     setBackgroundUrl(bgUrlRes)
   }
@@ -45,7 +47,6 @@ export function CommunityView(props: any) {
   useEffect(() => {
     void generate()
   }, [reflink])
-
   return (
     <div>
       <div
