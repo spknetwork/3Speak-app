@@ -8,6 +8,7 @@ import DefaultThumbnail from '../assets/img/default-thumbnail.jpg'
 import { GridFeedQueryService } from './GridFeed/grid-feed-query.service'
 import { knex } from '../singletons/knex.singleton'
 import { VideoWidget } from '../components/video/VideoWidget'
+import { useNewFeed } from '../components/hooks/Feeds'
 
 export interface GridFeedProps {
   source?: 'hive'
@@ -27,6 +28,9 @@ export interface GridFeedState {
 export function GridFeedView(props: GridFeedProps) {
   const [data, setData] = useState([])
   const [awaitingMoreData, setAwaitingMoreData] = useState(false)
+
+  const videos = useNewFeed()
+  console.log(videos)
   const reflink = useMemo(() => {
     return RefLink.parse(props.source || 'hive')
   }, [props.source])
@@ -134,6 +138,7 @@ export function GridFeedView(props: GridFeedProps) {
                     } else {
                       thumbnail = DefaultThumbnail
                     }
+                    thumbnail = val.three_video.thumbnmail_url
                     console.log(thumbnail)
                   }
                   console.log(val.json_metadata.sourceMap)
@@ -335,7 +340,7 @@ export function GridFeedView(props: GridFeedProps) {
       ) : null}
       <section className="content_home">
         <div className={'row'}>
-          {data.map((el) => (
+          {videos.map((el) => (
             <VideoWidget
               key={el.author + '/' + el.permlink}
               reflink={`hive:${el.author}:${el.permlink}`}

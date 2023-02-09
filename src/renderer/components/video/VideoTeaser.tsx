@@ -16,7 +16,7 @@ export function VideoTeaser(props: any) {
   useEffect(() => {
     const load = async () => {
       setVideoInfo(await AccountService.permalinkToVideoInfo(props.reflink))
-      setThumbnail(await VideoService.getThumbnailURL(props.reflink))
+      // setThumbnail(await VideoService.getNewThumbnailURL(...(props.reflink as any).split(':').slice(1)))
     }
 
     void load()

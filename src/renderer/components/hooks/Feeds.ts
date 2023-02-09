@@ -34,20 +34,20 @@ const LATEST_BY_USERNAME = gql`
 
           three_video
 
-          children {
-            parent_author
-            parent_permlink
-            permlink
-            title
-            body
-            title
-            lang
-            post_type
-            app
-            json_metadata
-            app_metadata
-            community_ref
-          }
+          # children {
+          #   parent_author
+          #   parent_permlink
+          #   permlink
+          #   title
+          #   body
+          #   title
+          #   lang
+          #   post_type
+          #   app
+          #   json_metadata
+          #   app_metadata
+          #   community_ref
+          # }
         }
         __typename
       }
@@ -86,20 +86,20 @@ const LASTEST_FEED = gql`
 
           three_video
 
-          children {
-            parent_author
-            parent_permlink
-            permlink
-            title
-            body
-            title
-            lang
-            post_type
-            app
-            json_metadata
-            app_metadata
-            community_ref
-          }
+          # children {
+          #   parent_author
+          #   parent_permlink
+          #   permlink
+          #   title
+          #   body
+          #   title
+          #   lang
+          #   post_type
+          #   app
+          #   json_metadata
+          #   app_metadata
+          #   community_ref
+          # }
         }
         __typename
       }
@@ -195,7 +195,7 @@ function transformGraphqlToNormal(data) {
         //ipfs: val.json_metadata.video.info.ipfs,
         isIpfs: true,
         images: {
-          thumbnail: video.three_video.thumbnail_url,
+          thumbnail: video.three_video.thumbnail_url.replace('img.3speakcontent.co', 'media.3speak.tv'),
           poster: video.three_video.thumbnail,
           post: video.three_video.thumbnail,
           ipfs_thumbnail: video.three_video.thumbnail,

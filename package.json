@@ -6,7 +6,7 @@
   "scripts": {
     "build-main": "webpack --config webpack/main.config.js",
     "build-renderer": "webpack --config webpack/renderer.prod.config.js",
-    "build": "npx npm-run-all --parallel build-main build-renderer",
+    "build": "concurrently \"npm run build-main\"  \"npm run build-renderer\"",
     "clear": "rm -rf ./dist",
     "dev": "cross-env DEBUG=3speak:* NODE_OPTIONS='--max_old_space_size=8096' npm run start-renderer",
     "lint:fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
@@ -37,6 +37,7 @@
     "@types/react-router-dom": "^5.3.2",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
+    "concurrently": "^7.6.0",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
     "debug": "^4.3.2",

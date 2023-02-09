@@ -29,6 +29,8 @@ export function VideoWidget(props: any) {
       } else {
         const [, author, permlink] = props.reflink.split(':')
         thumbnail = await VideoService.getNewThumbnailURL(author, permlink)
+        console.log(props)
+        // thumbnail = props.three_video.thumbnail_url
       }
 
       setThumbnailUrl(thumbnail)

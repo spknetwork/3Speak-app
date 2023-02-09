@@ -27,7 +27,7 @@ import { CreatorStudioView } from './views/CreatorStudioView'
 import { useQuery, gql, ApolloClient, InMemoryCache } from '@apollo/client'
 
 export const IndexerClient = new ApolloClient({
-  uri: 'http://localhost:4568/v1/graphql',
+  uri: 'https://spk-union.us-west.web3telekom.xyz/api/v1/graphql',
   cache: new InMemoryCache(),
 })
 

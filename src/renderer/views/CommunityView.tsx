@@ -16,13 +16,14 @@ export function CommunityView(props: any) {
   const [communityInfo, setCommunityInfo] = useState({} as any)
   // const [newVideos, setNewVideos] = useState([])
   // const [trendingVideos, setTrendingVideos] = useState([])
+  const reflink = useMemo(() => {
+    return RefLink.parse(props.match.params.reflink)
+  }, [props.match])
+  
   const newVideos = useLatestCommunityFeed(reflink.root)
   const trendingVideos = useTrendingCommunityFeed(reflink.root)
   const [backgroundUrl, setBackgroundUrl] = useState(null)
 
-  const reflink = useMemo(() => {
-    return RefLink.parse(props.match.params.reflink)
-  }, [props.match])
 
   // for development purpouses:
 

@@ -82,7 +82,7 @@ function transformGraphqlToNormal(data) {
       //ipfs: val.json_metadata.video.info.ipfs,
       isIpfs: true,
       images: {
-        thumbnail: video.three_video.thumbnail_url,
+        thumbnail: video.three_video.thumbnail_url.replace('img.3speakcontent.co', 'media.3speak.tv'),
         poster: video.three_video.thumbnail,
         post: video.three_video.thumbnail,
         ipfs_thumbnail: video.three_video.thumbnail

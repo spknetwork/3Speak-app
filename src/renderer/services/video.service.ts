@@ -6,6 +6,7 @@ import DefaultThumbnail from '../assets/img/default-thumbnail.jpg'
 import { IpfsService } from './ipfs.service'
 import hive from '@hiveio/hive-js'
 import { binary_to_base58 } from 'base58-js'
+import { post } from 'jquery'
 
 const Finder = ArraySearch.Finder
 
@@ -89,7 +90,6 @@ export class VideoService {
     try {
       const content = await hive.api.getContentAsync(author, permlink)
 
-      console.log(content)
       const parsedMeta = JSON.parse(content.json_metadata)
 
       if (parsedMeta && typeof parsedMeta === 'object' && typeof parsedMeta.image[0] === 'string') {
@@ -116,7 +116,7 @@ export class VideoService {
             )}?format=jpeg&mode=cover&width=340&height=191`
           }
         } else {
-          url = `https://img.3speakcontent.co/${permlink}/thumbnails/default.png`
+          url = `https://media.3speak.tv/${permlink}/thumbnails/default.png`
           console.log(url, permlink)
         }
 
