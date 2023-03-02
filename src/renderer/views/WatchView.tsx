@@ -427,7 +427,7 @@ export function WatchView(props: any) {
                 <h6>About :</h6>
                 <CollapsibleText>
                   <ReactMarkdown
-                    escapeHtml={false}
+                    skipHtml={false}
                   >{DOMPurify.sanitize(videoInfo.description)}</ReactMarkdown>
                   <hr />
                   <Container style={{ marginBottom: '10px', textAlign: 'center' }}>

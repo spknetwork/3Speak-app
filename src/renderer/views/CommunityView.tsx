@@ -81,7 +81,9 @@ export function CommunityView(props: any) {
         </h1>
       </div>
       <h4 className="mt-3">
-        <ReactMarkdown source={communityInfo.about} />
+        <ReactMarkdown> 
+          {communityInfo.about}
+        </ReactMarkdown>
       </h4>
       <p>{communityInfo.description}</p>
 

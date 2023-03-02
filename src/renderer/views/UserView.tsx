@@ -214,7 +214,7 @@ export function UserView(props: any) {
           </Row>
         </Route>
         <Route path={`/user/${reflink.toString()}/about`}>
-          <ReactMarkdown className={'p-3'} source={profileAbout} />
+          <ReactMarkdown className={'p-3'}>{profileAbout}</ReactMarkdown>
         </Route>
       </Switch>
     </div>
