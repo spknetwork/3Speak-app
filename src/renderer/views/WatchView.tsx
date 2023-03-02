@@ -428,8 +428,7 @@ export function WatchView(props: any) {
                 <CollapsibleText>
                   <ReactMarkdown
                     escapeHtml={false}
-                    source={DOMPurify.sanitize(videoInfo.description)}
-                  ></ReactMarkdown>
+                  >{DOMPurify.sanitize(videoInfo.description)}</ReactMarkdown>
                   <hr />
                   <Container style={{ marginBottom: '10px', textAlign: 'center' }}>
                     <a

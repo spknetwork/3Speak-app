@@ -128,9 +128,8 @@ export function PostComment(props: any) {
           </div>
           <div className="panel-body mt-1">
             <ReactMarkdown
-              escapeHtml={false}
-              source={DOMPurify.sanitize(commentInfo.description)}
-            ></ReactMarkdown>
+              skipHtml={false}
+            >{DOMPurify.sanitize(commentInfo.description)}</ReactMarkdown>
           </div>
           <div className="panel-footer ml-0 ml-md-4">
             <hr />
