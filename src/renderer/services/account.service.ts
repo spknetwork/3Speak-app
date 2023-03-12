@@ -340,8 +340,9 @@ export class AccountService {
         let title
         let description
         let duration
-        if (json_metadata.sourceMap) {
-          sources.push(...json_metadata.sourceMap)
+        if (json_metadata.video.info.sourceMap) {
+          sources.push(...json_metadata.video.info.sourceMap)
+          console.log(json_metadata)
           return {
             sources,
             creation: new Date(post_content.created + 'Z').toISOString(),
@@ -362,6 +363,8 @@ export class AccountService {
           title = video_info.title
           duration = video_info.duration
 
+
+          console.log("video_info", video_info)
           const urls = []
           if (video_info.ipfs != null && video_info.ipfs) {
             urls.push(`ipfs://${video_info.ipfs}`)
