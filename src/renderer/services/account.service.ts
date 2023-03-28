@@ -342,7 +342,6 @@ export class AccountService {
         let duration
         if (json_metadata.video.info.sourceMap) {
           sources.push(...json_metadata.video.info.sourceMap)
-          console.log(json_metadata)
           return {
             sources,
             creation: new Date(post_content.created + 'Z').toISOString(),

@@ -99,7 +99,8 @@ export function CommunityView(props: any) {
                 {trendingVideos !== null ? (
                   <GridFeedView
                     key="community-trends"
-                    type={`#${reflink.root}/trending`}
+                    community={reflink.root}
+                    type={`community-trends`}
                     data={trendingVideos}
                   />
                 ) : null}
@@ -112,7 +113,8 @@ export function CommunityView(props: any) {
                 {newVideos !== null ? (
                   <GridFeedView
                     key="community-new"
-                    type={`#${reflink.root}/new`}
+                    community={reflink.root}
+                    type={`community-new`}
                     data={newVideos}
                   />
                 ) : null}
