@@ -186,7 +186,7 @@ export function UserView(props: any) {
       <Switch>
         <Route exact path={`/user/${reflink.toString()}`}>
           <section className="content_home" style={{ height: 'auto !important' }}>
-            <GridFeedView type={'@' + username} awaitingMoreData={true} data={transformGraphqlToNormal(videos)}/>
+            <GridFeedView username={username} type={'author-feed'} awaitingMoreData={true}/>
           </section>
         </Route>
         <Route path={`/user/${reflink.toString()}/earning`}>

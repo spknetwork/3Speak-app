@@ -15,6 +15,7 @@ export interface GridFeedProps {
   awaitingMoreData?: boolean
   type: string
   community?: string
+  username?: string
   data?: any[]
   titleText?: string
 }
@@ -32,7 +33,7 @@ export function GridFeedView(props: GridFeedProps) {
 
   const videos = useGraphqlFeed({
     type: props.type,
-    community: props.community
+    id: props.community || props.username
   })
   
   const reflink = useMemo(() => {

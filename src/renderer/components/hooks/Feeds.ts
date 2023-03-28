@@ -2,54 +2,47 @@ import { gql, useQuery } from '@apollo/client'
 import { useEffect, useMemo } from 'react'
 import { IndexerClient } from '../../App'
 
-const LATEST_BY_USERNAME = gql`
-  query Query($author: String) {
-    latestFeed(author: $author, limit: 15) {
+const LATEST_FEED_AUTHOR = gql`
+  query AuthorFeed($id: String) {
+    feed: socialFeed(feedOptions: {
+      byCreator: {
+        _eq: $id
+      }
+    }) {
       items {
-        ... on CeramicPost {
-          stream_id
-          version_id
-          parent_id
-          title
-          body
-          json_metadata
-          app_metadata
-        }
+        body
+        created_at
+        parent_author
+        parent_permlink
+        permlink
+        title
+        updated_at
         ... on HivePost {
-          created_at
-          updated_at
           parent_author
           parent_permlink
-          permlink
-          author
-          title
-          body
-          lang
-          post_type
-          app
-          tags
-          json_metadata
+          author {
+            username
+          }
+          json_metadata {
+            raw
+          }
+          stats {
+            num_comments
+            num_votes
+            total_hive_reward
+          }
           app_metadata
-          community_ref
-
-          three_video
-
-          # children {
-          #   parent_author
-          #   parent_permlink
-          #   permlink
-          #   title
-          #   body
-          #   title
-          #   lang
-          #   post_type
-          #   app
-          #   json_metadata
-          #   app_metadata
-          #   community_ref
-          # }
+          spkvideo
+          refs
+          post_type
+          permlink
+          title
+          tags
+          updated_at
+          body
+          community
+          created_at
         }
-        __typename
       }
     }
   }
@@ -183,10 +176,10 @@ query TrendingFeed {
 `
 
 const LATEST_COMMUNITY_FEED = gql`
-  query LatestCommunityFeed($community: String) {
+  query LatestCommunityFeed($id: String) {
     latestFeed(feedOptions: {
       byCommunity: {
-        _id: $community
+        _id: $id
       }
     }) {
       items {
@@ -229,10 +222,10 @@ const LATEST_COMMUNITY_FEED = gql`
 `
 
 const TRENDING_COMMUNITY_FEED = gql`
-  query LatestCommunityFeed($community: String) {
+  query LatestCommunityFeed($id: String) {
     trendingFeed(feedOptions: {
       byCommunity: {
-        _id: $community
+        _id: $id
       }
     }) {
       items {
@@ -321,13 +314,16 @@ export function useGraphqlFeed(props: any) {
     query = LATEST_COMMUNITY_FEED
   } else if(props.type === "community-trends") {
     query = TRENDING_COMMUNITY_FEED
+  } else if(props.type === "author-feed") {
+    query = LATEST_FEED_AUTHOR;
   } else {
     query = LATEST_FEED
   }
+
   const { data, loading, refetch } = useQuery(query, {
     client: IndexerClient,
     variables: {
-      community: props.community
+      id: props.id,
     }
   })
 
