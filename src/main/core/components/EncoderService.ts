@@ -178,11 +178,17 @@ export class EncoderService {
       sizes.push(profile.size)
       ret.size(profile.size)
       this.logger.info(`Profile size ${profile.size}`)
+      let totalTime
+      ret.on('codecData', (data) => {
+        totalTime = parseInt(data.duration.replace(/:/g, ''))
+      })
       ret.on(
         'progress',
         ((progress) => {
-          this.events.emit('progress', jobInfo.id, progress)
-          this.statusInfo[jobInfo.id].progress = progress
+          const time = parseInt(progress.timemark.replace(/:/g, ''))
+          const percent = (time / totalTime) * 100
+          this.events.emit('progress', jobInfo.id, { ...progress, percent })
+          this.statusInfo[jobInfo.id].progress = { ...progress, percent }
         }).bind(this),
       )
       ret.on('end', () => {
