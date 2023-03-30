@@ -206,7 +206,8 @@ export function UploaderView() {
       return
     }
     setEncodingInProgress(true)
-    setStartTime(new Date().getTime())
+    const _startingTime = new Date().getTime()
+    setStartTime(_startingTime)
     setEndTime(null)
 
     const jobInfo = (await PromiseIpc.send('encoder.createJob', {
@@ -240,6 +241,7 @@ export function UploaderView() {
 
     let savePct = 0
     const progressTrack = async () => {
+      const _timeNow = new Date().getTime()
       const status = (await PromiseIpc.send('encoder.status', jobInfo.id)) as any
 
       console.log(`Encoder status: `, status)
@@ -247,14 +249,14 @@ export function UploaderView() {
       setProgress(status.progress || {})
       setStatusInfo(status)
 
-      const val = caluclatePercentage()
-      const diffPct = val - savePct
-      savePct = val
-      const pctPerSec = diffPct / 3
-      const totalTimeRemaining = (100 - val) / pctPerSec
-
-      setEstimatedTimeRemaining(secondsAsString(totalTimeRemaining))
-      setEndTime(new Date().getTime())
+      const val = status.progress.percent
+      // const diffPct = val - savePct
+      // savePct = val
+      // const pctPerSec = diffPct / 3
+      // const totalTimeRemaining = (100 - val) / pctPerSec
+      const totalTimeRemaining = (100 * (_timeNow - _startingTime)) / val
+      setEstimatedTimeRemaining(millisecondsAsString(totalTimeRemaining))
+      setEndTime(_timeNow)
     }
 
     const pid = setInterval(progressTrack, 3000)
