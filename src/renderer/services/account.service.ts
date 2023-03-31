@@ -1,4 +1,4 @@
-import hive from '@hiveio/hive-js'
+import { hive, api } from '@hiveio/hive-js'
 import axios from 'axios'
 import PromiseIPC from 'electron-promise-ipc'
 import ArraySearch from 'arraysearch'
@@ -280,6 +280,46 @@ export class AccountService {
       nextFollow = followingChunk[followingChunk.length - 1].following
     }
     return out
+  }
+
+  //Update posting_json_metadata
+  static async updateMeta(username, metadata) {
+    console.log('Updating metadata')
+    const profileID = window.localStorage.getItem('SNProfileID')
+    const getAccount = (await PromiseIPC.send('accounts.get', profileID as any)) as any
+    const hiveInfo = Finder.one.in(getAccount.keyring).with({ type: 'hive' })
+    const wif = hiveInfo.privateKeys.posting_key
+    console.log('WIF', wif)
+    console.log('JSON METADATA', metadata)
+    api.broadcast.account_update2(
+      wif,
+      [],
+      [username],
+      JSON.stringify(metadata),
+      async (error, succeed) => {
+        if (error) {
+          console.error(error)
+          console.error('Error encountered broadcsting custom json')
+        }
+
+        if (succeed) {
+          console.log(succeed)
+          console.log('success broadcasting custom json')
+        }
+      },
+    )
+  }
+
+
+  //Get account posting_json_metadata
+  static async getAccountMetadata() {
+     const profileID = window.localStorage.getItem('SNProfileID')
+      const getAccount = (await PromiseIPC.send('accounts.get', profileID as any)) as any
+      const hiveInfo = Finder.one.in(getAccount.keyring).with({ type: 'hive' })
+
+      const account = await hiveClient.call('condenser_api', 'get_accounts', [[hiveInfo.username]])
+      const metadata = account[0].posting_json_metadata
+      return metadata
   }
 
   static async convertLight(val) {

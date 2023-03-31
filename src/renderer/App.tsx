@@ -15,6 +15,7 @@ import { WatchView } from './views/WatchView'
 import { LeaderboardView } from './views/LeaderboardView'
 import { CommunityView } from './views/CommunityView'
 import { IpfsConsoleView } from './views/IpfsConsoleView'
+import { ProofOfAccessView } from './views/ProofOfAccessView'
 import { GridFeedView } from './views/GridFeedView'
 import { NotFoundView } from './views/NotFoundView'
 import { PinsView } from './views/PinsView'
@@ -85,6 +86,7 @@ export function App() {
           <Route path="/leaderboard/" component={LeaderboardView} />
           <Route path="/pins/" component={PinsView} />
           <Route path="/ipfsconsole/" component={IpfsConsoleView} />
+          <Route path="/proofofaccess/" component={ProofOfAccessView} />
           <Route path="/creatorstudio/" component={CreatorStudioView} />
           <Route path="/login" component={LoginView} />
           <Route path="/accounts" component={AccountsView} />
