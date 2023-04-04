@@ -164,9 +164,16 @@ export function UploaderView() {
   }
 
   const handleVideoSelect = async (e) => {
-    const file = e.target.files[0]
-    setVideoSourceFile(file.path)
-    setLogData([...logData, `Selected: ${videoInfo.path}`])
+    let file
+    if (e.target && e.target.files) {
+      file = e.target.files[0]
+    } else if (e.dataTransfer && e.dataTransfer.files) {
+      file = e.dataTransfer.files[0]
+    }
+    if (file) {
+      setVideoSourceFile(file.path)
+      setLogData([...logData, `Selected: ${videoInfo.path}`])
+    }
   }
 
   const handleThumbnailSelect = async (e) => {
@@ -307,6 +314,8 @@ export function UploaderView() {
               fontWeight: 'bold',
               cursor: 'pointer',
             }}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleVideoSelect}
           >
             Drop a file or click to start the upload <br />
             <p>
