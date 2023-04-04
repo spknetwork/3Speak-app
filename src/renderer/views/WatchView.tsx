@@ -124,6 +124,8 @@ export function WatchView(props: any) {
         cids.push(url.host)
       } catch {}
     }
+    // console.log('video_info', info)
+    // console.log(cids)
     setRootCid(cids[0])
   }
 
@@ -310,6 +312,7 @@ export function WatchView(props: any) {
         setLoadingMessage('Loading: Mounting player...')
         await mountPlayer()
       } catch (ex) {
+        console.log(ex)
         setLoadingMessage('Loading resulted in error')
         throw ex
       }
@@ -427,9 +430,8 @@ export function WatchView(props: any) {
                 <h6>About :</h6>
                 <CollapsibleText>
                   <ReactMarkdown
-                    escapeHtml={false}
-                    source={DOMPurify.sanitize(videoInfo.description)}
-                  ></ReactMarkdown>
+                    skipHtml={false}
+                  >{DOMPurify.sanitize(videoInfo.description)}</ReactMarkdown>
                   <hr />
                   <Container style={{ marginBottom: '10px', textAlign: 'center' }}>
                     <a

@@ -54,7 +54,7 @@ export function Player(props: PlayerProps) {
         throw new Error('Cannot set video info!')
       }
       const vidurl = await VideoService.getVideoSourceURL(vidInfo)
-      setThumbnail(await VideoService.getThumbnailURL(vidInfo))
+      setThumbnail(await VideoService.getNewThumbnailURL(vidInfo.author, vidInfo.permlink))
       setVideoUrl(vidurl)
       setVideoInfo(vidInfo)
     }

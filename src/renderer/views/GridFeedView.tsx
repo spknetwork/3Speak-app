@@ -8,11 +8,14 @@ import DefaultThumbnail from '../assets/img/default-thumbnail.jpg'
 import { GridFeedQueryService } from './GridFeed/grid-feed-query.service'
 import { knex } from '../singletons/knex.singleton'
 import { VideoWidget } from '../components/video/VideoWidget'
+import { useGraphqlFeed } from '../components/hooks/Feeds'
 
 export interface GridFeedProps {
   source?: 'hive'
   awaitingMoreData?: boolean
   type: string
+  community?: string
+  username?: string
   data?: any[]
   titleText?: string
 }
@@ -27,6 +30,12 @@ export interface GridFeedState {
 export function GridFeedView(props: GridFeedProps) {
   const [data, setData] = useState([])
   const [awaitingMoreData, setAwaitingMoreData] = useState(false)
+
+  const videos = useGraphqlFeed({
+    type: props.type,
+    id: props.community || props.username
+  })
+  
   const reflink = useMemo(() => {
     return RefLink.parse(props.source || 'hive')
   }, [props.source])
@@ -134,6 +143,7 @@ export function GridFeedView(props: GridFeedProps) {
                     } else {
                       thumbnail = DefaultThumbnail
                     }
+                    thumbnail = val.three_video.thumbnmail_url
                     console.log(thumbnail)
                   }
                   console.log(val.json_metadata.sourceMap)
@@ -188,137 +198,137 @@ export function GridFeedView(props: GridFeedProps) {
     }
   }, [])
 
-  const retrieveData = useCallback(async () => {
-    //For now use the 3speak.tv API until a proper solution is devised
-    if (
-      props.type === 'home' ||
-      props.type === 'trending' ||
-      props.type === 'new' ||
-      props.type === 'firstUploads'
-    ) {
-      void fetch(`https://3speak.tv/apiv2/feeds/${props.type}`)
-        .then((res) => res.json())
-        .then(async (json) => {
-          for (const e in json) {
-            if (
-              await PromiseIpc.send(
-                'blocklist.has',
-                `hive:${json[e].author}:${json[e].permlink}` as any,
-              )
-            ) {
-              delete json[e]
-            }
-          }
-          setData(json)
-        })
-      return
-    }
+  // const retrieveData = useCallback(async () => {
+  //   //For now use the 3speak.tv API until a proper solution is devised
+  //   if (
+  //     props.type === 'home' ||
+  //     props.type === 'trending' ||
+  //     props.type === 'new' ||
+  //     props.type === 'firstUploads'
+  //   ) {
+  //     void fetch(`https://3speak.tv/apiv2/feeds/${props.type}`)
+  //       .then((res) => res.json())
+  //       .then(async (json) => {
+  //         for (const e in json) {
+  //           if (
+  //             await PromiseIpc.send(
+  //               'blocklist.has',
+  //               `hive:${json[e].author}:${json[e].permlink}` as any,
+  //             )
+  //           ) {
+  //             delete json[e]
+  //           }
+  //         }
+  //         setData(json)
+  //       })
+  //     return
+  //   }
 
-    //     let query
-    const querySql = GridFeedQueryService.getFeedSql(props.type)
-    const query = knex.raw(querySql)
+  //   //     let query
+  //   const querySql = GridFeedQueryService.getFeedSql(props.type)
+  //   const query = knex.raw(querySql)
 
-    const blob = []
-    query.stream().on('data', async (val) => {
-      if (await PromiseIpc.send('blocklist.has', `hive:${val.author}:${val.permlink}` as any)) {
-        console.log(`${val.author} is blocked`)
-        return
-      }
-      val.json_metadata = JSON.parse(val.json_metadata)
+  //   const blob = []
+  //   query.stream().on('data', async (val) => {
+  //     if (await PromiseIpc.send('blocklist.has', `hive:${val.author}:${val.permlink}` as any)) {
+  //       console.log(`${val.author} is blocked`)
+  //       return
+  //     }
+  //     val.json_metadata = JSON.parse(val.json_metadata)
 
-      if (!val.json_metadata.video) {
-        val.json_metadata.video = {
-          info: {},
-        }
-      } else if (!val.json_metadata.video.info) {
-        val.json_metadata.video.info = {}
-      }
-      let thumbnail
-      if (val.json_metadata.sourceMap) {
-        const thumbnailOut = Finder.one.in(val.json_metadata.sourceMap).with({ type: 'thumbnail' })
-        if (thumbnailOut) {
-          thumbnail = thumbnailOut.url
-        } else {
-          thumbnail = DefaultThumbnail
-        }
-      }
+  //     if (!val.json_metadata.video) {
+  //       val.json_metadata.video = {
+  //         info: {},
+  //       }
+  //     } else if (!val.json_metadata.video.info) {
+  //       val.json_metadata.video.info = {}
+  //     }
+  //     let thumbnail
+  //     if (val.json_metadata.sourceMap) {
+  //       const thumbnailOut = Finder.one.in(val.json_metadata.sourceMap).with({ type: 'thumbnail' })
+  //       if (thumbnailOut) {
+  //         thumbnail = thumbnailOut.url
+  //       } else {
+  //         thumbnail = DefaultThumbnail
+  //       }
+  //     }
 
-      try {
-        blob.push({
-          created: val.created,
-          author: val.author,
-          permlink: val.permlink,
-          tags: val.json_metadata.tags,
-          title: val.title,
-          duration: val.json_metadata.video.info.duration || val.json_metadata.video.duration,
-          isIpfs: val.json_metadata.video.info.ipfs || thumbnail ? true : false,
-          ipfs: val.json_metadata.video.info.ipfs,
-          images: {
-            ipfs_thumbnail: thumbnail
-              ? `/ipfs/${thumbnail.slice(7)}`
-              : `/ipfs/${val.json_metadata.video.info.ipfsThumbnail}`,
-            thumbnail: `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/default.png`,
-            poster: `https://threespeakvideo.b-cdn.net/${val.permlink}/poster.png`,
-            post: `https://threespeakvideo.b-cdn.net/${val.permlink}/post.png`,
-          },
-          views: val.total_vote_weight ? Math.log(val.total_vote_weight / 1000).toFixed(2) : 0,
-        })
-        // console.log(blob[blob.length - 1])
-      } catch (ex) {
-        console.error(`hive:${val.author}:${val.permlink} is bugged the fuck out`)
-        console.error(val.json_metadata.video)
-        console.error(ex)
-      }
-      setData(blob)
-      setOffset(25)
-    })
+  //     try {
+  //       blob.push({
+  //         created: val.created,
+  //         author: val.author,
+  //         permlink: val.permlink,
+  //         tags: val.json_metadata.tags,
+  //         title: val.title,
+  //         duration: val.json_metadata.video.info.duration || val.json_metadata.video.duration,
+  //         isIpfs: val.json_metadata.video.info.ipfs || thumbnail ? true : false,
+  //         ipfs: val.json_metadata.video.info.ipfs,
+  //         images: {
+  //           ipfs_thumbnail: thumbnail
+  //             ? `/ipfs/${thumbnail.slice(7)}`
+  //             : `/ipfs/${val.json_metadata.video.info.ipfsThumbnail}`,
+  //           thumbnail: `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/default.png`,
+  //           poster: `https://threespeakvideo.b-cdn.net/${val.permlink}/poster.png`,
+  //           post: `https://threespeakvideo.b-cdn.net/${val.permlink}/post.png`,
+  //         },
+  //         views: val.total_vote_weight ? Math.log(val.total_vote_weight / 1000).toFixed(2) : 0,
+  //       })
+  //       // console.log(blob[blob.length - 1])
+  //     } catch (ex) {
+  //       console.error(`hive:${val.author}:${val.permlink} is bugged the fuck out`)
+  //       console.error(val.json_metadata.video)
+  //       console.error(ex)
+  //     }
+  //     setData(blob)
+  //     setOffset(25)
+  //   })
 
-    query
-      .then((rows) => {
-        for (const val of rows) {
-          val.json_metadata = JSON.parse(val.json_metadata)
-        }
-      })
-      .catch((err) => {
-        console.error(`Error connecting to hivesql!`)
-        console.error(err)
-        throw err
-      })
-      .finally(() => {})
+  //   query
+  //     .then((rows) => {
+  //       for (const val of rows) {
+  //         val.json_metadata = JSON.parse(val.json_metadata)
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error(`Error connecting to hivesql!`)
+  //       console.error(err)
+  //       throw err
+  //     })
+  //     .finally(() => {})
 
-    switch (reflink.source.value) {
-      case 'hive': {
-        void fetch(`https://3speak.tv/apiv2/feeds/${props.type}`)
-          .then((res) => res.json())
-          .then(async (json) => {
-            for (const e in json) {
-              if (
-                await PromiseIpc.send(
-                  'blocklist.has',
-                  `hive:${json[e].author}:${json[e].permlink}` as any,
-                )
-              ) {
-                delete json[e]
-              }
-            }
-          })
-        break
-      }
-      default: {
-        throw new Error(`Unrecognized feed type ${reflink.source.value}`)
-      }
-    }
-  }, [])
+  //   switch (reflink.source.value) {
+  //     case 'hive': {
+  //       void fetch(`https://3speak.tv/apiv2/feeds/${props.type}`)
+  //         .then((res) => res.json())
+  //         .then(async (json) => {
+  //           for (const e in json) {
+  //             if (
+  //               await PromiseIpc.send(
+  //                 'blocklist.has',
+  //                 `hive:${json[e].author}:${json[e].permlink}` as any,
+  //               )
+  //             ) {
+  //               delete json[e]
+  //             }
+  //           }
+  //         })
+  //       break
+  //     }
+  //     default: {
+  //       throw new Error(`Unrecognized feed type ${reflink.source.value}`)
+  //     }
+  //   }
+  // }, [])
 
-  useEffect(() => {
-    if (props.data) {
-      setData(props.data)
-    } else {
-      setData([])
-      void retrieveData()
-    }
-    window.scrollTo(0, 0)
-  }, [props.type, props.data])
+  // useEffect(() => {
+  //   if (props.data) {
+  //     setData(props.data)
+  //   } else {
+  //     setData([])
+  //     void retrieveData()
+  //   }
+  //   window.scrollTo(0, 0)
+  // }, [props.type, props.data])
 
   return (
     <div>
@@ -335,7 +345,7 @@ export function GridFeedView(props: GridFeedProps) {
       ) : null}
       <section className="content_home">
         <div className={'row'}>
-          {data.map((el) => (
+          {videos.map((el) => (
             <VideoWidget
               key={el.author + '/' + el.permlink}
               reflink={`hive:${el.author}:${el.permlink}`}

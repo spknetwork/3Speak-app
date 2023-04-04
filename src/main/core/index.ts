@@ -37,7 +37,7 @@ export class CoreService {
   async install() {
     this.start_progress.message = 'Installing IPFS'
     await waIpfs.install({
-      version: 'v0.10.0',
+      version: 'v0.19.0',
       dev: process.env.NODE_ENV === 'development',
       recursive: true,
     })

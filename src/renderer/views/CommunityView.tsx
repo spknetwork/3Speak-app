@@ -23,6 +23,13 @@ export function CommunityView(props: any) {
   const reflink = useMemo(() => {
     return RefLink.parse(props.match.params.reflink)
   }, [props.match])
+  
+  const newVideos = useLatestCommunityFeed(reflink.root)
+  const trendingVideos = useTrendingCommunityFeed(reflink.root)
+  const [backgroundUrl, setBackgroundUrl] = useState(null)
+
+
+  // for development purpouses:
 
   // for development purpouses:
 
@@ -80,7 +87,9 @@ export function CommunityView(props: any) {
         </h1>
       </div>
       <h4 className="mt-3">
-        <ReactMarkdown source={communityInfo.about} />
+        <ReactMarkdown> 
+          {communityInfo.about}
+        </ReactMarkdown>
       </h4>
       <p>{communityInfo.description}</p>
 
@@ -96,7 +105,8 @@ export function CommunityView(props: any) {
                 {trendingVideos !== null ? (
                   <GridFeedView
                     key="community-trends"
-                    type={`#${reflink.root}/trending`}
+                    community={reflink.root}
+                    type={`community-trends`}
                     data={trendingVideos}
                   />
                 ) : null}
@@ -109,7 +119,8 @@ export function CommunityView(props: any) {
                 {newVideos !== null ? (
                   <GridFeedView
                     key="community-new"
-                    type={`#${reflink.root}/new`}
+                    community={reflink.root}
+                    type={`community-new`}
                     data={newVideos}
                   />
                 ) : null}

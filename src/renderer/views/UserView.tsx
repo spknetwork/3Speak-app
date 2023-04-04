@@ -82,7 +82,7 @@ function transformGraphqlToNormal(data) {
       //ipfs: val.json_metadata.video.info.ipfs,
       isIpfs: true,
       images: {
-        thumbnail: video.three_video.thumbnail_url,
+        thumbnail: video.three_video.thumbnail_url.replace('img.3speakcontent.co', 'media.3speak.tv'),
         poster: video.three_video.thumbnail,
         post: video.three_video.thumbnail,
         ipfs_thumbnail: video.three_video.thumbnail
@@ -186,7 +186,7 @@ export function UserView(props: any) {
       <Switch>
         <Route exact path={`/user/${reflink.toString()}`}>
           <section className="content_home" style={{ height: 'auto !important' }}>
-            <GridFeedView type={'@' + username} awaitingMoreData={true} data={transformGraphqlToNormal(videos)}/>
+            <GridFeedView username={username} type={'author-feed'} awaitingMoreData={true}/>
           </section>
         </Route>
         <Route path={`/user/${reflink.toString()}/earning`}>
@@ -214,7 +214,7 @@ export function UserView(props: any) {
           </Row>
         </Route>
         <Route path={`/user/${reflink.toString()}/about`}>
-          <ReactMarkdown className={'p-3'} source={profileAbout} />
+          <ReactMarkdown className={'p-3'}>{profileAbout}</ReactMarkdown>
         </Route>
       </Switch>
     </div>

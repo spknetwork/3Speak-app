@@ -4,6 +4,7 @@ import DateTime from 'date-and-time'
 import PlaySVG from '../../assets/img/play.svg'
 import { FaUser } from 'react-icons/fa'
 import convert from 'convert-units'
+import { binary_to_base58 } from 'base58-js'
 import { HashRouter } from 'react-router-dom'
 import nsfwWarning from '../../assets/img/nsfw.png'
 import IpfsLogo from '../../assets/img/ipfs-logo-vector-ice.svg'
@@ -29,6 +30,8 @@ export function VideoWidget(props: any) {
       } else {
         const [, author, permlink] = props.reflink.split(':')
         thumbnail = await VideoService.getNewThumbnailURL(author, permlink)
+        console.log(props)
+        // thumbnail = props.three_video.thumbnail_url
       }
 
       setThumbnailUrl(thumbnail)
@@ -59,7 +62,9 @@ export function VideoWidget(props: any) {
                 maxHeight: '13em',
               }}
               className="img-fluid bg-dark"
-              src={thumbnailUrl}
+              src={`https://images.hive.blog/p/${binary_to_base58(
+                Buffer.from(props.images.thumbnail)
+              )}?format=webp&mode=cover&width=340&height=191`}
             />
           </a>
         </div>
