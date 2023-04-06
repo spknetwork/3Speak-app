@@ -179,7 +179,16 @@ export function UploaderView() {
   const handleThumbnailSelect = async (e) => {
     console.log(`handling thumbnail selectr`)
 
-    const file = e.target.files[0]
+    let file
+    if (e.target && e.target.files) {
+      file = e.target.files[0]
+    } else if (e.dataTransfer && e.dataTransfer.files) {
+      file = e.dataTransfer.files[0]
+    }
+    if (file) {
+      setVideoSourceFile(file.path)
+      setLogData([...logData, `Selected: ${videoInfo.path}`])
+    }
     const imgblob = URL.createObjectURL(file)
     const size = file.size
 
@@ -414,6 +423,8 @@ export function UploaderView() {
                   }}
                   alt=""
                   onClick={() => thumbnailUpload.current.click()}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={handleThumbnailSelect}
                 />
                 <input
                   accept="image/*"
