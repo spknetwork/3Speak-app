@@ -53,13 +53,13 @@ class Pins {
     this.inProgressPins[doc._id] = doc
     let totalSize = 0
     for (const cid of doc.cids) {
-      console.log('Pinning CID', cid)
+      console.log('Pinning CID', cid, new Date(), doc._id)
       await this.self.ipfs.pin.add(cid)
-      console.log('Getting Cumulative size of', cid)
+      console.log('Getting Cumulative size of', cid, new Date(), doc._id)
       const objectInfo = await this.self.ipfs.object.stat(cid)
       totalSize = totalSize + objectInfo.CumulativeSize
     }
-    console.log('finished', doc)
+    console.log('finished', doc, new Date(), doc._id)
     doc.size = totalSize
     //Prevet old and new docs from stepping on eachother.
     await this.db.upsert(doc._id, (oldDoc) => {
