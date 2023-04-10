@@ -43,7 +43,7 @@ class Pins {
       try {
         await ipfs.swarm.connect(bt)
       } catch (ex) {
-        console.error(ex)
+        // console.error(ex)
       }
     })
     doc.cids = doc.cids.filter(function (item, pos, self) {
@@ -53,10 +53,13 @@ class Pins {
     this.inProgressPins[doc._id] = doc
     let totalSize = 0
     for (const cid of doc.cids) {
+      console.log('Pinning CID', cid)
       await this.self.ipfs.pin.add(cid)
+      console.log('Getting Cumulative size of', cid)
       const objectInfo = await this.self.ipfs.object.stat(cid)
-      totalSize = +objectInfo.CumulativeSize
+      totalSize = totalSize + objectInfo.CumulativeSize
     }
+    console.log('finished', doc)
     doc.size = totalSize
     //Prevet old and new docs from stepping on eachother.
     await this.db.upsert(doc._id, (oldDoc) => {
