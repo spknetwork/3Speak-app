@@ -164,15 +164,31 @@ export function UploaderView() {
   }
 
   const handleVideoSelect = async (e) => {
-    const file = e.target.files[0]
-    setVideoSourceFile(file.path)
-    setLogData([...logData, `Selected: ${videoInfo.path}`])
+    let file
+    if (e.target && e.target.files) {
+      file = e.target.files[0]
+    } else if (e.dataTransfer && e.dataTransfer.files) {
+      file = e.dataTransfer.files[0]
+    }
+    if (file) {
+      setVideoSourceFile(file.path)
+      setLogData([...logData, `Selected: ${videoInfo.path}`])
+    }
   }
 
   const handleThumbnailSelect = async (e) => {
     console.log(`handling thumbnail selectr`)
 
-    const file = e.target.files[0]
+    let file
+    if (e.target && e.target.files) {
+      file = e.target.files[0]
+    } else if (e.dataTransfer && e.dataTransfer.files) {
+      file = e.dataTransfer.files[0]
+    }
+    if (file) {
+      setVideoSourceFile(file.path)
+      setLogData([...logData, `Selected: ${videoInfo.path}`])
+    }
     const imgblob = URL.createObjectURL(file)
     const size = file.size
 
@@ -206,7 +222,8 @@ export function UploaderView() {
       return
     }
     setEncodingInProgress(true)
-    setStartTime(new Date().getTime())
+    const _startingTime = new Date().getTime()
+    setStartTime(_startingTime)
     setEndTime(null)
 
     const jobInfo = (await PromiseIpc.send('encoder.createJob', {
@@ -240,6 +257,7 @@ export function UploaderView() {
 
     let savePct = 0
     const progressTrack = async () => {
+      const _timeNow = new Date().getTime()
       const status = (await PromiseIpc.send('encoder.status', jobInfo.id)) as any
 
       console.log(`Encoder status: `, status)
@@ -247,14 +265,14 @@ export function UploaderView() {
       setProgress(status.progress || {})
       setStatusInfo(status)
 
-      const val = caluclatePercentage()
-      const diffPct = val - savePct
-      savePct = val
-      const pctPerSec = diffPct / 3
-      const totalTimeRemaining = (100 - val) / pctPerSec
-
-      setEstimatedTimeRemaining(secondsAsString(totalTimeRemaining))
-      setEndTime(new Date().getTime())
+      const val = status.progress.percent
+      // const diffPct = val - savePct
+      // savePct = val
+      // const pctPerSec = diffPct / 3
+      // const totalTimeRemaining = (100 - val) / pctPerSec
+      const totalTimeRemaining = (100 * (_timeNow - _startingTime)) / val
+      setEstimatedTimeRemaining(millisecondsAsString(totalTimeRemaining))
+      setEndTime(_timeNow)
     }
 
     const pid = setInterval(progressTrack, 3000)
@@ -305,6 +323,8 @@ export function UploaderView() {
               fontWeight: 'bold',
               cursor: 'pointer',
             }}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleVideoSelect}
           >
             Drop a file or click to start the upload <br />
             <p>
@@ -403,6 +423,8 @@ export function UploaderView() {
                   }}
                   alt=""
                   onClick={() => thumbnailUpload.current.click()}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={handleThumbnailSelect}
                 />
                 <input
                   accept="image/*"
