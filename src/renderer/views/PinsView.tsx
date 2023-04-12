@@ -215,7 +215,10 @@ export function PinsView() {
   const pinRows = useMemo(() => {
     const rows = []
     for (const pin of pinList) {
-      const sizeBest = bytesAsString(pin.size)
+      if(!pin.cids) {
+        continue;
+      }
+      const sizeBest = bytesAsString(pin.size || 0)
 
       rows.push(
         <tr key={pin._id}>
@@ -271,12 +274,12 @@ export function PinsView() {
           <td>
             {pin.meta.pin_date
               ? (() => {
-                  console.log(pin.meta.pin_date)
+                  console.log(pin)
                   return new Date(pin.meta.pin_date).toLocaleString()
                 })()
               : null}
           </td>
-          <td>{pin.size === 0 ? <strong>Pinning In Progress</strong> : sizeBest}</td>
+          <td>{pin.size === 0 ? <strong>Pinning In Progress ({pin.percent}%) </strong> : sizeBest}</td>
           <td>
             <Button variant="danger" onClick={() => removePin(pin._id)}>
               X
