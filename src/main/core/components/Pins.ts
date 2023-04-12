@@ -1,3 +1,4 @@
+import { CID, IPFSHTTPClient } from 'ipfs-http-client'
 import PouchDB from 'pouchdb'
 import { CoreService } from '..'
 import RefLink from '../../RefLink'
@@ -7,6 +8,21 @@ const debug = require('debug')('3speak:pins')
 const Schedule = require('node-schedule')
 PouchDB.plugin(require('pouchdb-find'))
 PouchDB.plugin(require('pouchdb-upsert'))
+
+async function progressPin(ipfs: IPFSHTTPClient, pin: string, callback: Function) {
+  const refs = ipfs.refs(pin, {
+    recursive: true
+    // maxDepth: 1
+  })
+  const TotalSize = (await ipfs.object.stat(CID.parse(pin))).CumulativeSize
+  let counter = 0
+  for await(let result of refs) {
+    // const CumulativeSize = (await ipfs.object.stat(CID.parse(result.ref))).CumulativeSize
+    const dag = await ipfs.dag.get(CID.parse(result.ref))
+    counter = counter + dag.value.Data.length;
+    callback(Number((counter / TotalSize).toFixed(3)))
+  }
+}
 class Pins {
   self: CoreService
   db: any
@@ -51,15 +67,29 @@ class Pins {
     })
     doc.size = 0
     this.inProgressPins[doc._id] = doc
+
+
     let totalSize = 0
+    let totalPercent;
+
+    const progressTick = setInterval(async() => {
+      await this.db.upsert(doc._id, (oldDoc) => {
+        oldDoc.percent = totalPercent;
+        return oldDoc
+      })
+    }, 1000)
+
     for (const cid of doc.cids) {
       console.log('Pinning CID', cid, new Date(), doc._id)
+      await progressPin(this.self.ipfs, cid, (percent) => {
+        totalPercent = percent
+      })
       await this.self.ipfs.pin.add(cid)
       console.log('Getting Cumulative size of', cid, new Date(), doc._id)
       const objectInfo = await this.self.ipfs.object.stat(cid)
       totalSize = totalSize + objectInfo.CumulativeSize
     }
-    console.log('finished', doc, new Date(), doc._id)
+    clearInterval(progressTick)
     doc.size = totalSize
     //Prevet old and new docs from stepping on eachother.
     await this.db.upsert(doc._id, (oldDoc) => {
