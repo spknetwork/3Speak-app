@@ -3,21 +3,21 @@ import Path from 'path';
 import fs from 'fs';
 import axios from 'axios';
 import compareVersions from 'compare-versions';
-import { spawn } from 'child_process';
+import { EventEmitter } from 'events';
 
 const isWin = process.platform === 'win32';
 
-class PoAInstaller {
+class PoAInstaller extends EventEmitter {
   async main() {
     try {
-      await PoAInstaller.install();
+      await this.install();
     } catch (error) {
       console.error(error);
+      this.emit('error', error);
       process.exit(1);
     }
   }
-
-  static async getCurrentVersion(installDir) {
+ async getCurrentVersion(installDir) {
     const versionFilePath = Path.join(installDir, 'version.txt');
     try {
       const currentVersion = await fs.promises.readFile(versionFilePath, 'utf-8');
@@ -27,14 +27,11 @@ class PoAInstaller {
       return '0.0.0';
     }
   }
-
-
-  static async getDefaultPath() {
+ async getDefaultPath() {
     let defaultPath;
     switch (process.platform) {
       case 'win32':
         defaultPath = Path.join('AppData/Roaming/Microsoft/Windows/Start Menu/Programs/PoA');
-        console.log('Default path: ', defaultPath);
         return defaultPath;
       case 'darwin':
         defaultPath = Path.join(os.homedir(), 'Applications/PoA/poa');
@@ -55,12 +52,9 @@ class PoAInstaller {
       return null;
     }
   }
-
-
-
-  static async install() {
-    const installDir = Path.join(os.homedir(), (await PoAInstaller.getDefaultPath()) || '');
-
+ async install() {
+    const installDir = Path.join(os.homedir(), (await this.getDefaultPath()) || '');
+    console.log(`Installing PoA to ${installDir}`);
     if (!fs.existsSync(installDir)) {
       fs.mkdirSync(installDir, { recursive: true });
     }
@@ -71,9 +65,10 @@ class PoAInstaller {
     const { tag_name, assets } = data;
 
     console.log(tag_name);
-    const currentVersion = await PoAInstaller.getCurrentVersion(installDir);
+    const currentVersion = await this.getCurrentVersion(installDir);
     if (compareVersions.compare(tag_name, currentVersion, '>')) {
       console.log('Update available');
+      this.emit('update-available', tag_name);
       const asset = assets.find((a) => a.name.includes('win-main') && a.name.includes('exe') && isWin);
 
       if (!asset) {
@@ -94,13 +89,16 @@ class PoAInstaller {
       fs.writeFileSync(installPath, Buffer.from(response.data));
 
       console.log(`PoA installed at: ${installPath}`);
+      this.emit('installed', installPath);
 
       // Update version.txt file
       const versionFilePath = Path.join(installDir, 'version.txt');
       fs.writeFileSync(versionFilePath, tag_name);
       console.log(`Version ${tag_name} saved to ${versionFilePath}`);
+      this.emit('version-updated', tag_name);
     } else {
       console.log('PoA is already up-to-date');
+      this.emit('up-to-date');
     }
   }
 }
