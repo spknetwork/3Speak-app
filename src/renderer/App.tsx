@@ -15,7 +15,7 @@ import { WatchView } from './views/WatchView'
 import { LeaderboardView } from './views/LeaderboardView'
 import { CommunityView } from './views/CommunityView'
 import { IpfsConsoleView } from './views/IpfsConsoleView'
-import { ProofOfAccessView } from './views/ProofOfAccessView'
+import { PoAView } from './views/PoAView'
 import { GridFeedView } from './views/GridFeedView'
 import { NotFoundView } from './views/NotFoundView'
 import { PinsView } from './views/PinsView'
@@ -28,7 +28,7 @@ import { CreatorStudioView } from './views/CreatorStudioView'
 import { useQuery, gql, ApolloClient, InMemoryCache } from '@apollo/client'
 
 export const IndexerClient = new ApolloClient({
-  uri: 'https://spk-union.us-west.web3telekom.xyz/api/v2/graphql',
+  uri: 'https://union.us-02.infra.3speak.tv/api/v2/graphql',
   cache: new InMemoryCache(),
 })
 
@@ -86,7 +86,7 @@ export function App() {
           <Route path="/leaderboard/" component={LeaderboardView} />
           <Route path="/pins/" component={PinsView} />
           <Route path="/ipfsconsole/" component={IpfsConsoleView} />
-          <Route path="/proofofaccess/" component={ProofOfAccessView} />
+          <Route path="/proofofaccess/" component={PoAView} />
           <Route path="/creatorstudio/" component={CreatorStudioView} />
           <Route path="/login" component={LoginView} />
           <Route path="/accounts" component={AccountsView} />
