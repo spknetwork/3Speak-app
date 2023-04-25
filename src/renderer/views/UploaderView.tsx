@@ -186,29 +186,27 @@ export function UploaderView() {
       file = e.dataTransfer.files[0]
     }
     if (file) {
-      setVideoSourceFile(file.path)
-      setLogData([...logData, `Selected: ${videoInfo.path}`])
+      const imgblob = URL.createObjectURL(file)
+      const size = file.size
+
+      console.log(`uploading file with size ${size}`)
+
+      thumbnailPreview.current = imgblob
+
+      const fileDetails = {
+        path: file.name,
+        content: file,
+      }
+
+      const ipfsOut = await ipfs.current.add(fileDetails, { pin: false })
+      console.log(`setting thumbnail info to cid`, ipfsOut.cid.toString())
+
+      setThumbnailInfo({
+        size,
+        path: `thumbnail.${file.type.split('/')[1]}`,
+        cid: ipfsOut.cid.toString(),
+      })
     }
-    const imgblob = URL.createObjectURL(file)
-    const size = file.size
-
-    console.log(`uploading file with size ${size}`)
-
-    thumbnailPreview.current = imgblob
-
-    const fileDetails = {
-      path: e.target.files[0].name,
-      content: e.target.files[0],
-    }
-
-    const ipfsOut = await ipfs.current.add(fileDetails, { pin: false })
-    console.log(`setting thumbnail info to cid`, ipfsOut.cid.toString())
-
-    setThumbnailInfo({
-      size,
-      path: `thumbnail.${file.type.split('/')[1]}`,
-      cid: ipfsOut.cid.toString(),
-    })
   }
 
   const handleStartEncode = async (event) => {
