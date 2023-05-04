@@ -61,7 +61,7 @@ class PoAInstaller extends EventEmitter {
 
     console.log('Installing PoA...');
 
-    const { data } = await axios.get('https://api.github.com/repos/nathansenn/proofofaccess/releases/latest');
+    const { data } = await axios.get('https://api.github.com/repos/spknetwork/proofofaccess/releases/latest');
     const { tag_name, assets } = data;
 
     console.log(tag_name);
