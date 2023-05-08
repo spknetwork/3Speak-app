@@ -27,7 +27,6 @@ export function Player(props: PlayerProps) {
 
     async function load() {
       let reflink
-
       if (props.reflink) {
         reflink = props.reflink
       } else {
@@ -46,6 +45,8 @@ export function Player(props: PlayerProps) {
       }
 
       let vidInfo
+      console.log('videoInfo', props.videoInfo)
+      console.log('reflink', reflink)
       if (props.videoInfo) {
         vidInfo = props.videoInfo
       } else if (reflink) {
@@ -53,8 +54,12 @@ export function Player(props: PlayerProps) {
       } else {
         throw new Error('Cannot set video info!')
       }
+      console.log('vidInfo', vidInfo)
       const vidurl = await VideoService.getVideoSourceURL(vidInfo)
-      setThumbnail(await VideoService.getNewThumbnailURL(vidInfo.author, vidInfo.permlink))
+      console.log('vidurl', vidurl)
+      const thumbnailUrl = await VideoService.getThumbnailURL(vidInfo)
+      console.log('thumbnailUrl', thumbnailUrl)
+      setThumbnail(thumbnailUrl)
       setVideoUrl(vidurl)
       setVideoInfo(vidInfo)
     }

@@ -70,3 +70,38 @@ export const handleUpdatePostingData = async (peerId: string): Promise<void> => 
     }
   )
 }
+
+export async function postCustomJson(username, metadata, customJsonId) {
+  const profileID = window.localStorage.getItem('SNProfileID')
+  const getAccount = (await PromiseIPC.send('accounts.get', profileID as any)) as any
+  const hiveInfo = Finder.one.in(getAccount.keyring).with({ type: 'hive' })
+  const wif = hiveInfo.privateKeys.posting_key
+
+  const customJsonPayload = {
+    required_auths: [],
+    required_posting_auths: [username],
+    id: customJsonId,
+    json: JSON.stringify(metadata),
+  }
+
+  const customJsonOperation = [
+    'custom_json',
+    customJsonPayload
+  ];
+
+  broadcast.send(
+    { operations: [customJsonOperation] },
+    { posting: wif },
+    (error, result) => {
+      if (error) {
+        console.error(error)
+        console.error('Error encountered broadcasting custom json')
+      }
+
+      if (result) {
+        console.log(result)
+        console.log('Success broadcasting custom json')
+      }
+    }
+  );
+}

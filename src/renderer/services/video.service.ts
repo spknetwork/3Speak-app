@@ -13,16 +13,20 @@ const Finder = ArraySearch.Finder
 export class VideoService {
   static async getVideoSourceURL(permalink) {
     let post_content
+    console.log('permalink', permalink)
     if (typeof permalink === 'object') {
       post_content = permalink
+      console.log('post_content1', post_content)
     } else {
       post_content = await AccountService.permalinkToVideoInfo(permalink)
+      console.log('post_content2', post_content)
     }
-
+    console.log('post_content', post_content.sources)
     const videoSource = Finder.one.in(post_content.sources).with({
       type: 'video',
     })
     if (videoSource) {
+      console.log('videoSource', videoSource)
       const url = videoSource.url as string
       if (typeof url === 'string' && !url.startsWith('ipfs')) {
         return url
@@ -44,6 +48,7 @@ export class VideoService {
         return videoSource.url
       }
     } else {
+      console.error('Invalid post metadata')
       throw new Error('Invalid post metadata')
     }
   }
