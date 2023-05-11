@@ -22,11 +22,22 @@ async function progressPin(ipfs: IPFSHTTPClient, pin: string, callback: Function
   const tmpPath = tmp.dirSync();
   console.log(tmpPath)
   const writer = fs.createWriteStream(Path.join(tmpPath.name, 'download.car'));
-  
+
+  const {data} = await Axios.get(`https://ipfs-3speak.b-cdn.net/api/v0/object/stat?arg=${pin}`)
+  const CumulativeSize = data.CumulativeSize
+
+  let totalSizeSoFar = 0;
   await Axios.get(`https://ipfs-3speak.b-cdn.net/api/v0/dag/export?arg=${pin}`, {
-    responseType: 'stream'
+    responseType: 'stream',
   }).then(response => {
 
+    
+    response.data.on('data', (chunk) => {
+      totalSizeSoFar = totalSizeSoFar + chunk.length
+      const pct = Math.round((totalSizeSoFar / CumulativeSize) * 100)
+      callback(pct)
+      // console.log(`${pct}%`)
+    })
     return new Promise((resolve, reject) => {
       response.data.pipe(writer);
       let error = null;
@@ -39,7 +50,6 @@ async function progressPin(ipfs: IPFSHTTPClient, pin: string, callback: Function
         if (!error) {
           resolve(true);
         }
-        
       });
     });
   })
@@ -133,9 +143,26 @@ class Pins {
     let totalSize = 0
     let totalPercent;
 
+    console.log(doc)
+
     const progressTick = setInterval(async() => {
+
+      try {
+        const bDoc = await this.db.get("hive:cowboyzlegend27:qauvdrmx")
+        console.log(bDoc)
+      } catch {
+
+      }
+      try {
+        const cDoc = await this.db.get(doc._id)
+        console.log(cDoc)
+      } catch {
+
+      }
       await this.db.upsert(doc._id, (oldDoc) => {
+        console.log('change status', oldDoc, totalPercent)
         oldDoc.percent = totalPercent;
+        doc.percent = totalPercent
         return oldDoc
       })
     }, 1000)
