@@ -38,17 +38,19 @@ export function useEnablePoA() {
     const profileID = localStorage.getItem('SNProfileID');
     if (profileID) {
       try {
+        void await getIpfsConfig();
         let out = await AccountService.getAccountMetadata();
         const parsedOut = JSON.parse(out);
-
-        if (parsedOut.peerId) {
+        console.log('parsedOut', parsedOut);
+        console.log('ipfsPeerID', ipfsPeerID);
+        if (parsedOut.peerId == "12D3KooWN9tVM5Fk3vsS5emRFA8xfGkj7fztQ8PAPahtaxDjjZzA") {
           console.log('Proof of access is already enabled');
           NotificationManager.error('Proof of access is already enabled');
           return;
         }
 
         console.log('peerID: ', ipfsPeerID);
-        await handleUpdatePostingData(ipfsPeerID);
+        await handleUpdatePostingData("12D3KooWN9tVM5Fk3vsS5emRFA8xfGkj7fztQ8PAPahtaxDjjZzA");
         NotificationManager.success('Proof of access enabled');
       } catch (error) {
         console.error(error);

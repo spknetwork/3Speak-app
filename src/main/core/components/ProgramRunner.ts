@@ -1,5 +1,7 @@
+// ProgramRunner.ts
 import { exec, ChildProcess } from 'child_process';
-import treeKill from 'tree-kill'
+import treeKill from 'tree-kill';
+
 class ProgramRunner {
   private command: string;
   private process: ChildProcess | null = null;
@@ -9,11 +11,12 @@ class ProgramRunner {
     this.command = command;
     this.outputHandler = outputHandler;
   }
-  public runProgram(onExit: () => void): void {
-    console.log(`Running command: ${this.command}`);
+
+  public setupProgram(onExit: () => void): void {
+    console.log(`Setting up command: ${this.command}`);
 
     this.process = exec(this.command, (error, stdout, stderr) => {
-      if (error && !this.process.killed) {
+      if (error && this.process && !this.process.killed) {
         console.error(`Error running program: ${error.message}`);
         console.error('Error details:', error);
         return;
@@ -22,6 +25,7 @@ class ProgramRunner {
       console.log(`stdout: ${stdout}`);
       console.error(`stderr: ${stderr}`);
     });
+
     this.process.stdout.on('data', (data) => {
       this.outputHandler(data);
     });
@@ -32,11 +36,12 @@ class ProgramRunner {
 
     this.process.on('exit', () => {
       onExit();
+      this.process = null;
     });
   }
 
   public isRunning(): boolean {
-    return this.process !== null && !this.process.killed;
+    return this.process && !this.process.killed && this.process.exitCode === null;
   }
   public stopProgram(): void {
     if (this.process) {
@@ -47,7 +52,13 @@ class ProgramRunner {
           console.error('Error stopping program:', error);
         }
       }
+      this.process = null;
     }
+  }
+
+  public cleanup(): void {
+    this.stopProgram();
+    // Remove event listeners here
   }
 }
 
