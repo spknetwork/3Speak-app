@@ -1,4 +1,8 @@
-import React from 'react'
+// file src\renderer\App.tsx:
+import React, { useState } from 'react';
+import { usePoAProgramRunner } from './views/PoAView/usePoAProgramRunner';
+import { PoAProgramRunnerProvider } from './views/PoAView/PoAProgramRunnerContext';
+import { PoAStateProvider } from './views/PoAView/PoAStateContext'; // Import PoAStateProvider
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { HashRouter, Switch, Route } from 'react-router-dom'
 import './css/App.css'
@@ -33,8 +37,13 @@ export const IndexerClient = new ApolloClient({
 })
 
 export function App() {
+  const terminalRef = React.useRef<HTMLDivElement>();
+  const { terminal, setTerminal, isPoARunning, runPoA, contextValue } = usePoAProgramRunner();  // Add this line
+
   return (
-    <div>
+    <PoAProgramRunnerProvider>
+      <PoAStateProvider>
+      <div>
       <StartUp />
       <Popup
         className="mm-popup"
@@ -95,5 +104,7 @@ export function App() {
         </Switch>
       </HashRouter>
     </div>
+      </PoAStateProvider>
+    </PoAProgramRunnerProvider>
   )
 }

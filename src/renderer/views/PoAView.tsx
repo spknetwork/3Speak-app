@@ -3,7 +3,7 @@ import 'brace/theme/github';
 import 'brace/theme/monokai';
 import 'brace/theme/solarized_dark';
 import 'jsoneditor-react/es/editor.min.css';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Terminal } from 'xterm';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import 'xterm/css/xterm.css';
@@ -12,16 +12,18 @@ import { PoAViewContent } from './PoAView/PoAViewContent';
 import { usePoAInstaller } from './PoAView/usePoAInstaller';
 import { usePoAProgramRunner } from './PoAView/usePoAProgramRunner';
 import { useEnablePoA } from './PoAView/useEnablePoA';
+import { usePoAProgramRunnerContext } from './PoAView/PoAProgramRunnerContext';
 
 export function PoAView() {
-  const terminalRef = useRef<HTMLDivElement>(null);
+  const { programRunner, setProgramRunner, terminalRef } = usePoAProgramRunnerContext();
+
   const {
     alreadyEnabled,
     enablePoA,
     loadAlreadyEnabled,
   } = useEnablePoA();
   const updater = usePoAInstaller();
-  const { terminal, setTerminal, isPoARunning, runPoA } = usePoAProgramRunner(terminalRef);
+  const { terminal, setTerminal, isPoARunning, runPoA, contextValue } = usePoAProgramRunner();
 
   useEffect(() => {
     if (terminalRef.current && !terminal) {
@@ -30,8 +32,13 @@ export function PoAView() {
       term.loadAddon(new WebLinksAddon());
       setTerminal(term);
     }
-    void loadAlreadyEnabled();
-  }, [terminal]);
+
+    return () => {
+      if (terminal) {
+        terminal.dispose();
+      }
+    };
+  }, [terminal, terminalRef]);
 
   return (
     <PoAViewContent
