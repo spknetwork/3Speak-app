@@ -32,7 +32,7 @@ export const pinRows = (pinList: any[], removePin: any) => {
                 <td>{pin.source}</td>
                 <td>{expireText}</td>
                 <td>{pinDateText}</td>
-                <td>{pin.size === 0 ? <strong>Pinning In Progress</strong> : sizeBest}</td>
+                <td>{pin.size === 0 ? <strong>Pinning In Progress {pin.percent}%</strong> : sizeBest}</td>
                 <td>
                   <Button variant="danger" onClick={() => removePin(pin._id)}>
                     X
