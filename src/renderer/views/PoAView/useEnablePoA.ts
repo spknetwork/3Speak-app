@@ -43,14 +43,14 @@ export function useEnablePoA() {
         const parsedOut = JSON.parse(out);
         console.log('parsedOut', parsedOut);
         console.log('ipfsPeerID', ipfsPeerID);
-        if (parsedOut.peerId == "12D3KooWN9tVM5Fk3vsS5emRFA8xfGkj7fztQ8PAPahtaxDjjZzA") {
+        if (parsedOut.peerId == ipfsPeerID) {
           console.log('Proof of access is already enabled');
           NotificationManager.error('Proof of access is already enabled');
           return;
         }
 
         console.log('peerID: ', ipfsPeerID);
-        await handleUpdatePostingData("12D3KooWN9tVM5Fk3vsS5emRFA8xfGkj7fztQ8PAPahtaxDjjZzA");
+        await handleUpdatePostingData(ipfsPeerID);
         NotificationManager.success('Proof of access enabled');
       } catch (error) {
         console.error(error);
