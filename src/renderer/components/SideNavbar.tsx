@@ -202,12 +202,12 @@ export function SideNavbar(props: any) {
             </div>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="https://3speak.co/intl/about_us">
+            <a className="nav-link" href="https://3speak.tv/intl/about_us">
               About us
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="https://3speak.co/intl/about_us">
+            <a className="nav-link" href="https://3speak.tv/intl/about_us">
               FAQ
             </a>
           </li>
@@ -216,17 +216,17 @@ export function SideNavbar(props: any) {
             <a
               className=""
               target="_blank"
-              href="https://twitter.com/3speakonline?utm_source=3speak.co"
+              href="https://twitter.com/3speaktv?utm_source=3speak.tv"
             >
               <FaTwitter size={28} />
             </a>
-            <a className="ml-2" target="_blank" href="https://t.me/threespeak?utm_source=3speak.co">
+            <a className="ml-2" target="_blank" href="https://t.me/threespeak?utm_source=3speak.tv">
               <FaTelegram size={28} />
             </a>
             <a
               className="ml-2"
               target="_blank"
-              href="https://discord.me/3speak?utm_source=3speak.co"
+              href="https://discord.me/3speak?utm_source=3speak.tv"
             >
               <i className="fab fa-discord text-muted fa-2x"></i>
               <FaDiscord size={28} />
@@ -255,16 +255,16 @@ export function SideNavbar(props: any) {
               Find us
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <a className="dropdown-item" href="https://t.me/threespeak?utm_source=3speak.co">
+              <a className="dropdown-item" href="https://t.me/threespeak?utm_source=3speak.tv">
                 Telegram
               </a>
-              <a className="dropdown-item" href="https://discord.me/3speak?utm_source=3speak.co">
+              <a className="dropdown-item" href="https://discord.me/3speak?utm_source=3speak.tv">
                 Discord
               </a>
               <a
                 className="dropdown-item"
                 target="_blank"
-                href="https://twitter.com/3speakonline?utm_source=3speak.co"
+                href="https://twitter.com/3speakonline?utm_source=3speak.tv"
               >
                 Twitter
               </a>
