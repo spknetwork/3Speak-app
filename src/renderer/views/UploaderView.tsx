@@ -70,7 +70,7 @@ export function UploaderView() {
       e, thumbnailPreview, setThumbnailInfo, setVideoSourceFile, setLogData, ipfs, logData, videoInfo
     });
   };
-
+  
   const handleStartEncode = async () => {
     await startEncode({
       event, videoSourceFile, hwaccelOption, setEncodingInProgress, setStartTime, setEndTime, setProgress, setStatusInfo, setEstimatedTimeRemaining, setVideoInfo, setPublishReady, progress, statusInfo

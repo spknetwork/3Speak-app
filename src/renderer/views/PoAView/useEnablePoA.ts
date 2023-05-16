@@ -48,7 +48,6 @@ export function useEnablePoA() {
           NotificationManager.error('Proof of access is already enabled');
           return;
         }
-
         console.log('peerID: ', ipfsPeerID);
         await handleUpdatePostingData(ipfsPeerID);
         NotificationManager.success('Proof of access enabled');

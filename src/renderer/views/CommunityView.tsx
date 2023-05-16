@@ -14,8 +14,11 @@ const client = new HiveClient('https://api.openhive.network')
 
 export function CommunityView(props: any) {
   const [communityInfo, setCommunityInfo] = useState({} as any)
-  // const [newVideos, setNewVideos] = useState([])
-  // const [trendingVideos, setTrendingVideos] = useState([])
+  //const [newVideos, setNewVideos] = useState([])
+  //onst [trendingVideos, setTrendingVideos] = useState([])
+  //const newVideos = useLatestCommunityFeed(reflink.root)
+  //const trendingVideos = useTrendingCommunityFeed(reflink.root)
+
   const reflink = useMemo(() => {
     return RefLink.parse(props.match.params.reflink)
   }, [props.match])
@@ -24,6 +27,7 @@ export function CommunityView(props: any) {
   const trendingVideos = useTrendingCommunityFeed(reflink.root)
   const [backgroundUrl, setBackgroundUrl] = useState(null)
 
+  // for development purpouses:
 
   // for development purpouses:
 
@@ -48,7 +52,6 @@ export function CommunityView(props: any) {
   useEffect(() => {
     void generate()
   }, [reflink])
-
   return (
     <div>
       <div
@@ -82,9 +85,7 @@ export function CommunityView(props: any) {
         </h1>
       </div>
       <h4 className="mt-3">
-        <ReactMarkdown>
-          {communityInfo.about}
-        </ReactMarkdown>
+        <ReactMarkdown>{communityInfo.about}</ReactMarkdown>
       </h4>
       <p>{communityInfo.description}</p>
 
