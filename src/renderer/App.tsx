@@ -1,4 +1,8 @@
-import React from 'react'
+// file src\renderer\App.tsx:
+import React, { useState } from 'react';
+import { usePoAProgramRunner } from './views/PoAView/usePoAProgramRunner';
+import { PoAProgramRunnerProvider } from './views/PoAView/PoAProgramRunnerContext';
+import { PoAStateProvider } from './views/PoAView/PoAStateContext'; // Import PoAStateProvider
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { HashRouter, Switch, Route } from 'react-router-dom'
 import './css/App.css'
@@ -15,6 +19,7 @@ import { WatchView } from './views/WatchView'
 import { LeaderboardView } from './views/LeaderboardView'
 import { CommunityView } from './views/CommunityView'
 import { IpfsConsoleView } from './views/IpfsConsoleView'
+import { PoAView } from './views/PoAView'
 import { GridFeedView } from './views/GridFeedView'
 import { NotFoundView } from './views/NotFoundView'
 import { PinsView } from './views/PinsView'
@@ -27,13 +32,18 @@ import { CreatorStudioView } from './views/CreatorStudioView'
 import { useQuery, gql, ApolloClient, InMemoryCache } from '@apollo/client'
 
 export const IndexerClient = new ApolloClient({
-  uri: 'https://spk-union.us-west.web3telekom.xyz/api/v2/graphql',
+  uri: 'https://union.us-02.infra.3speak.tv/api/v2/graphql',
   cache: new InMemoryCache(),
 })
 
 export function App() {
+  const terminalRef = React.useRef<HTMLDivElement>();
+  const { terminal, setTerminal, isPoARunning, runPoA, contextValue } = usePoAProgramRunner();  // Add this line
+
   return (
-    <div>
+    <PoAProgramRunnerProvider>
+      <PoAStateProvider>
+      <div>
       <StartUp />
       <Popup
         className="mm-popup"
@@ -85,6 +95,7 @@ export function App() {
           <Route path="/leaderboard/" component={LeaderboardView} />
           <Route path="/pins/" component={PinsView} />
           <Route path="/ipfsconsole/" component={IpfsConsoleView} />
+          <Route path="/proofofaccess/" component={PoAView} />
           <Route path="/creatorstudio/" component={CreatorStudioView} />
           <Route path="/login" component={LoginView} />
           <Route path="/accounts" component={AccountsView} />
@@ -93,5 +104,7 @@ export function App() {
         </Switch>
       </HashRouter>
     </div>
+      </PoAStateProvider>
+    </PoAProgramRunnerProvider>
   )
 }

@@ -189,6 +189,9 @@ export function SideNavbar(props: any) {
             <Nav.Link href="#/ipfsconsole">
               <FaGlobe /> Ipfs Console
             </Nav.Link>
+            <Nav.Link href="#/proofofaccess">
+              <FaGlobe /> Proof of Access
+            </Nav.Link>
           </NavDropdown>
         </Nav>
 
