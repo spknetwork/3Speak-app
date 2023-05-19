@@ -35,7 +35,7 @@ const defaultIpfsConfig = {
     '/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt',
     '/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ',
     '/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ',
-    '/ip4/5.196.95.75/tcp/4001/p2p/12D3KooWKgdHAPAxhGRtUFhfeec3s4ujhVo31YvEYfKh4HaWXVfe',
+    '/ip4/65.21.201.94/tcp/4001/p2p/12D3KooWEcAmwmonJVnySsBsQEYCT4euQNr2v4KG28PcHkzMainK',
     '/ip4/185.130.44.194/tcp/4001/p2p/12D3KooWBGA84tBTHetG3eJ5N6iu6Wh9XeKxzcxvJkp5G46rpsyK',
   ],
   Swarm: {
@@ -51,9 +51,9 @@ const defaultIpfsConfig = {
   Addresses: {
     API: IPFS_SELF_MULTIADDR,
     Announce: [],
-    Gateway: '/ip4/127.0.0.1/tcp/8080',
+    Gateway: '/ip4/127.0.0.1/tcp/8081',
     NoAnnounce: [],
-    Swarm: ['/ip4/0.0.0.0/tcp/4001', '/ip6/::/tcp/4001', '/ip6/::/udp/4001/quic'],
+    Swarm: ['/ip4/0.0.0.0/tcp/4004', '/ip6/::/tcp/4004', '/ip6/::/udp/4004/quic'],
   },
 }
 export class IpfsHandler {
@@ -164,7 +164,7 @@ export class IpfsHandler {
     if (process.env.IPFS_Path) {
       ipfsPath = process.env.IPFS_Path
     } else {
-      ipfsPath = Path.join(os.homedir(), '.ipfs')
+      ipfsPath = Path.join(os.homedir(), '.ipfs-3speak')
     }
 
     let exists
@@ -207,7 +207,7 @@ export class IpfsHandler {
       const gma = await ipfs.config.get('Addresses.Gateway')
       gateway = toUri(gma) + '/ipfs/'
     } else {
-      gateway = 'http://localhost:8080/ipfs/'
+      gateway = 'http://localhost:8081/ipfs/'
     }
 
     return {
