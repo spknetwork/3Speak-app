@@ -45,8 +45,6 @@ const defaultIpfsConfig = {
       LowWater: 450,
       Type: 'basic',
     },
-    EnableAutoRelay: true,
-    EnableRelayHop: false,
   },
   Addresses: {
     API: IPFS_SELF_MULTIADDR,
