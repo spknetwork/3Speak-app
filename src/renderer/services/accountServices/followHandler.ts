@@ -1,4 +1,4 @@
-import { hive } from '@hiveio/hive-js'
+import hive from '@hiveio/hive-js'
 import ArraySearch from 'arraysearch'
 export async function followHandler(profileID, followOp) {
   const Finder = ArraySearch.Finder

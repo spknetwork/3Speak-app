@@ -1,4 +1,4 @@
-import { hive } from '@hiveio/hive-js'
+import hive from '@hiveio/hive-js'
 import PromiseIPC from 'electron-promise-ipc'
 import ArraySearch from 'arraysearch'
 

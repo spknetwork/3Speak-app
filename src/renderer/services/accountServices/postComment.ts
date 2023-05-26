@@ -1,4 +1,4 @@
-import { hive } from '@hiveio/hive-js'
+import hive from '@hiveio/hive-js'
 import { CommentOp } from '../../../common/models/comments.model'
 import PromiseIPC from 'electron-promise-ipc'
 import { HiveInfo } from '../../../common/models/hive.model'

@@ -1,4 +1,4 @@
-import { hive } from '@hiveio/hive-js'
+import hive from '@hiveio/hive-js'
 
 export async function voteHandler(voteOp) {
   switch (voteOp.accountType) {
