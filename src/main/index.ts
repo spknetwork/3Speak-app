@@ -101,6 +101,7 @@ async function startup(): Promise<void> {
 void startup()
 
 process.on('unhandledRejection', (err: Error) => {
+  console.log(err)
   core.logger.error(`Unhandled rejection!`)
   core.logger.error(err.message)
   core.logger.error(err.stack)
@@ -109,6 +110,7 @@ process.on('unhandledRejection', (err: Error) => {
 })
 
 process.on('uncaughtException', (err: Error) => {
+  console.log('err', err)
   core.logger.error(`Uncaught exception!`)
   core.logger.error(err.message)
   core.logger.error(err.stack)

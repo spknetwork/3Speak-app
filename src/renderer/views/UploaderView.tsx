@@ -50,7 +50,7 @@ export function UploaderView() {
   const [blockedGlobalMessage, setBlockedGlobalMessage] = useState('')
 
   useEffect(() => {
-    ipfs.current = IPFSHTTPClient.create({ host: IPFS_HOST })
+    ipfs.current = IPFSHTTPClient.create({ url: IPFS_HOST })
   }, [])
 
   const handlePublish = async () => {

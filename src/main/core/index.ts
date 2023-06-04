@@ -1,5 +1,6 @@
 import { IPFSHTTPClient } from 'ipfs-http-client'
 import winston from 'winston'
+import execa from 'execa'
 import Components from './components'
 import DistillerDB from './components/DistillerDB'
 import { EncoderService } from './components/EncoderService'
@@ -37,14 +38,19 @@ export class CoreService {
   async install() {
     this.start_progress.message = 'Installing IPFS'
     await waIpfs.install({
-      version: 'v0.19.0',
+      version: 'v0.19.2',
       dev: process.env.NODE_ENV === 'development',
       recursive: true,
     })
     await new Promise<void>((resolve) => {
       setTimeout(async () => {
+        const ipfsInfo = await IpfsHandler.getIpfs()
         this.start_progress.message = 'Initializing IPFS'
-        await IpfsHandler.init(undefined)
+        try {
+          await IpfsHandler.init(ipfsInfo.ipfsPath)
+        } catch {
+
+        }
         this.start_progress.message = null
         resolve()
       }, 5000)
@@ -87,8 +93,19 @@ export class CoreService {
           fs.chmodSync(ipfsPath, 755)
         }
       }
+      const output = await execa(ipfsPath, ['version', '-n'])
+      console.log(output)
+      if(output.stdout !== "0.16.2") {
+        console.log('Ipfs not up to date')
+        throw new Error('Ipfs not up to date')
+      }
     } catch {
-      await this.install()
+      console.log('installing ipfs update')
+      try {
+        await this.install()
+      } catch(ex) {
+        console.log(ex)
+      }
     }
 
     this.config = new Components.Config(this._options.path)
@@ -119,12 +136,19 @@ export class CoreService {
     this.events.emit('ready')
     this.start_progress.ready = true
     this.start_progress.message = null
+
+    console.log('starting message LOOP')
     setInterval(async () => {
-      const peerIds = (await this.ipfs.config.get('Bootstrap')) as any
-      for (const peerId of peerIds) {
-        try {
-          await this.ipfs.swarm.connect(peerId)
-        } catch {}
+      console.log(IpfsHandler.isReady)
+      try {
+        const peerIds = (await this.ipfs.config.get('Bootstrap')) as any
+        for (const peerId of peerIds) {
+          try {
+            await this.ipfs.swarm.connect(peerId)
+          } catch {}
+        }
+      } catch {
+
       }
     }, 60000)
   }

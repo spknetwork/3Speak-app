@@ -22,12 +22,8 @@ import { PinLocally } from './WatchView/watchViewHelpers/PinLocally';
 import { showDebug } from './WatchView/watchViewHelpers/showDebug';
 const Finder = ArraySearch.Finder
 
-let ipfsClient
-try {
-  ipfsClient = IPFSHTTPClient.create({ host: IPFS_HOST })
-} catch (error) {
-  throw error
-}
+let ipfsClient = IPFSHTTPClient.create({ url: IPFS_HOST })
+
 
 export function WatchView(props: any) {
   const player = useRef<any>()

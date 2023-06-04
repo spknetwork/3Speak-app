@@ -9,6 +9,11 @@ import { IPFS_HOST, IPFS_SELF_MULTIADDR } from '../../../common/constants'
 const waIpfs = require('wa-go-ipfs')
 const toUri = require('multiaddr-to-uri')
 
+const IPFSPORTS = [
+  '5001',
+  '5004'
+]
+
 const defaultIpfsConfig = {
   API: {
     HTTPHeaders: {
@@ -56,6 +61,7 @@ const defaultIpfsConfig = {
 }
 export class IpfsHandler {
   static events: any
+  static isReady: boolean
   static get ready() {
     return new Promise(async (resolve, reject) => {
       let ipfsInfo = await IpfsHandler.getIpfs()
@@ -70,6 +76,9 @@ export class IpfsHandler {
     })
   }
   static async start(appPath) {
+    IpfsHandler.events.once('ready', async () => {
+      this.isReady = true
+    })
     console.log(`4`)
     let ipfsInfo = await IpfsHandler.getIpfs()
     if (!ipfsInfo.exists) {
@@ -83,7 +92,7 @@ export class IpfsHandler {
       IpfsHandler.events.emit('ready')
     } else {
       console.log(`6`)
-      if (ipfsInfo.ipfs) {
+      if (ipfsInfo.isRunning) {
         IpfsHandler.events.emit('ready')
       } else {
         fs.writeFileSync(
@@ -107,6 +116,7 @@ export class IpfsHandler {
     const goIpfsPath = await waIpfs.getPath(
       waIpfs.getDefaultPath({ dev: process.env.NODE_ENV === 'development' }),
     )
+    console.log('repoPath', {repoPath, goIpfsPath})
     await execa(goIpfsPath, ['init'], {
       env: {
         IPFS_Path: repoPath,
@@ -156,13 +166,12 @@ export class IpfsHandler {
     })
   }
   static async getIpfs() {
-    const AppPath = Path.join(os.homedir(), '.blasio-app')
 
     let ipfsPath: string
     if (process.env.IPFS_Path) {
       ipfsPath = process.env.IPFS_Path
     } else {
-      ipfsPath = Path.join(os.homedir(), '.ipfs-3speak')
+      ipfsPath = Path.join(os.homedir(), '.ipfs-3speak2')
     }
 
     let exists
@@ -188,20 +197,23 @@ export class IpfsHandler {
             }*/
     }
 
+    let isRunning = false;
     if (apiAddr) {
-      ipfs = IPFSHTTPClient.create({ host: IPFS_HOST })
+      ipfs = IPFSHTTPClient.create({ url: IPFS_HOST })
       try {
         await ipfs.config.get('Addresses')
+        isRunning = true
       } catch (ex) {
         console.error(`Error getting IPFS address config`)
         console.error(ex)
-        ipfs = null
+        // ipfs = null
       }
     } else {
       console.error(`***** API addr is null!!******`)
     }
 
-    if (ipfs !== null && ipfs) {
+    if (ipfs !== null && isRunning) {
+      
       const gma = await ipfs.config.get('Addresses.Gateway')
       gateway = toUri(gma) + '/ipfs/'
     } else {
@@ -210,6 +222,7 @@ export class IpfsHandler {
 
     return {
       isLocked,
+      isRunning,
       exists,
       ipfsPath,
       ipfs,

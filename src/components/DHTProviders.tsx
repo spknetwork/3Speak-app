@@ -5,7 +5,7 @@ import { IPFS_HOST } from '../common/constants';
 
 let ipfsClient;
 try {
-  ipfsClient = IPFSHTTPClient.create({ host: IPFS_HOST });
+  ipfsClient = IPFSHTTPClient.create({ url: IPFS_HOST });
 } catch (error) {
   console.error(`Error creating IPFS client in watch.tsx: `, error);
   throw error;
