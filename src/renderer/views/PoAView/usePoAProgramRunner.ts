@@ -26,7 +26,7 @@ export const usePoAProgramRunner = () => {
       const hiveInfo = Finder.one.in(getAccount.keyring).with({ type: 'hive' });
       const installDir = Path.join(os.homedir(), (await poaInstaller.current.getDefaultPath()) || '');
       const executablePath = Path.join(installDir, 'PoA.exe');
-      command = `"${executablePath}" -node=2 -username=${hiveInfo.username}`;  // Assign command here
+      command = `"${executablePath}" -node=2 -username=${hiveInfo.username} -IPFS_PORT=5004`;  // Assign command here
       if (!runner.current) {
         runner.current = new ProgramRunner(command, (data: string) => {
           if (!isMountedRef.current) return;

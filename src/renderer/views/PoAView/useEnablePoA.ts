@@ -12,7 +12,7 @@ export function useEnablePoA() {
   const [alreadyEnabled, setAlreadyEnabled] = useState(false);
   const getIpfsConfig = async () => {
     try {
-      const ipfs = create({ url: 'http://localhost:5001' });
+      const ipfs = create({ url: 'http://localhost:5004' });
       const { id } = await ipfs.id();
       console.log('peerId', id);
 
