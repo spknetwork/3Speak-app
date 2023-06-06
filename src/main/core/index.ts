@@ -12,6 +12,7 @@ const fs = require('fs')
 const waIpfs = require('wa-go-ipfs')
 const mergeOptions = require('merge-options')
 
+
 export class CoreService {
   _options: any
   events: any
@@ -33,15 +34,19 @@ export class CoreService {
     this.events = new EventEmitter()
     this.start = this.start.bind(this)
     this.stop = this.stop.bind(this)
-    this.start_progress = { ready: false, message: null }
+    this.start_progress = { ready: false, message: null, ipfsDownloadPct: null }
   }
   async install() {
     this.start_progress.message = 'Installing IPFS'
     await waIpfs.install({
       version: 'v0.19.2',
-      dev: process.env.NODE_ENV === 'development',
+      dev: false,
       recursive: true,
+      progressHandler: (pct) => {
+        this.start_progress.ipfsDownloadPct = pct
+      }
     })
+    console.log('its been installed!')
     await new Promise<void>((resolve) => {
       setTimeout(async () => {
         const ipfsInfo = await IpfsHandler.getIpfs()

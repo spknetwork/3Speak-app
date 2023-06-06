@@ -160,7 +160,6 @@ class Pins {
 
       }
       await this.db.upsert(doc._id, (oldDoc) => {
-        console.log('change status', oldDoc, totalPercent)
         oldDoc.percent = totalPercent;
         doc.percent = totalPercent
         return oldDoc

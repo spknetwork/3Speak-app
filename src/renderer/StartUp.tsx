@@ -6,6 +6,7 @@ import './css/Startup.css'
 export function StartUp(props: any) {
   const [show, setShow] = useState(false)
   const [message, setMessage] = useState('')
+  const [downloadProgress, setDownloadProgress] = useState(null)
 
   useEffect(() => {
     const load = async () => {
@@ -15,6 +16,7 @@ export function StartUp(props: any) {
         const pid = setInterval(async () => {
           const status = (await PromiseIpc.send('core.status', undefined as any)) as any
           setMessage(status.start_progress.message)
+          setDownloadProgress(status.start_progress.ipfsDownloadPct)
         }, 25)
         PromiseIpc.send('core.ready', undefined as any).then((eda) => {
           setShow(false)
@@ -36,7 +38,8 @@ export function StartUp(props: any) {
           <div style={{ textAlign: 'center' }}>
             <h1 style={{ paddingTop: '50px' }}>Loading</h1>
             <hr />
-            <p style={{ fontSize: '15px' }}>{message}</p>
+            <p style={{ fontSize: '15px' }}>{message} </p>
+            {downloadProgress ? `${downloadProgress}%` : null}
           </div>
         </Modal.Body>
       </Modal>
