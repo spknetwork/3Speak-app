@@ -189,6 +189,15 @@ export function GridFeedView(props: GridFeedProps) {
   //   window.scrollTo(0, 0)
   // }, [props.type, props.data])
 
+
+  if(props.type === "home") {
+    return <div>
+        <h2 style={{textAlign: 'center'}}>
+          Home page temporarily disabled. Please use New or Trending on the left sidebar.
+        </h2>
+    </div>
+  }
+
   return (
     <div>
       {props.titleText !== undefined ? (

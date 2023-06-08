@@ -52,7 +52,7 @@ export function SideNavbar(props: any) {
   }
 
   return (
-    <Navbar bg="white" expand="lg" id="layoutNav" className="bg_white fixed-left">
+    <Navbar bg="white" expand="lg" id="layoutNav" className="bg_white fixed-left"  style={{overflow:'scroll'}}>
       <Navbar.Brand>
         <img src={SpeakLogo} />
       </Navbar.Brand>
@@ -93,7 +93,7 @@ export function SideNavbar(props: any) {
             </Nav.Link>
           )}
           <hr />
-          <Nav.Link href="#/">
+          <Nav.Link href="#/home">
             <div className="nav_icons">
               <img src={iconHome} height="14px" />
             </div>

@@ -61,6 +61,9 @@ export function App() {
       <HashRouter>
         <Switch>
           <Route path="/" exact>
+            <GridFeedView awaitingMoreData={true} type="new" />
+          </Route>
+          <Route path="/home" exact>
             <GridFeedView awaitingMoreData={true} type="home" />
           </Route>
           <Route path="/new" exact>
