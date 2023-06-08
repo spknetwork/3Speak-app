@@ -301,7 +301,7 @@ export function useGraphqlFeed(props: any) {
   let query
   if (props.type === 'trending') {
     query = TRENDING_FEED
-  } else if (props.type === 'first_upload') {
+  } else if (props.type === 'first-uploads') {
     query = FIRST_UPLOADS
   } else if (props.type === 'community-new') {
     query = LATEST_COMMUNITY_FEED

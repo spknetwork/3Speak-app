@@ -151,12 +151,12 @@ export function SideNavbar(props: any) {
             </div>
             Leaderboard
           </Nav.Link>
-          <Nav.Link href="#/newcomers">
+          {/* <Nav.Link href="#/newcomers">
             <div className="nav_icons">
               <img src={iconNewcomer} height="19px" />
             </div>
             First Uploads 
-          </Nav.Link>
+          </Nav.Link> */}
           {/* <Nav.Link href="#/uploader">
             <div className="nav_icons">
               <FaToolbox />

@@ -87,7 +87,7 @@ export function App() {
               key="feed-newcomers"
               awaitingMoreData={true}
               titleText="First Uploads"
-              type="firstUploads"
+              type="first-uploads"
             />
           </Route>
           <Route path="/watch/:reflink" component={WatchView} />
