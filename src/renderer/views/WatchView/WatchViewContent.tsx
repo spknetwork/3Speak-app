@@ -159,7 +159,7 @@ export const WatchViewContent = (props: any) => {
                   })()}
                 </p>
               </div>
-              <CommentSection reflink={reflink.toString()} />
+              {/* <CommentSection reflink={reflink.toString()} /> */}
             </Col>
             <Col md={4}>
               <Row>

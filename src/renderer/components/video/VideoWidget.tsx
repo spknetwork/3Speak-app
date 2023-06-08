@@ -44,10 +44,10 @@ export function VideoWidget(props: any) {
     <HashRouter>
       <div className=" col-lg-3 col-md-4 col-xl-2 col-xxl-2     col-6 p-2 mb-3 marg_bot1 videowidget-padding">
         <div className="teaser_holder text-center">
-          <div className="card-label card-label-views">
+          {/* <div className="card-label card-label-views">
             <img className="play_i" src={PlaySVG} height="11px" />
             <span>{props.views}</span>
-          </div>
+          </div> */}
           <div className="card-label">
             {(() => {
               const pattern = DateTime.compile('mm:ss')

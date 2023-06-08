@@ -12,7 +12,7 @@ try {
 }
 
 export function DHTProviders(props) {
-  const [peers, setPeers] = useState(0);
+  const [peers, setPeers] = useState<string | number>('N/A"');
 
   useEffect(() => {
     void load();
@@ -32,7 +32,7 @@ export function DHTProviders(props) {
 
   return (
     <div>
-      <FaSitemap /> DHT Providers <strong>{peers}</strong>
+      <FaSitemap /> Storage Servers: <strong>{peers}</strong>
     </div>
   );
 }

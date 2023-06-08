@@ -171,7 +171,7 @@ const TRENDING_FEED = gql`
 
 const LATEST_COMMUNITY_FEED = gql`
   query LatestCommunityFeed($id: String) {
-    latestFeed(feedOptions: { byCommunity: { _id: $id } }) {
+    feed: socialFeed(feedOptions: { byCommunity: { _eq: $id } }) {
       items {
         body
         created_at
@@ -213,7 +213,7 @@ const LATEST_COMMUNITY_FEED = gql`
 
 const TRENDING_COMMUNITY_FEED = gql`
   query LatestCommunityFeed($id: String) {
-    trendingFeed(feedOptions: { byCommunity: { _id: $id } }) {
+    feed: trendingFeed(feedOptions: { byCommunity: { _eq: $id } }) {
       items {
         body
         created_at
@@ -267,10 +267,11 @@ function transformGraphqlToNormal(data) {
           title: video.title,
           duration:
             video.json_metadata.raw.video.info.duration || video.json_metadata.raw.video.duration,
-          views:
-            video.stats.total_hive_reward > 0
-              ? Math.abs(Number((Math.log(video.stats.total_hive_reward) / 100).toFixed(2)))
-              : 0,
+          total_hive_reward: video.stats.total_hive_reward,
+          views: video.stats.total_hive_reward,
+            // video.stats.total_hive_reward > 0
+            //   ? Math.abs(Number((Math.log(video.stats.total_hive_reward) / 100).toFixed(2)))
+            //   : 0,
 
           isIpfs: video.app_metadata.spkvideo.storage_type === 'ipfs',
           images: {
@@ -334,7 +335,7 @@ export function useGraphqlFeed(props: any) {
 export function useLatestCommunityFeed(parent_permlink) {
   const { data, loading, error } = useQuery(LATEST_COMMUNITY_FEED, {
     client: IndexerClient,
-    variables: { parent_permlink },
+    variables: { id: parent_permlink },
   })
   const videos = data?.latestFeed?.items || []
 
@@ -345,7 +346,7 @@ export function useLatestCommunityFeed(parent_permlink) {
 export function useTrendingCommunityFeed(parent_permlink) {
   const { data, loading, error } = useQuery(TRENDING_COMMUNITY_FEED, {
     client: IndexerClient,
-    variables: { parent_permlink },
+    variables: { id: parent_permlink },
   })
   const videos = data?.latestFeed?.items || []
 

@@ -35,7 +35,7 @@ export function GridFeedView(props: GridFeedProps) {
     type: props.type,
     id: props.community || props.username
   })
-  
+
   const reflink = useMemo(() => {
     return RefLink.parse(props.source || 'hive')
   }, [props.source])
@@ -43,148 +43,7 @@ export function GridFeedView(props: GridFeedProps) {
   const [offset, setOffset] = useState(0)
 
   const handleScroll = useCallback(async () => {
-    if (!awaitingMoreData) {
-      const windowHeight =
-        'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight
-      const body = document.body
-      const html = document.documentElement
-      const docHeight = Math.max(
-        body.scrollHeight,
-        body.offsetHeight,
-        html.clientHeight,
-        html.scrollHeight,
-        html.offsetHeight,
-      )
-      const windowBottom = windowHeight + window.pageYOffset
-      if (windowBottom + 200 >= docHeight) {
-        setAwaitingMoreData(true)
-        switch (reflink.source.value) {
-          case 'hive': {
-            //For now use the 3speak.tv API until a proper solution is devised
-            if (props.type === 'home') {
-              void fetch(`https://3speak.tv/api/trends/more?skip=${data.length}`)
-                .then((res) => res.json())
-                .then(async (json) => {
-                  json = json.recommended ? json.recommended : json.trends
-                  json.forEach((video) => {
-                    video['author'] = video['owner']
-                    delete video['owner']
-                  })
-                  json = data.concat(json)
-                  json = json.filter((video, index, self) => {
-                    return (
-                      index ===
-                      self.findIndex((v) => {
-                        if (v) {
-                          return v.author === video.author && v.permlink === video.permlink
-                        }
-                      })
-                    )
-                  })
-                  for (const e in json) {
-                    if (
-                      await PromiseIpc.send(
-                        'blocklist.has',
-                        `hive:${json[e].author}:${json[e].permlink}` as any,
-                      )
-                    ) {
-                      delete json[e]
-                    }
-                  }
-
-                  setData(json)
-                  setAwaitingMoreData(false)
-                })
-              return
-            }
-
-            const querySql = GridFeedQueryService.getFeedSql(props.type, offset)
-            const query = knex.raw(querySql)
-
-            query.on('query-response', (ret, det, aet) => {
-              //       console.log(ret, det, aet)
-            })
-            const blob = data
-            query
-              .stream()
-              .on('data', async (val) => {
-                if (
-                  await PromiseIpc.send(
-                    'blocklist.has',
-                    `hive:${val.author}:${val.permlink}` as any,
-                  )
-                ) {
-                  console.log(`${val.author} is blocked`)
-                  //return;
-                }
-                val.json_metadata = JSON.parse(val.json_metadata)
-                //console.log(val)
-                if (
-                  !(await PromiseIpc.send(
-                    'blocklist.has',
-                    `hive:${val.author}:${val.permlink}` as any,
-                  ))
-                ) {
-                  //console.log(val)
-                  if (!val.json_metadata.video) {
-                    val.json_metadata.video = {
-                      info: {},
-                    }
-                  } else if (!val.json_metadata.video.info) {
-                    val.json_metadata.video.info = {}
-                  }
-                  let thumbnail
-                  if (val.json_metadata.sourceMap) {
-                    const thumbnailOut = Finder.one
-                      .in(val.json_metadata.sourceMap)
-                      .with({ type: 'thumbnail' })
-                    if (thumbnailOut) {
-                      thumbnail = thumbnailOut.url
-                    } else {
-                      thumbnail = DefaultThumbnail
-                    }
-                    thumbnail = val.three_video.thumbnmail_url
-                    console.log(thumbnail)
-                  }
-                  console.log(val.json_metadata.sourceMap)
-                  console.log(val)
-                  blob.push({
-                    created: val.created,
-                    author: val.author,
-                    permlink: val.permlink,
-                    tags: val.json_metadata.tags,
-                    title: val.title,
-                    duration:
-                      val.json_metadata.video.info.duration || val.json_metadata.video.duration,
-                    isIpfs: val.json_metadata.video.info.ipfs || thumbnail ? true : false,
-                    ipfs: val.json_metadata.video.info.ipfs,
-                    images: {
-                      ipfs_thumbnail: thumbnail
-                        ? `/ipfs/${thumbnail.slice(7)}`
-                        : `/ipfs/${val.json_metadata.video.info.ipfsThumbnail}`,
-                      thumbnail: `https://threespeakvideo.b-cdn.net/${val.permlink}/thumbnails/default.png`,
-                      poster: `https://threespeakvideo.b-cdn.net/${val.permlink}/poster.png`,
-                      post: `https://threespeakvideo.b-cdn.net/${val.permlink}/post.png`,
-                    },
-                    views: val.total_vote_weight
-                      ? Math.log(val.total_vote_weight / 1000).toFixed(2)
-                      : 0,
-                  })
-                }
-                setOffset(offset + 1)
-                setData(blob)
-              })
-              .on('end', () => {
-                setAwaitingMoreData(false)
-              })
-            break
-          }
-          default: {
-            throw new Error(`Unrecognized feed type: ${reflink.source.value}`)
-          }
-        }
-      }
-    }
+    
   }, [])
 
   // init tasks
