@@ -39,7 +39,7 @@ export class CoreService {
   async install() {
     this.start_progress.message = 'Installing IPFS'
     await waIpfs.install({
-      version: 'v0.19.2',
+      version: 'v0.16.0',
       dev: false,
       recursive: true,
       progressHandler: (pct) => {
@@ -100,7 +100,7 @@ export class CoreService {
       }
       const output = await execa(ipfsPath, ['version', '-n'])
       console.log(output)
-      if(output.stdout !== "0.19.2") {
+      if(output.stdout !== "0.16.2") {
         console.log('Ipfs not up to date')
         throw new Error('Ipfs not up to date')
       }

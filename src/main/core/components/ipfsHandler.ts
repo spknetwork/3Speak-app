@@ -171,7 +171,7 @@ export class IpfsHandler {
     if (process.env.IPFS_PATH) {
       ipfsPath = process.env.IPFS_PATH
     } else {
-      ipfsPath = Path.join(os.homedir(), '.ipfs-3speak2')
+      ipfsPath = Path.join(os.homedir(), '.ipfs-3speak_v0.16.0')
     }
 
     let exists
