@@ -12,7 +12,7 @@ try {
 }
 
 export function DHTProviders(props) {
-  const [peers, setPeers] = useState<string | number>('N/A"');
+  const [peers, setPeers] = useState<string | number>('N/A');
 
   useEffect(() => {
     void load();
