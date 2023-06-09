@@ -119,14 +119,14 @@ export class IpfsHandler {
     console.log('repoPath', {repoPath, goIpfsPath})
     await execa(goIpfsPath, ['init'], {
       env: {
-        IPFS_Path: repoPath,
+        IPFS_PATH: repoPath,
       },
     })
     for (const key in defaultIpfsConfig) {
       const subTree = defaultIpfsConfig[key]
       await execa(goIpfsPath, ['config', '--json', key, JSON.stringify(subTree)], {
         env: {
-          IPFS_Path: repoPath,
+          IPFS_PATH: repoPath,
         },
       })
     }
@@ -143,7 +143,7 @@ export class IpfsHandler {
           ['daemon', '--enable-pubsub-experiment', '--enable-gc', '--migrate'],
           {
             env: {
-              IPFS_Path: repoPath,
+              IPFS_PATH: repoPath,
             },
           },
         )
@@ -168,8 +168,8 @@ export class IpfsHandler {
   static async getIpfs() {
 
     let ipfsPath: string
-    if (process.env.IPFS_Path) {
-      ipfsPath = process.env.IPFS_Path
+    if (process.env.IPFS_PATH) {
+      ipfsPath = process.env.IPFS_PATH
     } else {
       ipfsPath = Path.join(os.homedir(), '.ipfs-3speak2')
     }

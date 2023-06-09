@@ -100,7 +100,7 @@ export class CoreService {
       }
       const output = await execa(ipfsPath, ['version', '-n'])
       console.log(output)
-      if(output.stdout !== "0.16.2") {
+      if(output.stdout !== "0.19.2") {
         console.log('Ipfs not up to date')
         throw new Error('Ipfs not up to date')
       }
