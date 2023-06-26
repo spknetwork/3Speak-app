@@ -23,9 +23,10 @@ export function SideNavbar(props: any) {
   useEffect(() => {
     const load = async () => {
       const login = localStorage.getItem('SNProfileID')
-
+      console.log('login debug', login)
       if (login) {
         const user = (await AccountService.getAccount(login)) as any
+        console.log('login debug 2', user)
 
         const ringItem = user.keyring[0]
         setLogin(user.nickname)
