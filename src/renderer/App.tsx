@@ -1,6 +1,5 @@
 // file src\renderer\App.tsx:
 import React, { useState } from 'react';
-import { usePoAProgramRunner } from './views/PoAView/usePoAProgramRunner';
 import { PoAProgramRunnerProvider } from './views/PoAView/PoAProgramRunnerContext';
 import { PoAStateProvider } from './views/PoAView/PoAStateContext'; // Import PoAStateProvider
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -37,8 +36,6 @@ export const IndexerClient = new ApolloClient({
 })
 
 export function App() {
-  const terminalRef = React.useRef<HTMLDivElement>();
-  const { terminal, setTerminal, isPoARunning, runPoA, contextValue } = usePoAProgramRunner();  // Add this line
 
   return (
     <PoAProgramRunnerProvider>

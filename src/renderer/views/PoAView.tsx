@@ -1,3 +1,4 @@
+// Filename: PoAView.tsx
 import 'brace/mode/json';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -11,20 +12,14 @@ import 'xterm/css/xterm.css';
 import { PoAViewContent } from './PoAView/PoAViewContent';
 import { usePoAInstaller } from './PoAView/usePoAInstaller';
 import { usePoAProgramRunner } from './PoAView/usePoAProgramRunner';
-import { useEnablePoA } from './PoAView/useEnablePoA';
 import { usePoAProgramRunnerContext } from './PoAView/PoAProgramRunnerContext';
 
 export function PoAView() {
   const { programRunner, setProgramRunner, terminalRef } = usePoAProgramRunnerContext();
 
-  const {
-    alreadyEnabled,
-    enablePoA,
-    loadAlreadyEnabled,
-  } = useEnablePoA();
   const updater = usePoAInstaller();
   const { terminal, setTerminal, isPoARunning, runPoA, contextValue } = usePoAProgramRunner();
-
+  const { stopPoA } = contextValue;
   useEffect(() => {
     if (terminalRef.current && !terminal) {
       const term = new Terminal();
@@ -42,11 +37,10 @@ export function PoAView() {
 
   return (
     <PoAViewContent
-      alreadyEnabled={alreadyEnabled}
       isPoARunning={isPoARunning}
-      enablePoA={enablePoA}
       updatePoA={updater.updatePoA}
       runPoA={runPoA}
+      stopPoA={stopPoA} // Pass the stopPoA function as a prop
       terminalRef={terminalRef}
     />
   );
