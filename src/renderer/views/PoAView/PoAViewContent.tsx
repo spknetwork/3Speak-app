@@ -5,9 +5,7 @@ import { usePoAState } from './PoAStateContext';
 import { usePoAProgramRunner } from './usePoAProgramRunner';
 
 interface PoAViewContentProps {
-  alreadyEnabled: boolean;
   isPoARunning: boolean;
-  enablePoA: () => void;
   updatePoA: () => Promise<void>;
   runPoA: () => void;
   stopPoA: () => void;
@@ -15,15 +13,14 @@ interface PoAViewContentProps {
 }
 
 export const PoAViewContent: React.FC<PoAViewContentProps> = ({
-                                                                alreadyEnabled,
                                                                 isPoARunning,
-                                                                enablePoA,
                                                                 updatePoA,
                                                                 runPoA,
                                                                 terminalRef,
                                                               }) => {
   const { logs, validatorOnline, setValidatorOnline } = usePoAState();
   const [isDataReceived, setIsDataReceived] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [stats, setStats] = useState({
     syncStatus: '',
     peers: '',
@@ -101,12 +98,14 @@ export const PoAViewContent: React.FC<PoAViewContentProps> = ({
   }, [logs, terminalRef]);
 
   const startPoA = async () => {
-    if (!alreadyEnabled) {
-      enablePoA();
-    }
-    if (!isPoARunning && isDataReceived) {
+    if (!isPoARunning && !isDataReceived && !isUpdating) {
+      console.log('starting PoA');
+      setIsUpdating(true);
       await updatePoA();
+      setIsUpdating(false);
       runPoA();
+    } else {
+      console.log('PoA is already running');
     }
   };
   const stopPoA = () => {
@@ -131,26 +130,22 @@ export const PoAViewContent: React.FC<PoAViewContentProps> = ({
       <p>
         Enable the Proof of Access feature to earn rewards for storing data on your computer.
       </p>
-      <p>
-        <b>
-          By enabling proof of access your ipfs peer ID will be published to your hive profile metadata
-        </b>
-      </p>
       <b>
-      To test proof of access you can go to <a href="http://spk.tv" target="_blank">http://spk.tv</a>
+        To test proof of access you can go to <a href="http://spk.tv" target="_blank">http://spk.tv</a>
       </b>
       <p>
         <div>
           <OverlayTrigger
             placement="top"
-            overlay={<Tooltip id="run-proof-of-access-tooltip">{isDataReceived ? 'Stop' : 'Start'} Proof of Access software</Tooltip>}
+            overlay={<Tooltip id="run-proof-of-access-tooltip">{isDataReceived ? 'Stop' : isUpdating ? 'Downloading...' : 'Start'} Proof of Access software</Tooltip>}
           >
             <Button
               variant="light"
               size="sm"
+              disabled={isUpdating}
               onClick={isDataReceived ? stopPoA : startPoA}
             >
-              <span>{isDataReceived ? 'Stop' : 'Start'} Proof of Access</span>
+              <span>{isDataReceived ? 'Stop' : isUpdating ? 'Downloading...' : 'Start'} Proof of Access</span>
             </Button>
           </OverlayTrigger>
           <IoIosRadioButtonOn style={{ color: validatorOnline ? 'green' : 'red' }} />
@@ -158,10 +153,7 @@ export const PoAViewContent: React.FC<PoAViewContentProps> = ({
       </p>
       <h1>SPK Network Stats</h1>
       <Card className="stats-card">
-        <h2>Sync Status: <span style={{ color: validatorOnline ? 'green' : 'red' }}>{validatorOnline ? 'Synced' : 'Not Synced'}</span></h2>
-        <div style={{ height: '20px', width: `${stats.syncedPercentage}%`, backgroundColor: 'green' }}>
-          <span style={{ position: 'relative', color: 'white', textAlign: 'center', verticalAlign: 'middle', lineHeight: '20px' }}>{stats.syncedPercentage}%</span>
-        </div>
+        <h2>Network Status: <span style={{ color: validatorOnline ? 'green' : 'red' }}>{validatorOnline ? 'Synced' : 'Not Synced'}</span></h2>
       </Card>
       <Card className="stats-card">
         <h2>ValidatorCount Count: <span>{stats.validatorsCount}</span></h2>
@@ -176,7 +168,10 @@ export const PoAViewContent: React.FC<PoAViewContentProps> = ({
         <h2>Validators: <span>{stats.validators}</span></h2>
       </Card>
       <Card className="stats-card">
-        <h2>Local Storage: <span>{stats.networkStorage}</span></h2>
+        <h2>Local Pins: <span>{stats.networkStorage}</span></h2>
+        <div style={{ height: '20px', width: `${stats.syncedPercentage}%`, backgroundColor: 'green' }}>
+          <span style={{ position: 'relative', color: 'white', textAlign: 'center', verticalAlign: 'middle', lineHeight: '20px' }}>{stats.syncedPercentage}%</span>
+        </div>
       </Card>
     </div>
   );
