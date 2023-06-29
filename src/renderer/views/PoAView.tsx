@@ -1,3 +1,4 @@
+// Filename: PoAView.tsx
 import 'brace/mode/json';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -24,7 +25,7 @@ export function PoAView() {
   } = useEnablePoA();
   const updater = usePoAInstaller();
   const { terminal, setTerminal, isPoARunning, runPoA, contextValue } = usePoAProgramRunner();
-
+  const { stopPoA } = contextValue;
   useEffect(() => {
     if (terminalRef.current && !terminal) {
       const term = new Terminal();
@@ -47,6 +48,7 @@ export function PoAView() {
       enablePoA={enablePoA}
       updatePoA={updater.updatePoA}
       runPoA={runPoA}
+      stopPoA={stopPoA} // Pass the stopPoA function as a prop
       terminalRef={terminalRef}
     />
   );

@@ -14,6 +14,7 @@ export function usePoAInstaller() {
     } catch (error) {
       console.error('Error updating Proof of Access:', error);
     }
+    return
   };
 
   const initTerminal = (terminalRef: React.RefObject<HTMLDivElement>) => {
