@@ -188,7 +188,7 @@ export const usePinningUtils = () => {
   useEffect(() => {
     document.title = '3Speak - Tokenised video communities';
     generate();
-    pid.current = setInterval(generate, 1500);
+    pid.current = setInterval(generate, 40000);
     updateSearchTables();
 
     return () => {

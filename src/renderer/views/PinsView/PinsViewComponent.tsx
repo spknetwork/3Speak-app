@@ -1,3 +1,4 @@
+// Path: src\renderer\views\PinsView\PinsViewComponent.tsx
 import React from 'react';
 import { Button, Col, Dropdown, Row, Table } from 'react-bootstrap'
 import { CustomPinsViewToggle } from './CustomToggle'
@@ -55,6 +56,7 @@ export const PinsViewComponent: React.FC<PinsViewProps> =
             <th>Pin Date</th>
             <th>Size/Status</th>
             <th>Remove?</th>
+            <th>SPoA</th>
           </tr>
           </thead>
           <tbody>{pinRows}</tbody>
