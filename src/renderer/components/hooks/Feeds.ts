@@ -269,9 +269,9 @@ function transformGraphqlToNormal(data) {
             video.json_metadata.raw.video.info.duration || video.json_metadata.raw.video.duration,
           total_hive_reward: video.stats.total_hive_reward,
           views: video.stats.total_hive_reward,
-            // video.stats.total_hive_reward > 0
-            //   ? Math.abs(Number((Math.log(video.stats.total_hive_reward) / 100).toFixed(2)))
-            //   : 0,
+          // video.stats.total_hive_reward > 0
+          //   ? Math.abs(Number((Math.log(video.stats.total_hive_reward) / 100).toFixed(2)))
+          //   : 0,
 
           isIpfs: video.app_metadata.spkvideo.storage_type === 'ipfs',
           images: {

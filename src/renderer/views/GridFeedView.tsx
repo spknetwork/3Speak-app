@@ -14,6 +14,7 @@ export interface GridFeedProps {
   source?: 'hive'
   awaitingMoreData?: boolean
   type: string
+  tag?: string
   community?: string
   username?: string
   data?: any[]
@@ -33,7 +34,7 @@ export function GridFeedView(props: GridFeedProps) {
 
   const videos = useGraphqlFeed({
     type: props.type,
-    id: props.community || props.username
+    id: props.tag || props.community || props.username,
   })
 
   const reflink = useMemo(() => {
@@ -42,9 +43,7 @@ export function GridFeedView(props: GridFeedProps) {
 
   const [offset, setOffset] = useState(0)
 
-  const handleScroll = useCallback(async () => {
-    
-  }, [])
+  const handleScroll = useCallback(async () => {}, [])
 
   // init tasks
   useEffect(() => {
@@ -189,13 +188,14 @@ export function GridFeedView(props: GridFeedProps) {
   //   window.scrollTo(0, 0)
   // }, [props.type, props.data])
 
-
-  if(props.type === "home") {
-    return <div>
-        <h2 style={{textAlign: 'center'}}>
+  if (props.type === 'home') {
+    return (
+      <div>
+        <h2 style={{ textAlign: 'center' }}>
           Home page temporarily disabled. Please use New or Trending on the left sidebar.
         </h2>
-    </div>
+      </div>
+    )
   }
 
   return (
