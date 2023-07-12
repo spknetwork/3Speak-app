@@ -1,7 +1,7 @@
 import { GridFeedView } from './GridFeedView'
 import React, { useEffect, useMemo, useState } from 'react'
 import RefLink from '../../main/RefLink'
-import { useLatestCommunityFeed } from '../components/hooks/Feeds'
+import { useNewTagFeed } from '../components/hooks/Feeds'
 import { useParams } from 'react-router-dom'
 
 export function TagView(props: any) {
@@ -9,21 +9,12 @@ export function TagView(props: any) {
   const reflink = useMemo(() => {
     return RefLink.parse(props.match.params.reflink)
   }, [props.match])
-  const newVideos = useLatestCommunityFeed(reflink.root)
+  const newVideos = useNewTagFeed(reflink.root)
 
-  useEffect(() => {
-    console.log('newVideos')
-    console.log(newVideos)
-  }, [newVideos])
   return (
     <>
       {newVideos !== null ? (
-        <GridFeedView
-          key="community-new"
-          tag={reflink.root}
-          type={`community-new`}
-          data={newVideos}
-        />
+        <GridFeedView key="tag-new" type={`tag-new`} tag={reflink.root} data={newVideos} />
       ) : null}
     </>
   )

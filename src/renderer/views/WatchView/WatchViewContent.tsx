@@ -1,5 +1,5 @@
-import React from 'react';
-import { Container, Col, Row } from 'react-bootstrap';
+import React from 'react'
+import { Container, Col, Row } from 'react-bootstrap'
 import { FollowWidget } from '../../components/widgets/FollowWidget'
 import { FaDownload } from 'react-icons/fa'
 import { CollapsibleText } from '../../components/CollapsibleText'
@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown'
 import { BsInfoSquare } from 'react-icons/bs'
 import { CommentSection } from '../../components/video/CommentSection'
 import { VideoTeaser } from '../../components/video/VideoTeaser'
-import { Player } from '../../components/video/Player';
+import { Player } from '../../components/video/Player'
 import { LoopCircleLoading } from 'react-loadingg'
 import DateTime from 'date-and-time'
 import DOMPurify from 'dompurify'
@@ -34,7 +34,7 @@ export const WatchViewContent = (props: any) => {
     loadingMessage,
     reflink,
     Finder,
-  } = props;
+  } = props
 
   return (
     <div>
@@ -127,9 +127,9 @@ export const WatchViewContent = (props: any) => {
               <div className="single-video-info-content box mb-3">
                 <h6>About :</h6>
                 <CollapsibleText>
-                  <ReactMarkdown
-                    skipHtml={false}
-                  >{DOMPurify.sanitize(videoInfo.description)}</ReactMarkdown>
+                  <ReactMarkdown skipHtml={false}>
+                    {DOMPurify.sanitize(videoInfo.description)}
+                  </ReactMarkdown>
                   <hr />
                   <Container style={{ marginBottom: '10px', textAlign: 'center' }}>
                     <a
@@ -150,7 +150,7 @@ export const WatchViewContent = (props: any) => {
                       for (const tag of videoInfo.tags) {
                         out.push(
                           <span style={{ paddingLeft: '3px' }} key={tag}>
-                            <a>{tag}</a>
+                            <a href={`#/tag/hive:${tag}`}>{tag}</a>
                           </span>,
                         )
                       }
@@ -191,5 +191,5 @@ export const WatchViewContent = (props: any) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}

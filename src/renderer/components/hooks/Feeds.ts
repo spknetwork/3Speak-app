@@ -253,6 +253,48 @@ const TRENDING_COMMUNITY_FEED = gql`
   }
 `
 
+const LATEST_TAG_FEED = gql`
+  query LatestCommunityFeed($id: String) {
+    feed: socialFeed(feedOptions: { byTag: { _eq: $id } }) {
+      items {
+        body
+        created_at
+        parent_author
+        parent_permlink
+        permlink
+        title
+        updated_at
+        ... on HivePost {
+          parent_author
+          parent_permlink
+          author {
+            username
+          }
+          json_metadata {
+            raw
+          }
+          stats {
+            num_comments
+            num_votes
+            total_hive_reward
+          }
+          app_metadata
+          spkvideo
+          refs
+          post_type
+          permlink
+          title
+          tags
+          updated_at
+          body
+          community
+          created_at
+        }
+      }
+    }
+  }
+`
+
 function transformGraphqlToNormal(data) {
   let blob = []
   for (let video of data) {
@@ -309,6 +351,8 @@ export function useGraphqlFeed(props: any) {
     query = TRENDING_COMMUNITY_FEED
   } else if (props.type === 'author-feed') {
     query = LATEST_FEED_AUTHOR
+  } else if (props.type === 'tag-new') {
+    query = LATEST_TAG_FEED
   } else {
     query = LATEST_FEED
   }
@@ -345,6 +389,18 @@ export function useLatestCommunityFeed(parent_permlink) {
 }
 export function useTrendingCommunityFeed(parent_permlink) {
   const { data, loading, error } = useQuery(TRENDING_COMMUNITY_FEED, {
+    client: IndexerClient,
+    variables: { id: parent_permlink },
+  })
+  const videos = data?.latestFeed?.items || []
+
+  return useMemo(() => {
+    return transformGraphqlToNormal(videos)
+  }, [videos])
+}
+
+export function useNewTagFeed(parent_permlink) {
+  const { data, loading, error } = useQuery(LATEST_TAG_FEED, {
     client: IndexerClient,
     variables: { id: parent_permlink },
   })
