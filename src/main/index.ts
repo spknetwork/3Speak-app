@@ -66,6 +66,7 @@ if (!gotTheLock) {
         contextIsolation: false,
       },
     })
+    window.openDevTools();
     const theUrl = process.argv[process.argv.length - 1]
     if (theUrl.includes('speak://')) {
       const UrlWoo = new URL(theUrl)

@@ -61,11 +61,11 @@ export function LoginView() {
       event.preventDefault()
 
       const login = {
-        username: username,
-        key: key,
-        profile: profile,
-        accountType: accountType,
-        symKey: symKey,
+        username,
+        key,
+        profile,
+        accountType,
+        symKey,
         isEncrypted: encryption,
       }
 
@@ -170,24 +170,38 @@ export function LoginView() {
           ) : (
             <>
               <Form.Group>
-                <Form.Label className="text-secondary">Profile name</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={profile}
-                  onChange={onProfileChange}
-                  className="bg-secondary text-light"
-                  required
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label className="text-secondary">Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={username}
-                  onChange={onUsernameChange}
-                  className="bg-secondary text-light"
-                  required
-                />
+                <Form.Label className="text-secondary">HIVE Username</Form.Label>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: '#d1d1d1',
+                      width: '45px',
+                      height: '45px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: '20px',
+                      borderRadius: '2px 0 0 2px',
+                    }}
+                  >
+                    @
+                  </div>
+                  <Form.Control
+                    type="text"
+                    value={username}
+                    onChange={onUsernameChange}
+                    className="bg-secondary text-light"
+                    style={{
+                      borderRadius: '0 2px 2px 0',
+                    }}
+                    required
+                  />
+                </div>
               </Form.Group>
             </>
           )}
