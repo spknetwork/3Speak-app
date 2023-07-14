@@ -23,10 +23,8 @@ export const SideNavbar = () => {
   useEffect(() => {
     const load = async () => {
       const login = localStorage.getItem('SNProfileID')
-      console.log('login debug', login)
       if (login) {
         const user = (await AccountService.getAccount(login)) as any
-        console.log('login debug 2', user)
         const ringItem = user.keyring[0]
         setLogin(user.nickname)
         setMyChannelLink(`${ringItem.type}:${ringItem.username}`)
@@ -44,7 +42,6 @@ export const SideNavbar = () => {
     const user = await AccountService.logout(profileID)
     const accountsInit = (await AccountService.getAccounts()) as any
     localStorage.removeItem('SNProfileID')
-    console.log(accountsInit)
     if (accountsInit.length > 0) {
       localStorage.setItem('SNProfileID', accountsInit[0]._id)
     }
