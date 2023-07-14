@@ -16,7 +16,7 @@ import iconTrend from '../assets/img/icon_trend.svg'
 import shakeHands from '../assets/img/shake-hands.svg'
 import { AccountService } from '../services/account.service'
 
-export function SideNavbar(props: any) {
+export function SideNavbar() {
   const [login, setLogin] = useState('')
   const [myChannelLink, setMyChannelLink] = useState('')
 
@@ -27,7 +27,6 @@ export function SideNavbar(props: any) {
       if (login) {
         const user = (await AccountService.getAccount(login)) as any
         console.log('login debug 2', user)
-        console.log(user)
         const ringItem = user.keyring[0]
         setLogin(user.nickname)
         setMyChannelLink(`${ringItem.type}:${ringItem.username}`)
@@ -53,7 +52,13 @@ export function SideNavbar(props: any) {
   }
 
   return (
-    <Navbar bg="white" expand="lg" id="layoutNav" className="bg_white fixed-left"  style={{overflow:'scroll'}}>
+    <Navbar
+      bg="white"
+      expand="lg"
+      id="layoutNav"
+      className="bg_white fixed-left"
+      style={{ overflow: 'scroll' }}
+    >
       <Navbar.Brand>
         <img src={SpeakLogo} />
       </Navbar.Brand>
