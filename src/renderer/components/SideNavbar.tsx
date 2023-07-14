@@ -16,7 +16,7 @@ import iconTrend from '../assets/img/icon_trend.svg'
 import shakeHands from '../assets/img/shake-hands.svg'
 import { AccountService } from '../services/account.service'
 
-export function SideNavbar() {
+export const SideNavbar = () => {
   const [login, setLogin] = useState('')
   const [myChannelLink, setMyChannelLink] = useState('')
 
