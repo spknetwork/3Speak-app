@@ -16,7 +16,7 @@ export async function login(data) {
       if (Valid) {
         const profile = {
           _id: userAccounts[0].id.toString(),
-          nickname: data.profile,
+          nickname: data.username,
           keyring: [
             {
               type: 'hive',

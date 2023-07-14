@@ -27,7 +27,7 @@ export function SideNavbar(props: any) {
       if (login) {
         const user = (await AccountService.getAccount(login)) as any
         console.log('login debug 2', user)
-
+        console.log(user)
         const ringItem = user.keyring[0]
         setLogin(user.nickname)
         setMyChannelLink(`${ringItem.type}:${ringItem.username}`)

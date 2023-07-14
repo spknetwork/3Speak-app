@@ -63,7 +63,6 @@ export function LoginView() {
       const login = {
         username,
         key,
-        profile,
         accountType,
         symKey,
         isEncrypted: encryption,
@@ -143,17 +142,6 @@ export function LoginView() {
               overlay={<Tooltip id="coming-soon">Disabled (Coming Soon!)</Tooltip>}
             >
               <div>
-                <Form.Group>
-                  <Form.Label className="text-secondary">Profile name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={profile}
-                    onChange={onProfileChange}
-                    className="bg-secondary text-light"
-                    disabled
-                    required
-                  />
-                </Form.Group>
                 <Form.Group>
                   <Form.Label className="text-secondary">Username</Form.Label>
                   <Form.Control
