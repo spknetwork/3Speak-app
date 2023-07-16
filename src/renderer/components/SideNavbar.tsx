@@ -16,18 +16,15 @@ import iconTrend from '../assets/img/icon_trend.svg'
 import shakeHands from '../assets/img/shake-hands.svg'
 import { AccountService } from '../services/account.service'
 
-export function SideNavbar(props: any) {
+export const SideNavbar = () => {
   const [login, setLogin] = useState('')
   const [myChannelLink, setMyChannelLink] = useState('')
 
   useEffect(() => {
     const load = async () => {
       const login = localStorage.getItem('SNProfileID')
-      console.log('login debug', login)
       if (login) {
         const user = (await AccountService.getAccount(login)) as any
-        console.log('login debug 2', user)
-
         const ringItem = user.keyring[0]
         setLogin(user.nickname)
         setMyChannelLink(`${ringItem.type}:${ringItem.username}`)
@@ -45,7 +42,6 @@ export function SideNavbar(props: any) {
     const user = await AccountService.logout(profileID)
     const accountsInit = (await AccountService.getAccounts()) as any
     localStorage.removeItem('SNProfileID')
-    console.log(accountsInit)
     if (accountsInit.length > 0) {
       localStorage.setItem('SNProfileID', accountsInit[0]._id)
     }
@@ -53,7 +49,13 @@ export function SideNavbar(props: any) {
   }
 
   return (
-    <Navbar bg="white" expand="lg" id="layoutNav" className="bg_white fixed-left"  style={{overflow:'scroll'}}>
+    <Navbar
+      bg="white"
+      expand="lg"
+      id="layoutNav"
+      className="bg_white fixed-left"
+      style={{ overflow: 'scroll' }}
+    >
       <Navbar.Brand>
         <img src={SpeakLogo} />
       </Navbar.Brand>
