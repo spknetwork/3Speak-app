@@ -131,6 +131,7 @@
     "react-notifications": "^1.7.2",
     "react-popup": "^0.10.0",
     "react-router-dom": "^5.2.0",
+    "rehype-raw": "^6.1.1",
     "tedious": "^14.0.0",
     "wa-go-ipfs": "git+https://github.com/vaultec81/wa-go-ipfs.git",
     "winston": "^3.3.3",

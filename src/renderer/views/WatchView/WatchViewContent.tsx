@@ -11,6 +11,7 @@ import { Player } from '../../components/video/Player'
 import { LoopCircleLoading } from 'react-loadingg'
 import DateTime from 'date-and-time'
 import DOMPurify from 'dompurify'
+import rehypeRaw from 'rehype-raw'
 export const WatchViewContent = (props: any) => {
   const {
     loaded,
@@ -127,7 +128,7 @@ export const WatchViewContent = (props: any) => {
               <div className="single-video-info-content box mb-3">
                 <h6>About :</h6>
                 <CollapsibleText>
-                  <ReactMarkdown skipHtml={false}>
+                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>
                     {DOMPurify.sanitize(videoInfo.description)}
                   </ReactMarkdown>
                   <hr />
