@@ -105,10 +105,10 @@ export class IpfsHandler {
       let ipfsPath
       if (folderPath) {
         ipfsPath = folderPath
-        config.set('ipfsPath', folderPath)
       } else {
         ipfsPath = ipfsInfo.ipfsPath // Use the default path if no folder is selected
       }
+      config.set('ipfsPath', ipfsPath)
       await IpfsHandler.init(ipfsPath)
       fs.writeFileSync(Path.join(appPath, 'ipfs.pid'), `${await IpfsHandler.run(ipfsPath)}`)
       IpfsHandler.events.emit('ready')
