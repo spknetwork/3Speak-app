@@ -6,13 +6,14 @@ import * as IPFSHTTPClient from 'ipfs-http-client'
 import { execFile, spawn } from 'child_process'
 import execa from 'execa'
 import { IPFS_HOST, IPFS_SELF_MULTIADDR } from '../../../common/constants'
+import Config from './Config'
+
+const { dialog } = require('electron')
+const Utils = require('../utils')
 const waIpfs = require('wa-go-ipfs')
 const toUri = require('multiaddr-to-uri')
 
-const IPFSPORTS = [
-  '5001',
-  '5004'
-]
+const IPFSPORTS = ['5001', '5004']
 
 const defaultIpfsConfig = {
   API: {
@@ -75,6 +76,21 @@ export class IpfsHandler {
       }
     })
   }
+  static async selectFolderPath() {
+    try {
+      const result = await dialog.showOpenDialog({
+        properties: ['openDirectory'],
+        title: 'Select IPFS folder for 3Speak pins',
+        message: 'Please select a folder to store IPFS data:',
+      })
+
+      const folderPath = result.canceled ? null : result.filePaths[0]
+      return folderPath
+    } catch (error) {
+      console.error(error)
+      return null // Error occurred
+    }
+  }
   static async start(appPath) {
     IpfsHandler.events.once('ready', async () => {
       this.isReady = true
@@ -83,12 +99,18 @@ export class IpfsHandler {
     let ipfsInfo = await IpfsHandler.getIpfs()
     if (!ipfsInfo.exists) {
       console.log(`5`)
-      ipfsInfo = await IpfsHandler.getIpfs()
-      await IpfsHandler.init(ipfsInfo.ipfsPath)
-      fs.writeFileSync(
-        Path.join(appPath, 'ipfs.pid'),
-        `${await IpfsHandler.run(ipfsInfo.ipfsPath)}`,
-      )
+      const config = new Config(Utils.getRepoPath())
+      await config.open()
+      const folderPath = await this.selectFolderPath()
+      let ipfsPath
+      if (folderPath) {
+        ipfsPath = folderPath
+      } else {
+        ipfsPath = ipfsInfo.ipfsPath // Use the default path if no folder is selected
+      }
+      config.set('ipfsPath', ipfsPath)
+      await IpfsHandler.init(ipfsPath)
+      fs.writeFileSync(Path.join(appPath, 'ipfs.pid'), `${await IpfsHandler.run(ipfsPath)}`)
       IpfsHandler.events.emit('ready')
     } else {
       console.log(`6`)
@@ -116,7 +138,7 @@ export class IpfsHandler {
     const goIpfsPath = await waIpfs.getPath(
       waIpfs.getDefaultPath({ dev: process.env.NODE_ENV === 'development' }),
     )
-    console.log('repoPath', {repoPath, goIpfsPath})
+    console.log('repoPath', { repoPath, goIpfsPath })
     await execa(goIpfsPath, ['init'], {
       env: {
         IPFS_PATH: repoPath,
@@ -166,12 +188,19 @@ export class IpfsHandler {
     })
   }
   static async getIpfs() {
-
     let ipfsPath: string
     if (process.env.IPFS_PATH) {
       ipfsPath = process.env.IPFS_PATH
     } else {
-      ipfsPath = Path.join(os.homedir(), '.ipfs-3speak_v0.16.0')
+      const config = new Config(Utils.getRepoPath())
+      await config.open()
+      let ipfsPathConfig = config.get('ipfsPath')
+
+      if (ipfsPathConfig) {
+        ipfsPath = ipfsPathConfig
+      } else {
+        ipfsPath = Path.join(os.homedir(), '.ipfs-3speak_v0.16.0') // Use the default path if no folder is selected
+      }
     }
 
     let exists
@@ -197,7 +226,7 @@ export class IpfsHandler {
             }*/
     }
 
-    let isRunning = false;
+    let isRunning = false
     if (apiAddr) {
       ipfs = IPFSHTTPClient.create({ url: IPFS_HOST })
       try {
@@ -213,7 +242,6 @@ export class IpfsHandler {
     }
 
     if (ipfs !== null && isRunning) {
-      
       const gma = await ipfs.config.get('Addresses.Gateway')
       gateway = toUri(gma) + '/ipfs/'
     } else {
