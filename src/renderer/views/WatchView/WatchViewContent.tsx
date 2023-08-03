@@ -37,6 +37,18 @@ export const WatchViewContent = (props: any) => {
     Finder,
   } = props
 
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes'
+
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+  }
+
   return (
     <div>
       {loaded ? (
@@ -86,31 +98,20 @@ export const WatchViewContent = (props: any) => {
                 <div className="float-right">
                   <Row>
                     <FollowWidget reflink={reflink} />
-                    <a
-                      target="_blank"
-                      style={{ marginRight: '5px', marginLeft: '5px' }}
-                      className="btn btn-light btn-sm"
-                      onClick={PinLocally}
-                    >
-                      <FaDownload /> Download to IPFS node
-                    </a>
-                    <a
-                      target="_blank"
-                      style={{ marginRight: '5px' }}
-                      className="btn btn-light btn-sm"
-                      href={(() => {
-                        const videoSource = Finder.one.in(videoInfo.sources).with({
-                          format: 'mp4',
-                        })
-                        if (videoSource) {
-                          return videoSource.url
-                        }
-                      })()}
-                    >
-                      <FaDownload /> Download
-                    </a>
+                    <div style={{ textAlign: 'center' }}>
+                      <a
+                        target="_blank"
+                        style={{ marginRight: '5px', marginLeft: '5px' }}
+                        className="btn btn-light btn-sm"
+                        onClick={PinLocally}
+                      >
+                        <FaDownload /> Download to IPFS node
+                      </a>
+                      <div>{formatBytes(videoInfo.size)}</div>
+                    </div>
                   </Row>
                 </div>
+
                 <img className="img-fluid" src={profilePictureURL} alt="" />
                 <p>
                   <a href={`#/user/${reflinkParsed.source.value}:${reflinkParsed.root}`}>
