@@ -19,6 +19,7 @@ export interface VideoInfo {
   refs: string[]
   meta: any
   reflink: string
+  size?: number
 }
 
 export interface VideoResolutionProfile {
