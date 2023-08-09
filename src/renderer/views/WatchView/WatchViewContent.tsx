@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container, Col, Row } from 'react-bootstrap'
 import { FollowWidget } from '../../components/widgets/FollowWidget'
 import { FaDownload } from 'react-icons/fa'
@@ -12,7 +12,10 @@ import { LoopCircleLoading } from 'react-loadingg'
 import DateTime from 'date-and-time'
 import DOMPurify from 'dompurify'
 import rehypeRaw from 'rehype-raw'
+import { usePinningUtils } from '../PinsView/pinningUtils'
 export const WatchViewContent = (props: any) => {
+  const [currentViewIsPinned, setCurrentViewIsPinned] = useState(false)
+
   const {
     loaded,
     videoInfo,
@@ -49,6 +52,20 @@ export const WatchViewContent = (props: any) => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
   }
 
+  const { pinList } = usePinningUtils()
+
+  useEffect(() => {
+    checkPins()
+  }, [pinList, rootCid])
+  const checkPins = () => {
+    let pins = pinList.flatMap((obj) => obj.cids)
+
+    if (pins.includes(rootCid)) {
+      setCurrentViewIsPinned(true)
+    } else {
+      setCurrentViewIsPinned(false)
+    }
+  }
   return (
     <div>
       {loaded ? (
@@ -99,14 +116,29 @@ export const WatchViewContent = (props: any) => {
                   <Row>
                     <FollowWidget reflink={reflink} />
                     <div style={{ textAlign: 'center' }}>
-                      <a
-                        target="_blank"
-                        style={{ marginRight: '5px', marginLeft: '5px' }}
-                        className="btn btn-light btn-sm"
-                        onClick={PinLocally}
-                      >
-                        <FaDownload /> Download to IPFS node
-                      </a>
+                      {currentViewIsPinned ? (
+                        <button
+                          style={{ marginRight: '5px', marginLeft: '5px' }}
+                          className="btn btn-light btn-sm"
+                          disabled={currentViewIsPinned}
+                        >
+                          {'Downloaded on IPFS'}
+                        </button>
+                      ) : (
+                        <a
+                          target="_blank"
+                          style={{ marginRight: '5px', marginLeft: '5px' }}
+                          className="btn btn-light btn-sm"
+                          onClick={async () => {
+                            setCurrentViewIsPinned(true)
+                            await PinLocally()
+                            checkPins()
+                          }}
+                        >
+                          <FaDownload /> Download to IPFS node
+                        </a>
+                      )}
+
                       <div>{formatBytes(videoInfo.size)}</div>
                     </div>
                   </Row>
