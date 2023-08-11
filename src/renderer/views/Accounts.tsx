@@ -51,6 +51,8 @@ export function AccountsView() {
 
     if (accountsInit.length > 0) {
       localStorage.setItem('SNProfileID', accountsInit[0]._id)
+    } else {
+      localStorage.removeItem('SNProfileID')
     }
     window.location.reload()
   }
