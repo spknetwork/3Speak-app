@@ -23,17 +23,17 @@ export function LoginView() {
     setUsername('')
     setKey('')
   }
-  useEffect(() => {
-    const load = async () => {
-      const login = localStorage.getItem('SNProfileID')
-      const accountsInit = (await AccountService.getAccounts()) as any[]
-      if (login && accountsInit.length > 0) {
-        history.push('/')
-      }
-    }
+  // useEffect(() => {
+  //   const load = async () => {
+  //     const login = localStorage.getItem('SNProfileID')
+  //     const accountsInit = (await AccountService.getAccounts()) as any[]
+  //     if (login && accountsInit.length > 0) {
+  //       history.push('/')
+  //     }
+  //   }
 
-    void load()
-  }, [])
+  //   void load()
+  // }, [])
 
   const onUsernameChange = useCallback(async (event) => {
     console.log(`username change ${event.target.value}`)

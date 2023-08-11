@@ -43,6 +43,7 @@ export function AccountsView() {
 
     localStorage.setItem('SNProfileID', profileID)
     setLogin(theAcc.nickname)
+    window.location.reload()
   }
 
   const logOut = async (profileID: string) => {
