@@ -26,8 +26,8 @@ export function LoginView() {
   useEffect(() => {
     const load = async () => {
       const login = localStorage.getItem('SNProfileID')
-
-      if (login) {
+      const accountsInit = (await AccountService.getAccounts()) as any[]
+      if (login && accountsInit.length > 0) {
         history.push('/')
       }
     }
