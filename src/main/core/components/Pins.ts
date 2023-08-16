@@ -9,29 +9,31 @@ import { IpfsHandler } from './ipfsHandler'
 import tmp from 'tmp'
 import execa from 'execa'
 import waIpfs from 'wa-go-ipfs'
+import Config from './Config'
+import path from 'path'
+import fsExtra from 'fs-extra'
+
 const Path = require('path')
 const debug = require('debug')('3speak:pins')
 const Schedule = require('node-schedule')
 PouchDB.plugin(require('pouchdb-find'))
 PouchDB.plugin(require('pouchdb-upsert'))
+const Utils = require('../utils')
 
 async function progressPin(ipfs: IPFSHTTPClient, pin: string, callback: Function) {
-
   // ipfs.dag.exp
-  
-  const tmpPath = tmp.dirSync();
-  console.log(tmpPath)
-  const writer = fs.createWriteStream(Path.join(tmpPath.name, 'download.car'));
 
-  const {data} = await Axios.get(`https://ipfs-3speak.b-cdn.net/api/v0/object/stat?arg=${pin}`)
+  const tmpPath = tmp.dirSync()
+  console.log(tmpPath)
+  const writer = fs.createWriteStream(Path.join(tmpPath.name, 'download.car'))
+
+  const { data } = await Axios.get(`https://ipfs-3speak.b-cdn.net/api/v0/object/stat?arg=${pin}`)
   const CumulativeSize = data.CumulativeSize
 
-  let totalSizeSoFar = 0;
+  let totalSizeSoFar = 0
   await Axios.get(`https://ipfs-3speak.b-cdn.net/api/v0/dag/export?arg=${pin}`, {
     responseType: 'stream',
-  }).then(response => {
-
-    
+  }).then((response) => {
     response.data.on('data', (chunk) => {
       totalSizeSoFar = totalSizeSoFar + chunk.length
       const pct = Math.round((totalSizeSoFar / CumulativeSize) * 100)
@@ -39,21 +41,21 @@ async function progressPin(ipfs: IPFSHTTPClient, pin: string, callback: Function
       // console.log(`${pct}%`)
     })
     return new Promise((resolve, reject) => {
-      response.data.pipe(writer);
-      let error = null;
-      writer.on('error', err => {
-        error = err;
-        writer.close();
-        reject(err);
-      });
+      response.data.pipe(writer)
+      let error = null
+      writer.on('error', (err) => {
+        error = err
+        writer.close()
+        reject(err)
+      })
       writer.on('close', () => {
         if (!error) {
-          resolve(true);
+          resolve(true)
         }
-      });
-    });
+      })
+    })
   })
-  
+
   // console.log('got here')
   // for await(let importBlock of ipfs.dag.import(fs.createReadStream(Path.join(tmpPath.name, 'download.car')))) {
   //   console.log(importBlock)
@@ -64,21 +66,16 @@ async function progressPin(ipfs: IPFSHTTPClient, pin: string, callback: Function
     waIpfs.getDefaultPath({ dev: process.env.NODE_ENV === 'development' }),
   )
 
-
-  const output = await execa(ipfsPath, [
-    'dag',
-    'import',
-    Path.join(tmpPath.name, 'download.car')
-  ], {
+  const output = await execa(ipfsPath, ['dag', 'import', Path.join(tmpPath.name, 'download.car')], {
     env: {
-      IPFS_PATH: ipfsInfo.ipfsPath
-    }
+      IPFS_PATH: ipfsInfo.ipfsPath,
+    },
   })
   console.log(output)
-  
+
   await fsPromises.rmdir(tmpPath.name, {
     recursive: true,
-    force: true
+    force: true,
   } as any)
 
   // const refs = ipfs.refs(pin, {
@@ -116,6 +113,63 @@ class Pins {
     )
     return out
   }
+  async mv(sender) {
+    try {
+      const { dialog, BrowserWindow } = require('electron')
+
+      const focusedWindow = BrowserWindow.getFocusedWindow()
+      if (!focusedWindow) {
+        throw new Error('No focused window found.')
+      }
+
+      // Open folder dialog to select new path
+      const result = await dialog.showOpenDialog(focusedWindow, {
+        properties: ['openDirectory'],
+        title: 'Select New IPFS Folder',
+        message: 'Please select a new folder for IPFS data:',
+      })
+
+      const selectedFolder = result.canceled ? null : result.filePaths[0]
+
+      if (selectedFolder) {
+        // Implement logic to move the contents from the old folder to the new folder
+        const config = new Config(Utils.getRepoPath())
+        await config.open()
+        const ipfsPath = config.get('ipfsPath')
+
+        // Normalize paths to ensure consistent comparison
+        const normalizedIPFSPath = path.normalize(ipfsPath)
+        const normalizedSelectedFolder = path.normalize(selectedFolder)
+
+        // Check if the selected folder is the same as or a parent of the current IPFS folder
+        if (
+          normalizedIPFSPath === normalizedSelectedFolder ||
+          normalizedIPFSPath.startsWith(normalizedSelectedFolder + path.sep)
+        ) {
+          console.error('Selected folder is the same as or a parent of the current IPFS folder.')
+          return
+        }
+
+        // Move contents
+        const files = await fsExtra.readdir(ipfsPath)
+        for (const file of files) {
+          const sourcePath = path.join(ipfsPath, file)
+          const destPath = path.join(selectedFolder, file)
+          await fsExtra.move(sourcePath, destPath, { overwrite: true })
+        }
+
+        // Update IPFS configuration with the new folder path
+        config.set('ipfsPath', selectedFolder)
+
+        console.log('IPFS folder path changed successfully')
+      }
+
+      // Reply to the sender window with the selected folder path
+      sender.send('ipfs.handleFolderSelection', selectedFolder)
+    } catch (error) {
+      console.error('Error handling IPC request:', error)
+    }
+  }
   async add(doc) {
     debug(`received add with id of ${doc._id}`)
     if (typeof doc !== 'object') {
@@ -139,28 +193,22 @@ class Pins {
     doc.size = 0
     this.inProgressPins[doc._id] = doc
 
-
     let totalSize = 0
-    let totalPercent;
+    let totalPercent
 
     console.log(doc)
 
-    const progressTick = setInterval(async() => {
-
+    const progressTick = setInterval(async () => {
       try {
-        const bDoc = await this.db.get("hive:cowboyzlegend27:qauvdrmx")
+        const bDoc = await this.db.get('hive:cowboyzlegend27:qauvdrmx')
         console.log(bDoc)
-      } catch {
-
-      }
+      } catch {}
       try {
         const cDoc = await this.db.get(doc._id)
         console.log(cDoc)
-      } catch {
-
-      }
+      } catch {}
       await this.db.upsert(doc._id, (oldDoc) => {
-        oldDoc.percent = totalPercent;
+        oldDoc.percent = totalPercent
         doc.percent = totalPercent
         return oldDoc
       })
