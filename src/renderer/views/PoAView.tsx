@@ -18,7 +18,7 @@ export function PoAView() {
   const { programRunner, setProgramRunner, terminalRef } = usePoAProgramRunnerContext();
 
   const updater = usePoAInstaller();
-  const { terminal, setTerminal, isPoARunning, runPoA, contextValue } = usePoAProgramRunner();
+  const { terminal, setTerminal, isPoARunning, runPoA, contextValue, storageSize, autoPin, setAutoPin, setStorageSize } = usePoAProgramRunner();
   const { stopPoA } = contextValue;
   useEffect(() => {
     if (terminalRef.current && !terminal) {
@@ -40,8 +40,12 @@ export function PoAView() {
       isPoARunning={isPoARunning}
       updatePoA={updater.updatePoA}
       runPoA={runPoA}
-      stopPoA={stopPoA} // Pass the stopPoA function as a prop
+      stopPoA={stopPoA}
       terminalRef={terminalRef}
+      storageSize={storageSize}
+      autoPin={autoPin}
+      setStorageSize={setStorageSize}
+      setAutoPin={setAutoPin}
     />
   );
 }

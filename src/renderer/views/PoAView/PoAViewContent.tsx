@@ -1,5 +1,6 @@
+//Path: src\renderer\views\PoAView\PoAViewContent.tsx
 import React, { useEffect, useRef, useState, RefObject } from 'react';
-import { Button, OverlayTrigger, Tooltip, Card } from 'react-bootstrap';
+import { Form, Button, OverlayTrigger, Tooltip, Card } from 'react-bootstrap';
 import { IoIosRadioButtonOn } from 'react-icons/io';
 import { usePoAState } from './PoAStateContext';
 import { usePoAProgramRunner } from './usePoAProgramRunner';
@@ -7,9 +8,15 @@ import { usePoAProgramRunner } from './usePoAProgramRunner';
 interface PoAViewContentProps {
   isPoARunning: boolean;
   updatePoA: () => Promise<void>;
-  runPoA: () => void;
+  runPoA: () => Promise<void>;
   stopPoA: () => void;
   terminalRef: RefObject<HTMLDivElement>;
+
+  // Add the new properties
+  storageSize: number;
+  autoPin: boolean;
+  setStorageSize: React.Dispatch<React.SetStateAction<number>>;
+  setAutoPin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const PoAViewContent: React.FC<PoAViewContentProps> = ({
@@ -17,6 +24,10 @@ export const PoAViewContent: React.FC<PoAViewContentProps> = ({
                                                                 updatePoA,
                                                                 runPoA,
                                                                 terminalRef,
+                                                                autoPin,
+                                                                storageSize,
+                                                                setAutoPin,
+                                                                setStorageSize,
                                                               }) => {
   const { logs, validatorOnline, setValidatorOnline } = usePoAState();
   const [isDataReceived, setIsDataReceived] = useState(false);
@@ -97,6 +108,14 @@ export const PoAViewContent: React.FC<PoAViewContentProps> = ({
     }
   }, [logs, terminalRef]);
 
+
+  const handleAutoPinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAutoPin(e.target.checked);
+  };
+
+  const handleStorageSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStorageSize(Number(e.target.value));
+  };
   const startPoA = async () => {
     if (!isPoARunning && !isDataReceived && !isUpdating) {
       console.log('starting PoA');
@@ -149,6 +168,23 @@ export const PoAViewContent: React.FC<PoAViewContentProps> = ({
             </Button>
           </OverlayTrigger>
           <IoIosRadioButtonOn style={{ color: validatorOnline ? 'green' : 'red' }} />
+          <Form.Check
+            type="checkbox"
+            label="Auto Pin"
+            checked={autoPin}
+            onChange={handleAutoPinChange}
+            disabled={isPoARunning}
+          />
+          <p>Enter storage size in GB to auto pin</p>
+          <Form.Control
+            type="number"
+            title="Enter storage size in GB to auto pin"
+            value={storageSize}
+            onChange={handleStorageSizeChange}
+            min={0}
+            placeholder="Enter storage size in GB"
+            disabled={isPoARunning}
+          />
         </div>
       </p>
       <h1>SPK Network Stats</h1>

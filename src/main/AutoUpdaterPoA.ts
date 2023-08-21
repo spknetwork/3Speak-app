@@ -52,7 +52,7 @@ class PoAInstaller extends EventEmitter {
       return null;
     }
   }
- async install() {
+  async install() {
     const installDir = Path.join(os.homedir(), (await this.getDefaultPath()) || '');
     console.log(`Installing PoA to ${installDir}`);
     if (!fs.existsSync(installDir)) {
@@ -69,7 +69,14 @@ class PoAInstaller extends EventEmitter {
     if (compareVersions.compare(tag_name, currentVersion, '>')) {
       console.log('Update available');
       this.emit('update-available', tag_name);
-      const asset = assets.find((a) => a.name.includes('win-main') && a.name.includes('exe') && isWin);
+
+      let asset;
+
+      if (isWin) {
+        asset = assets.find((a) => a.name.includes('win-main') && a.name.includes('exe'));
+      } else if (process.platform === 'linux') {
+        asset = assets.find((a) => a.name.includes(`linux-main-${tag_name}`)); // Modified this line
+      }
 
       if (!asset) {
         console.error('Could not find PoA asset for this platform');
@@ -84,7 +91,7 @@ class PoAInstaller extends EventEmitter {
         responseType: 'arraybuffer',
       });
 
-      const installPath = Path.join(installDir, 'PoA.exe');
+      const installPath = isWin ? Path.join(installDir, 'PoA.exe') : Path.join(installDir, 'PoA');
 
       fs.writeFileSync(installPath, Buffer.from(response.data));
 

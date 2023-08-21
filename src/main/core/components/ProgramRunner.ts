@@ -1,5 +1,5 @@
 // ProgramRunner.ts
-import { exec, ChildProcess } from 'child_process';
+import { spawn, SpawnOptions, ChildProcess } from 'child_process';
 import treeKill from 'tree-kill';
 
 class ProgramRunner {
@@ -15,23 +15,24 @@ class ProgramRunner {
   public setupProgram(onExit: () => void): void {
     console.log(`Setting up command: ${this.command}`);
 
-    this.process = exec(this.command, (error, stdout, stderr) => {
-      if (error && this.process && !this.process.killed) {
-        console.error(`Error running program: ${error.message}`);
-        console.error('Error details:', error);
-        return;
-      }
+    const commandParts = this.command.split(' ');
+    const cmd = commandParts[0];
+    const args = commandParts.slice(1);
 
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
-    });
+    const options: SpawnOptions = {
+      stdio: 'pipe',
+      detached: true, // This might help in some scenarios to open the program in a new process group.
+      shell: true // Running in a shell can sometimes help with GUI apps.
+    };
+
+    this.process = spawn(cmd, args, options);
 
     this.process.stdout.on('data', (data) => {
-      this.outputHandler(data);
+      this.outputHandler(data.toString());
     });
 
     this.process.stderr.on('data', (data) => {
-      this.outputHandler(data);
+      this.outputHandler(data.toString());
     });
 
     this.process.on('exit', () => {

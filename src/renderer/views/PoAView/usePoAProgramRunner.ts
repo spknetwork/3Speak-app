@@ -9,6 +9,7 @@ import os from 'os';
 import ArraySearch from 'arraysearch';
 import PromiseIPC from 'electron-promise-ipc';
 
+const isWin = process.platform === 'win32';
 export const usePoAProgramRunner = () => {
   const [terminal, setTerminal] = useState<Terminal | null>(null);
   const [isPoARunning, setIsPoARunning] = useState(false);
@@ -17,6 +18,8 @@ export const usePoAProgramRunner = () => {
   const Finder = ArraySearch.Finder;
   const { logs, setLogs } = usePoAState();
   const isMountedRef = useRef(true);
+  const [autoPin, setAutoPin] = useState(false);
+  const [storageSize, setStorageSize] = useState(0);
 
   const runPoA = useCallback(async () => {
     let command = '';  // Define command here
@@ -25,8 +28,18 @@ export const usePoAProgramRunner = () => {
       const getAccount = (await PromiseIPC.send('accounts.get', profileID as any)) as any;
       const hiveInfo = Finder.one.in(getAccount.keyring).with({ type: 'hive' });
       const installDir = Path.join(os.homedir(), (await poaInstaller.current.getDefaultPath()) || '');
-      const executablePath = Path.join(installDir, 'PoA.exe');
-      command = `"${executablePath}" -node=2 -username=${hiveInfo.username} -useWS=true -IPFS_PORT=5004`;  // Assign command here
+      const executablePath = isWin ? Path.join(installDir, 'PoA.exe') : Path.join(installDir, 'PoA');
+      command = `"${executablePath}" -node=2 -username=${hiveInfo.username} -useWS=true -IPFS_PORT=5004`;
+      console.log(command);
+      console.log(autoPin);
+      console.log(storageSize);
+      if (autoPin) {
+        command += " -getVids=true -pinVideos=true";
+        if (storageSize > 0) {
+          command += ` -storageLimit=${storageSize}`;
+        }
+      }
+      console.log(command);
       if (!runner.current) {
         runner.current = new ProgramRunner(command, (data: string) => {
           if (!isMountedRef.current) return;
@@ -45,7 +58,7 @@ export const usePoAProgramRunner = () => {
       runner.current.stopProgram();
       setIsPoARunning(false);
     }
-  }, [terminal, isPoARunning]);
+  }, [terminal, isPoARunning, autoPin, storageSize]);
 
   const contextValue = {
     isPoARunning,
@@ -54,5 +67,5 @@ export const usePoAProgramRunner = () => {
     stopPoA: () => runner.current?.stopProgram(),
   };
 
-  return { terminal, setTerminal, isPoARunning, runPoA, contextValue };
+  return { terminal, setTerminal, isPoARunning, runPoA, contextValue, setAutoPin, setStorageSize, storageSize, autoPin };
 }
