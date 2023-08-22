@@ -78,6 +78,9 @@ class IpcAdapter {
     PromiseIPC.on('pins.ls', async () => {
       return await this.core.pins.ls()
     })
+    PromiseIPC.on('pins.mv', async (ref) => {
+      return await this.core.pins.mv(ref.sender)
+    })
     //Accounts
     PromiseIPC.on('accounts.createProfile', async (doc) => {
       return await this.core.accounts.createProfile(doc)
