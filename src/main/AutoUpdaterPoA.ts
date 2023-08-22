@@ -75,7 +75,9 @@ class PoAInstaller extends EventEmitter {
       if (isWin) {
         asset = assets.find((a) => a.name.includes('win-main') && a.name.includes('exe'));
       } else if (process.platform === 'linux') {
-        asset = assets.find((a) => a.name.includes(`linux-main-${tag_name}`)); // Modified this line
+        asset = assets.find((a) => a.name.includes('linux-main')); // Modified this line
+      } else if (process.platform === 'darwin') {
+        asset = assets.find((a) => a.name.includes('mac-main') && a.name.includes('dmg'));
       }
 
       if (!asset) {

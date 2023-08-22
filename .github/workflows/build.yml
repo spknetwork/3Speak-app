@@ -15,6 +15,11 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x' # or the specific version you need
+
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
