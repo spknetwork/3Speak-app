@@ -122,50 +122,62 @@ class Pins {
         throw new Error('No focused window found.')
       }
 
-      // Open folder dialog to select new path
-      const result = await dialog.showOpenDialog(focusedWindow, {
-        properties: ['openDirectory'],
-        title: 'Select New IPFS Folder',
-        message: 'Please select a new folder for IPFS data:',
+      // Show a confirmation dialog to the user
+      const response = await dialog.showMessageBox(focusedWindow, {
+        type: 'question',
+        buttons: ['Cancel', 'Proceed'],
+        title: 'Confirm Folder Move',
+        message: 'Are you sure you want to move the IPFS folder contents?',
+        defaultId: 1, // Set the default button (0 for Cancel, 1 for Proceed)
       })
 
-      const selectedFolder = result.canceled ? null : result.filePaths[0]
+      // Check user response
+      if (response.response === 1) {
+        // Open folder dialog to select new path
+        const result = await dialog.showOpenDialog(focusedWindow, {
+          properties: ['openDirectory'],
+          title: 'Select New IPFS Folder',
+          message: 'Please select a new folder for IPFS data:',
+        })
 
-      if (selectedFolder) {
-        // Implement logic to move the contents from the old folder to the new folder
-        const config = new Config(Utils.getRepoPath())
-        await config.open()
-        const ipfsPath = config.get('ipfsPath')
+        const selectedFolder = result.canceled ? null : result.filePaths[0]
 
-        // Normalize paths to ensure consistent comparison
-        const normalizedIPFSPath = path.normalize(ipfsPath)
-        const normalizedSelectedFolder = path.normalize(selectedFolder)
+        if (selectedFolder) {
+          // Implement logic to move the contents from the old folder to the new folder
+          const config = new Config(Utils.getRepoPath())
+          await config.open()
+          const ipfsPath = config.get('ipfsPath')
 
-        // Check if the selected folder is the same as or a parent of the current IPFS folder
-        if (
-          normalizedIPFSPath === normalizedSelectedFolder ||
-          normalizedIPFSPath.startsWith(normalizedSelectedFolder + path.sep)
-        ) {
-          console.error('Selected folder is the same as or a parent of the current IPFS folder.')
-          return
+          // Normalize paths to ensure consistent comparison
+          const normalizedIPFSPath = path.normalize(ipfsPath)
+          const normalizedSelectedFolder = path.normalize(selectedFolder)
+
+          // Check if the selected folder is the same as or a parent of the current IPFS folder
+          if (
+            normalizedIPFSPath === normalizedSelectedFolder ||
+            normalizedIPFSPath.startsWith(normalizedSelectedFolder + path.sep)
+          ) {
+            console.error('Selected folder is the same as or a parent of the current IPFS folder.')
+            return
+          }
+
+          // Move contents
+          const files = await fsExtra.readdir(ipfsPath)
+          for (const file of files) {
+            const sourcePath = path.join(ipfsPath, file)
+            const destPath = path.join(selectedFolder, file)
+            await fsExtra.move(sourcePath, destPath, { overwrite: true })
+          }
+
+          // Update IPFS configuration with the new folder path
+          config.set('ipfsPath', selectedFolder)
+
+          console.log('IPFS folder path changed successfully')
         }
 
-        // Move contents
-        const files = await fsExtra.readdir(ipfsPath)
-        for (const file of files) {
-          const sourcePath = path.join(ipfsPath, file)
-          const destPath = path.join(selectedFolder, file)
-          await fsExtra.move(sourcePath, destPath, { overwrite: true })
-        }
-
-        // Update IPFS configuration with the new folder path
-        config.set('ipfsPath', selectedFolder)
-
-        console.log('IPFS folder path changed successfully')
+        // Reply to the sender window with the selected folder path
+        sender.send('ipfs.handleFolderSelection', selectedFolder)
       }
-
-      // Reply to the sender window with the selected folder path
-      sender.send('ipfs.handleFolderSelection', selectedFolder)
     } catch (error) {
       console.error('Error handling IPC request:', error)
     }

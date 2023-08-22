@@ -175,7 +175,7 @@ export const usePinningUtils = () => {
 
   const handleCase4 = async () => {
     try {
-      await PromiseIpc.send('ipfs.changeFolderPath')
+      await PromiseIpc.send('pins.mv')
     } catch (error) {
       console.error('Error sending IPC message:', error)
     }
