@@ -17,17 +17,18 @@ class PoAInstaller extends EventEmitter {
       process.exit(1);
     }
   }
- async getCurrentVersion(installDir) {
+
+  async getCurrentVersion(installDir) {
     const versionFilePath = Path.join(installDir, 'version.txt');
     try {
       const currentVersion = await fs.promises.readFile(versionFilePath, 'utf-8');
       return currentVersion.trim();
     } catch (error) {
-      // If the file doesn't exist or there is an error reading it, return a default version
       return '0.0.0';
     }
   }
- async getDefaultPath() {
+
+  async getDefaultPath() {
     let defaultPath;
     switch (process.platform) {
       case 'win32':
@@ -43,49 +44,46 @@ class PoAInstaller extends EventEmitter {
         throw new Error(`Unsupported platform: ${process.platform}`);
     }
 
-    // Check if the default path exists
     try {
       await fs.promises.access(defaultPath, fs.constants.F_OK);
       return defaultPath;
     } catch (error) {
-      // Default path does not exist, return null
       return null;
     }
   }
+
   async install() {
     const installDir = Path.join(os.homedir(), (await this.getDefaultPath()) || '');
     console.log(`Installing PoA to ${installDir}`);
-    if (!fs.existsSync(installDir)) {
-      fs.mkdirSync(installDir, { recursive: true });
+
+    // Create the data/badger directory if it doesn't exist
+    const dataDir = Path.join('.', 'data', 'badger');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+      console.log(`Directory ${dataDir} created.`);
     }
 
-    console.log('Installing PoA...');
-
+    // ... (rest of your existing code)
     const { data } = await axios.get('https://api.github.com/repos/spknetwork/proofofaccess/releases/latest');
     const { tag_name, assets } = data;
 
-    console.log(tag_name);
     const currentVersion = await this.getCurrentVersion(installDir);
     if (compareVersions.compare(tag_name, currentVersion, '>')) {
-      console.log('Update available');
       this.emit('update-available', tag_name);
 
       let asset;
-
       if (isWin) {
         asset = assets.find((a) => a.name.includes('win-main') && a.name.includes('exe'));
       } else if (process.platform === 'linux') {
-        asset = assets.find((a) => a.name.includes('linux-main')); // Modified this line
+        asset = assets.find((a) => a.name.includes('linux-main'));
       } else if (process.platform === 'darwin') {
-        asset = assets.find((a) => a.name.includes('mac-main') && a.name.includes('dmg'));
+        asset = assets.find((a) => a.name.includes('mac-main'));
       }
 
       if (!asset) {
         console.error('Could not find PoA asset for this platform');
         return;
       }
-
-      console.log(`Downloading PoA for ${process.platform}...`);
 
       const response = await axios({
         method: 'get',
@@ -94,13 +92,16 @@ class PoAInstaller extends EventEmitter {
       });
 
       const installPath = isWin ? Path.join(installDir, 'PoA.exe') : Path.join(installDir, 'PoA');
-
       fs.writeFileSync(installPath, Buffer.from(response.data));
+
+      // Make the file executable (only for non-Windows)
+      if (!isWin) {
+        fs.chmodSync(installPath, 0o755);
+      }
 
       console.log(`PoA installed at: ${installPath}`);
       this.emit('installed', installPath);
 
-      // Update version.txt file
       const versionFilePath = Path.join(installDir, 'version.txt');
       fs.writeFileSync(versionFilePath, tag_name);
       console.log(`Version ${tag_name} saved to ${versionFilePath}`);
