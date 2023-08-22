@@ -41,6 +41,7 @@ export const PinsViewComponent: React.FC<PinsViewProps> = ({
                 <Dropdown.Item eventKey="1">Manual Pin</Dropdown.Item>
                 <Dropdown.Item eventKey="2">Manual GC</Dropdown.Item>
                 <Dropdown.Item eventKey="3">IPFS Folder</Dropdown.Item>
+                <Dropdown.Item eventKey="4">Change path</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Col>

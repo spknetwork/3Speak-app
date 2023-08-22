@@ -173,6 +173,14 @@ export const usePinningUtils = () => {
     shell.openPath(ipfsPath)
   }
 
+  const handleCase4 = async () => {
+    try {
+      await PromiseIpc.send('pins.mv')
+    } catch (error) {
+      console.error('Error sending IPC message:', error)
+    }
+  }
+
   const actionSelect = async (key) => {
     switch (key) {
       case '1':
@@ -183,6 +191,9 @@ export const usePinningUtils = () => {
         break
       case '3':
         await handleCase3()
+        break
+      case '4':
+        await handleCase4()
         break
       default:
     }
