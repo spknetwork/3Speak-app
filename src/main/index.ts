@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, dialog } from 'electron'
 import debug from 'debug'
 import { CoreService } from './core'
 import IpcAdapter from './ipcAdapter'
@@ -73,6 +73,21 @@ if (!gotTheLock) {
     } else {
       window.loadURL(entryUrl)
     }
+    window.on('close', (event) => {
+      if (window) {
+        const choice = dialog.showMessageBoxSync(window, {
+          type: 'question',
+          buttons: ['Yes', 'No'],
+          title: 'Stop Proof of Access',
+          message:
+            'Closing the 3Speak app will result in the interruption of the Proof of Access. Are you ok with stopping it?',
+        })
+
+        if (choice === 1) {
+          event.preventDefault()
+        }
+      }
+    })
     window.on('closed', () => (window = null))
   })
 }
